@@ -27,7 +27,7 @@ Application web de jeu musical en équipe permettant à des joueurs de soumettre
 - [x] Code quality: scope is small, readable, and maintainable
   - Rails conventions (MVC, RESTful routes) garantissent lisibilité
   - Modèles ActiveRecord simples, contrôleurs directs
-  - 6 modèles, 7 contrôleurs - scope maîtrisé
+  - 6 modèles, 6 contrôleurs métier + ApplicationController - scope maîtrisé
 - [x] Testing: test strategy defined for all changed behaviors
   - Minitest pour tests unitaires (modèles, validations)
   - System tests Capybara pour flux utilisateur (phases de jeu)
@@ -69,9 +69,11 @@ app/
 ├── controllers/
 │   ├── application_controller.rb
 │   ├── teams_controller.rb
+│   ├── memberships_controller.rb
 │   ├── games_controller.rb
 │   ├── proposals_controller.rb
-│   └── guesses_controller.rb
+│   ├── guesses_controller.rb
+│   └── results_controller.rb
 ├── models/
 │   ├── user.rb
 │   ├── team.rb

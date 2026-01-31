@@ -1,0 +1,50 @@
+<div class="max-w-2xl mx-auto">
+  <div class="mb-6">
+    <%= link_to "← Retour à la partie", game_path(@game), class: "text-gray-400 hover:neon-text-cyan transition-all duration-300" %>
+  </div>
+
+  <div class="neon-border p-6">
+    <h1 class="text-2xl font-display font-bold neon-text-purple mb-4">🎯 Faire mes devinettes</h1>
+    
+    <p class="text-gray-300 mb-6">
+      Pour chaque musique proposée, devinez qui l'a soumise. Vous ne pouvez pas vous sélectionner vous-même pour votre propre proposition (elle n'apparaît pas).
+    </p>
+
+    <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3 mb-6">
+      <p class="text-sm text-yellow-400">
+        ⚠️ <strong>Attention:</strong> Une fois soumises, vos devinettes ne pourront plus être modifiées.
+      </p>
+    </div>
+
+    <%= form_with url: game_guesses_path(@game), method: :post, class: "space-y-6" do |f| %>
+      <% @proposals.each_with_index do |proposal, index| %>
+        <div class="border border-neon-purple/30 rounded-lg p-4 bg-dark-700/50">
+          <h3 class="font-medium text-gray-200 mb-3">Proposition #<%= index + 1 %></h3>
+          
+          <div class="bg-dark-800/50 rounded-lg p-3 mb-4 border border-neon-cyan/20">
+            <a href="<%= proposal.url %>" target="_blank" rel="noopener noreferrer" class="neon-text-cyan hover:neon-text-pink transition-all duration-300 break-all flex items-center gap-2">
+              <span>🔗</span>
+              <span><%= proposal.url %></span>
+            </a>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-3">Qui a proposé cette musique ?</label>
+            <div class="space-y-2">
+              <% @players.reject { |p| p == current_user }.each do |player| %>
+                <label class="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-neon-purple/10 transition-all duration-300">
+                  <%= radio_button_tag "guesses[#{proposal.id}]", player.id, false, required: true, class: "w-4 h-4 text-neon-pink border-neon-purple/50 focus:ring-neon-pink bg-dark-700" %>
+                  <span class="text-gray-200"><%= player.name %></span>
+                </label>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <div class="pt-4 border-t border-neon-purple/20">
+        <%= f.submit "Soumettre mes devinettes", class: "btn-neon btn-primary w-full font-medium py-3 px-4 rounded-lg cursor-pointer" %>
+      </div>
+    <% end %>
+  </div>
+</div>

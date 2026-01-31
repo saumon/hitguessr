@@ -105,6 +105,10 @@ En tant que joueur, je consulte les résultats et le classement final une fois l
 - L’organisateur peut clôturer une phase même si tous les joueurs n’ont pas soumis leurs réponses.
 - Une absence de proposition ou de devinettes donne un score nul pour le joueur concerné et l’exclut du pool de propositions en phase de devinettes (si pas de proposition), tout en permettant la fin de partie.
 
+### Implementation Notes
+
+- **Sélection des membres**: L'organisateur ajoute des membres via recherche par email. L'utilisateur doit avoir un compte existant. L'interface affiche un champ de recherche et les résultats correspondants pour sélection.
+
 ### Dependencies
 
 - Gestion des identités utilisateurs et appartenance à une équipe disponible au moment du lancement de la partie.
@@ -129,8 +133,8 @@ Include explicit UX consistency and performance criteria per the constitution.
 
 ### Measurable Outcomes
 
-- **SC-001**: 95% des joueurs soumettent leur proposition en moins de 2 minutes, sans assistance.
-- **SC-002**: 95% des joueurs soumettent des devinettes complètes en moins de 5 minutes pour une partie standard.
-- **SC-003**: 90% des joueurs comprennent le passage des phases (collecte → devinettes → résultats) sans aide externe lors d’un test utilisateur.
+- **SC-001**: Le formulaire de proposition DOIT être accessible en 2 clics maximum depuis la page de partie (mesurable via test système).
+- **SC-002**: Le formulaire de devinettes DOIT afficher toutes les propositions sur une seule page sans pagination (mesurable via inspection DOM).
+- **SC-003**: Chaque transition de phase DOIT afficher un indicateur visuel clair du statut actuel (collecte/devinettes/terminé) avec instructions contextuelles (vérifiable via revue UX).
 - **SC-004**: Les résultats et le classement s’affichent en moins de 2 secondes pour 95% des sessions.
 - **SC-005**: Zéro incohérence UX de sévérité élevée détectée sur les écrans principaux lors de la revue UX.

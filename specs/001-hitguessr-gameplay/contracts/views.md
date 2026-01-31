@@ -5,13 +5,15 @@
 
 Ce document définit les vues principales et leur contenu pour chaque phase du jeu.
 
+**Note**: Authentication views (sign_in, sign_up, password reset) use Devise default templates with TailwindCSS styling applied in Phase 6.
+
 ---
 
 ## Layout Principal
 
 ### `app/views/layouts/application.html.erb`
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │ Header                                                       │
 │ ┌─────────────┐                    ┌──────────────────────┐ │
@@ -35,7 +37,7 @@ Ce document définit les vues principales et leur contenu pour chaque phase du j
 
 ### `teams/index` - Liste des équipes
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │ Mes Équipes                              [+ Créer équipe]   │
 ├─────────────────────────────────────────────────────────────┤
@@ -55,7 +57,7 @@ Ce document définit les vues principales et leur contenu pour chaque phase du j
 
 ### `teams/show` - Détail équipe
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │ ← Retour    Les Mélomanes                    [Éditer]       │
 ├─────────────────────────────────────────────────────────────┤
@@ -89,7 +91,7 @@ Ce document définit les vues principales et leur contenu pour chaque phase du j
 
 ### `games/show` - Phase Collecte (status: collecting)
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │ ← Équipe    Partie #4 - Les Mélomanes                       │
 ├─────────────────────────────────────────────────────────────┤
@@ -121,7 +123,7 @@ Ce document définit les vues principales et leur contenu pour chaque phase du j
 
 ### `games/show` - Phase Devinettes (status: guessing)
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │ ← Équipe    Partie #4 - Les Mélomanes                       │
 ├─────────────────────────────────────────────────────────────┤
@@ -144,7 +146,7 @@ Ce document définit les vues principales et leur contenu pour chaque phase du j
 
 ### `games/show` - Phase Terminée (status: finished)
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │ ← Équipe    Partie #4 - Les Mélomanes                       │
 ├─────────────────────────────────────────────────────────────┤
@@ -165,7 +167,7 @@ Ce document définit les vues principales et leur contenu pour chaque phase du j
 
 ### `proposals/new` - Soumettre proposition
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │ ← Retour    Proposer ma musique                             │
 ├─────────────────────────────────────────────────────────────┤
@@ -194,7 +196,7 @@ Ce document définit les vues principales et leur contenu pour chaque phase du j
 
 ### `guesses/new` - Faire les devinettes
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │ ← Retour    Mes devinettes                                  │
 ├─────────────────────────────────────────────────────────────┤
@@ -242,7 +244,7 @@ Ce document définit les vues principales et leur contenu pour chaque phase du j
 
 ### `results/show` - Résultats et classement
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │ ← Retour    Résultats - Partie #4                           │
 ├─────────────────────────────────────────────────────────────┤
@@ -284,18 +286,21 @@ Ce document définit les vues principales et leur contenu pour chaque phase du j
 ## UX Guidelines (per Constitution)
 
 ### Accessibility
+
 - Contraste minimum 4.5:1 pour texte normal
 - Navigation clavier complète (tab, enter, escape)
 - Labels explicites sur tous les formulaires
 - Messages d'erreur associés aux champs
 
 ### Visual Consistency
+
 - TailwindCSS v4.1 pour tous les styles
 - Palette de couleurs cohérente (primary, success, warning, error)
 - Icônes emoji pour feedback visuel rapide
 - Boutons d'action principaux mis en évidence
 
 ### Feedback
+
 - Flash messages pour toutes les actions (success/error)
 - Indicateurs de progression visuels
 - États de chargement sur les boutons
