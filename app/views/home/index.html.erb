@@ -1,0 +1,71 @@
+<div class="max-w-4xl mx-auto text-center">
+  <%# Hero Section %>
+  <div class="py-16">
+    <div class="mb-8">
+      <span class="text-7xl inline-block pulse-glow neon-text-pink">♪</span>
+      <span class="text-6xl inline-block pulse-glow mx-3 neon-text-cyan" style="animation-delay: 0.3s;">♫</span>
+      <span class="text-7xl inline-block pulse-glow neon-text-purple" style="animation-delay: 0.6s;">♬</span>
+    </div>
+    <h1 class="font-display text-5xl md:text-7xl font-bold mb-6">
+      <span class="neon-text-cyan">Hit</span><span class="neon-text-pink">Guessr</span>
+    </h1>
+    <p class="text-xl text-gray-400 mb-12 max-w-2xl mx-auto leading-relaxed">
+      Le jeu de devinettes musicales entre amis ! Proposez vos morceaux préférés et devinez qui a choisi quoi.
+    </p>
+    <div class="flex flex-col sm:flex-row gap-5 justify-center">
+      <%= link_to "S'inscrire", new_user_registration_path, class: "btn-neon btn-primary text-white font-semibold py-4 px-12 rounded-lg text-lg transition-all duration-300" %>
+      <%= link_to "Se connecter", new_user_session_path, class: "btn-neon bg-dark-800 font-semibold py-4 px-12 rounded-lg text-lg border border-neon-cyan/40 hover:border-neon-cyan transition-all duration-300 neon-text-cyan" %>
+    </div>
+  </div>
+
+  <%# How it works %>
+  <div class="py-16 border-t border-neon-purple/15">
+    <h2 class="font-display text-3xl font-bold neon-text-cyan mb-12">Comment ça marche ?</h2>
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="neon-border p-8 hover:scale-105 transition-all duration-300">
+        <span class="text-5xl mb-4 inline-block">👥</span>
+        <h3 class="font-display text-xl font-semibold neon-text-pink mb-3">1. Créez votre équipe</h3>
+        <p class="text-gray-400 leading-relaxed">Invitez vos amis à rejoindre votre équipe pour jouer ensemble.</p>
+      </div>
+      <div class="neon-border p-8 hover:scale-105 transition-all duration-300">
+        <span class="text-5xl mb-4 inline-block">🎶</span>
+        <h3 class="font-display text-xl font-semibold neon-text-cyan mb-3">2. Proposez un morceau</h3>
+        <p class="text-gray-400 leading-relaxed">Chaque joueur soumet secrètement un lien YouTube vers sa chanson.</p>
+      </div>
+      <div class="neon-border p-8 hover:scale-105 transition-all duration-300">
+        <span class="text-5xl mb-4 inline-block">🤔</span>
+        <h3 class="font-display text-xl font-semibold neon-text-purple mb-3">3. Devinez !</h3>
+        <p class="text-gray-400 leading-relaxed">Écoutez les morceaux et devinez qui a proposé chaque chanson.</p>
+      </div>
+    </div>
+  </div>
+
+  <%# Scoring %>
+  <div class="py-16 border-t border-neon-purple/15">
+    <h2 class="font-display text-3xl font-bold neon-text-pink mb-12">Système de points</h2>
+    <div class="neon-border p-10 max-w-lg mx-auto">
+      <div class="space-y-8 text-left">
+        <div class="flex items-center">
+          <span class="text-4xl mr-5">🎯</span>
+          <div>
+            <span class="font-bold text-lg neon-text-cyan">+1 point</span>
+            <span class="text-gray-400 text-lg"> pour chaque bonne devinette</span>
+          </div>
+        </div>
+        <div class="flex items-center">
+          <span class="text-4xl mr-5">🛡️</span>
+          <div>
+            <span class="font-bold text-lg neon-text-pink">+1 point</span>
+            <span class="text-gray-400 text-lg"> quand personne ne devine votre morceau</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%# Call to action %>
+  <div class="py-16 border-t border-neon-purple/15">
+    <p class="text-xl text-gray-400 mb-8">Prêt à jouer ?</p>
+    <%= link_to "Commencer maintenant", new_user_registration_path, class: "btn-neon btn-primary text-white font-semibold py-4 px-12 rounded-lg text-xl transition-all duration-300 inline-block" %>
+  </div>
+</div>

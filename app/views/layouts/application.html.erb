@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "HitGuessr" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="HitGuessr">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%# Google Fonts - Modern music-style font %>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <%# Includes Tailwind CSS %>
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+
+    <style>
+      body { font-family: 'Inter', sans-serif; }
+      .font-display { font-family: 'Orbitron', sans-serif; }
+    </style>
+  </head>
+
+  <body class="bg-dark-950 bg-music-gradient min-h-screen flex flex-col text-gray-200 music-bg">
+    <%# Header %>
+    <header class="bg-dark-900/90 backdrop-blur-lg border-b border-neon-purple/20 sticky top-0 z-50">
+      <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+          <div class="equalizer text-neon-pink">
+            <div class="equalizer-bar"></div>
+            <div class="equalizer-bar"></div>
+            <div class="equalizer-bar"></div>
+            <div class="equalizer-bar"></div>
+            <div class="equalizer-bar"></div>
+          </div>
+          <%= link_to root_path, class: "font-display text-2xl font-bold neon-text-cyan hover:neon-text-pink transition-all duration-300" do %>
+            HitGuessr
+          <% end %>
+        </div>
+        <nav class="flex items-center space-x-4">
+          <% if user_signed_in? %>
+            <span class="text-gray-400 text-sm hidden sm:inline">Bonjour, <span class="text-neon-cyan neon-text-subtle"><%= current_user.name %></span></span>
+            <%= link_to "Mes équipes", teams_path, class: "text-gray-300 hover:text-neon-pink hover:neon-text-subtle transition-all duration-300" %>
+            <%= button_to "Déconnexion", destroy_user_session_path, method: :delete, class: "btn-neon bg-dark-700 hover:bg-dark-600 text-neon-pink border border-neon-pink/40 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 cursor-pointer" %>
+          <% else %>
+            <%= link_to "Connexion", new_user_session_path, class: "text-gray-300 hover:text-neon-cyan hover:neon-text-subtle transition-all duration-300" %>
+            <%= link_to "Inscription", new_user_registration_path, class: "btn-neon btn-primary text-white px-5 py-2 rounded-lg font-medium transition-all duration-300" %>
+          <% end %>
+        </nav>
+      </div>
+    </header>
+
+    <%# Flash messages %>
+    <% if notice %>
+      <div class="bg-dark-800/95 border border-neon-cyan/40 px-4 py-3 mx-4 mt-4 rounded-lg relative" role="alert">
+        <span class="block sm:inline neon-text-cyan"><%= notice %></span>
+      </div>
+    <% end %>
+    <% if alert %>
+      <div class="bg-dark-800/95 border border-neon-pink/40 px-4 py-3 mx-4 mt-4 rounded-lg relative" role="alert">
+        <span class="block sm:inline neon-text-pink"><%= alert %></span>
+      </div>
+    <% end %>
+
+    <%# Main content %>
+    <main class="container mx-auto px-4 py-8 flex-grow relative z-10">
+      <%= yield %>
+    </main>
+
+    <%# Footer %>
+    <footer class="bg-dark-900/90 backdrop-blur-lg border-t border-neon-purple/15 py-6 mt-auto">
+      <div class="container mx-auto px-4 text-center">
+        <div class="flex items-center justify-center space-x-3 mb-3">
+          <span class="text-2xl neon-text-pink">♪</span>
+          <span class="text-2xl neon-text-cyan">♫</span>
+          <span class="text-2xl neon-text-purple">♬</span>
+        </div>
+        <p class="text-gray-500 text-sm">
+          © <%= Date.current.year %> <span class="font-display neon-text-purple">HitGuessr</span> - Un jeu de devinettes musicales entre amis
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>

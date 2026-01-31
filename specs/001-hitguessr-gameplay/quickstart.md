@@ -78,6 +78,7 @@ rails generate migration AddNameToUsers name:string
 ```
 
 Modifier la migration pour `name`:
+
 ```ruby
 # db/migrate/xxx_add_name_to_users.rb
 class AddNameToUsers < ActiveRecord::Migration[8.0]
@@ -234,7 +235,7 @@ end
 bin/dev
 ```
 
-Ouvrir http://localhost:3000
+Ouvrir <http://localhost:3000>
 
 ---
 
@@ -267,7 +268,7 @@ bin/rubocop -A
 
 ## Structure finale
 
-```
+```text
 hitguessr/
 ├── app/
 │   ├── controllers/

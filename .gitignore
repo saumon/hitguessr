@@ -1,0 +1,78 @@
+# Ruby/Rails specific
+*.gem
+*.rbc
+.bundle
+.config
+coverage/
+InstalledFiles
+lib/bundler/man
+pkg
+rdoc
+spec/reports
+test/tmp
+test/version_tmp
+tmp
+*.orig
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Database
+*.sqlite3
+*.sqlite3-journal
+db/*.sqlite3
+db/*.sqlite3-*
+
+# Logs
+log/
+*.log
+
+# Runtime files
+tmp/
+tmp/**/*
+
+# Storage
+storage/
+!storage/.keep
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Bundler
+vendor/bundle
+
+# Node modules (if using any JS tools)
+node_modules/
+
+# Coverage reports
+coverage/
+
+# Test artifacts
+test/reports/
+test/tmp/
+
+# Credentials (keep encrypted versions)
+config/master.key
+config/credentials/*.key
+
+# Spring
+spring/*.pid
+
+# Byebug history
+.byebug_history
+
+# Bootsnap cache
+tmp/cache/bootsnap*
+
+/app/assets/builds/*
+!/app/assets/builds/.keep

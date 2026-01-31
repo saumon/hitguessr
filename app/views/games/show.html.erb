@@ -1,0 +1,19 @@
+<div class="max-w-4xl mx-auto">
+  <%# Header %>
+  <div class="flex justify-between items-center mb-8">
+    <div class="flex items-center gap-4">
+      <%= link_to "← Équipe", team_path(@team), class: "neon-text-cyan hover:neon-text-pink transition-all duration-300" %>
+      <h1 class="font-display text-2xl font-bold neon-text-pink">Partie #<%= @game.id %> - <%= @team.name %></h1>
+    </div>
+  </div>
+
+  <%# Phase indicator %>
+  <% case @game.status %>
+  <% when "collecting" %>
+    <%= render "games/collecting", game: @game, team: @team, proposals: @proposals, my_proposal: @my_proposal, members: @members, players_with_proposals: @players_with_proposals %>
+  <% when "guessing" %>
+    <%= render "games/guessing", game: @game, team: @team, proposals: @proposals, my_proposal: @my_proposal %>
+  <% when "finished" %>
+    <%= render "games/finished", game: @game, team: @team %>
+  <% end %>
+</div>
