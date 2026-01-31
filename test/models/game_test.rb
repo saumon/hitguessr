@@ -169,4 +169,61 @@ class GameTest < ActiveSupport::TestCase
     player2_score = scores.find { |s| s[:player] == @player2 }
     assert_nil player2_score
   end
+
+  # Single active game validation tests (Feature 002)
+  test "should not allow creating a new game when a collecting game exists" do
+    # @game is already created in setup and is collecting
+    assert @game.collecting?
+
+    new_game = @team.games.build
+    assert_not new_game.valid?
+    assert_includes new_game.errors[:base], "Une partie est déjà en cours pour cette équipe. Terminez-la avant d'en lancer une nouvelle."
+  end
+
+  test "should not allow creating a new game when a guessing game exists" do
+    @game.proposals.create!(player: @player1, url: "https://youtube.com/a")
+    @game.proposals.create!(player: @player2, url: "https://youtube.com/b")
+    @game.start_guessing!
+    assert @game.guessing?
+
+    new_game = @team.games.build
+    assert_not new_game.valid?
+    assert_includes new_game.errors[:base], "Une partie est déjà en cours pour cette équipe. Terminez-la avant d'en lancer une nouvelle."
+  end
+
+  test "should allow creating a new game when no active game exists" do
+    @game.destroy
+    assert_not @team.has_active_game?
+
+    new_game = @team.games.build
+    assert new_game.valid?
+  end
+
+  test "should allow creating a new game when only finished games exist" do
+    @game.proposals.create!(player: @player1, url: "https://youtube.com/a")
+    @game.proposals.create!(player: @player2, url: "https://youtube.com/b")
+    @game.start_guessing!
+    @game.finish!
+    assert @game.finished?
+
+    new_game = @team.games.build
+    assert new_game.valid?
+    assert_difference "Game.count", 1 do
+      new_game.save!
+    end
+  end
+
+  test "Game.active scope should return only collecting and guessing games" do
+    @game.proposals.create!(player: @player1, url: "https://youtube.com/a")
+    @game.proposals.create!(player: @player2, url: "https://youtube.com/b")
+    @game.start_guessing!
+    @game.finish!
+
+    # Now @game is finished, create a new active game
+    new_game = @team.games.create!
+
+    active_games = @team.games.active
+    assert_includes active_games, new_game
+    assert_not_includes active_games, @game
+  end
 end

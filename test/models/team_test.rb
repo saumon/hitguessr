@@ -79,4 +79,80 @@ class TeamTest < ActiveSupport::TestCase
       team.destroy
     end
   end
+
+  # Active game helper tests (Feature 002)
+  test "active_game should return the active game when one exists" do
+    team = Team.create!(name: "Les Mélomanes", organizer: @user)
+    game = team.games.create!
+    assert game.collecting?
+
+    assert_equal game, team.active_game
+  end
+
+  test "active_game should return nil when no active game exists" do
+    team = Team.create!(name: "Les Mélomanes", organizer: @user)
+
+    assert_nil team.active_game
+  end
+
+  test "active_game should return nil when only finished games exist" do
+    team = Team.create!(name: "Les Mélomanes", organizer: @user)
+    player1 = User.create!(email: "p1@example.com", name: "Player 1", password: "password123")
+    player2 = User.create!(email: "p2@example.com", name: "Player 2", password: "password123")
+    team.memberships.create!(user: player1)
+    team.memberships.create!(user: player2)
+
+    game = team.games.create!
+    game.proposals.create!(player: player1, url: "https://youtube.com/a")
+    game.proposals.create!(player: player2, url: "https://youtube.com/b")
+    game.start_guessing!
+    game.finish!
+
+    assert_nil team.active_game
+  end
+
+  test "has_active_game? should return true when a collecting game exists" do
+    team = Team.create!(name: "Les Mélomanes", organizer: @user)
+    game = team.games.create!
+    assert game.collecting?
+
+    assert team.has_active_game?
+  end
+
+  test "has_active_game? should return true when a guessing game exists" do
+    team = Team.create!(name: "Les Mélomanes", organizer: @user)
+    player1 = User.create!(email: "p1@example.com", name: "Player 1", password: "password123")
+    player2 = User.create!(email: "p2@example.com", name: "Player 2", password: "password123")
+    team.memberships.create!(user: player1)
+    team.memberships.create!(user: player2)
+
+    game = team.games.create!
+    game.proposals.create!(player: player1, url: "https://youtube.com/a")
+    game.proposals.create!(player: player2, url: "https://youtube.com/b")
+    game.start_guessing!
+
+    assert team.has_active_game?
+  end
+
+  test "has_active_game? should return false when no games exist" do
+    team = Team.create!(name: "Les Mélomanes", organizer: @user)
+
+    assert_not team.has_active_game?
+  end
+
+  test "has_active_game? should return false when only finished games exist" do
+    team = Team.create!(name: "Les Mélomanes", organizer: @user)
+    player1 = User.create!(email: "p1@example.com", name: "Player 1", password: "password123")
+    player2 = User.create!(email: "p2@example.com", name: "Player 2", password: "password123")
+    team.memberships.create!(user: player1)
+    team.memberships.create!(user: player2)
+
+    game = team.games.create!
+    game.proposals.create!(player: player1, url: "https://youtube.com/a")
+    game.proposals.create!(player: player2, url: "https://youtube.com/b")
+    game.start_guessing!
+    game.finish!
+
+    assert_not team.has_active_game?
+  end
 end

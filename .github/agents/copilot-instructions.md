@@ -3,6 +3,8 @@
 Auto-generated from all feature plans. Last updated: 2026-01-31
 
 ## Active Technologies
+- Ruby 3.4.x, Rails 8.1.2 + Hotwire (Turbo, Stimulus), Tailwind CSS, Devise (002-single-active-game)
+- SQLite (development), ActiveRecord ORM (002-single-active-game)
 
 - Ruby 3.4.6 + Devise (authentification), TailwindCSS v4.1 (styling) (001-hitguessr-gameplay)
 
@@ -22,6 +24,7 @@ tests/
 Ruby 3.4.6: Follow standard conventions
 
 ## Recent Changes
+- 002-single-active-game: Added Ruby 3.4.x, Rails 8.1.2 + Hotwire (Turbo, Stimulus), Tailwind CSS, Devise
 
 - 001-hitguessr-gameplay: Added Ruby 3.4.6 + Devise (authentification), TailwindCSS v4.1 (styling)
 
