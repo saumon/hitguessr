@@ -11,6 +11,15 @@ class Team < ApplicationRecord
   # Callbacks
   after_create :add_organizer_as_member
 
+  # Active game helpers
+  def active_game
+    games.active.first
+  end
+
+  def has_active_game?
+    games.active.exists?
+  end
+
   private
 
   def add_organizer_as_member

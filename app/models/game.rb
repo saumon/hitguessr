@@ -2,6 +2,9 @@ class Game < ApplicationRecord
   # Enum for game status
   enum :status, { collecting: 0, guessing: 1, finished: 2 }, default: :collecting
 
+  # Scopes
+  scope :active, -> { where(status: [ :collecting, :guessing ]) }
+
   # Associations
   belongs_to :team
   has_many :proposals, dependent: :destroy
@@ -10,6 +13,7 @@ class Game < ApplicationRecord
 
   # Validations
   validates :status, presence: true
+  validate :only_one_active_game_per_team, on: :create
 
   # State transitions
   def start_guessing!
@@ -57,4 +61,12 @@ class Game < ApplicationRecord
 
   # Custom exception for invalid state transitions
   class InvalidTransitionError < StandardError; end
+
+  private
+
+  def only_one_active_game_per_team
+    if team&.has_active_game?
+      errors.add(:base, "Une partie est déjà en cours pour cette équipe. Terminez-la avant d'en lancer une nouvelle.")
+    end
+  end
 end

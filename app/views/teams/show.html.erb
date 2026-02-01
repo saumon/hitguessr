@@ -57,11 +57,32 @@
     <div class="flex justify-between items-center mb-4">
       <h2 class="font-display text-lg font-semibold neon-text-pink">Parties récentes</h2>
       <% if @team.organizer == current_user %>
-        <%= link_to new_team_game_path(@team), class: "btn-neon btn-primary px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2" do %>
-          🎮 Lancer une partie
+        <% if @team.has_active_game? %>
+          <span class="group relative inline-block">
+            <span class="btn-neon btn-primary px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 opacity-50 cursor-not-allowed">
+              🎮 Lancer une partie
+            </span>
+            <span class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-gray-900 text-gray-200 text-xs rounded whitespace-nowrap invisible group-hover:visible border border-neon-purple/30">
+              Une partie est déjà en cours
+            </span>
+          </span>
+        <% else %>
+          <%= link_to new_team_game_path(@team), class: "btn-neon btn-primary px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2" do %>
+            🎮 Lancer une partie
+          <% end %>
         <% end %>
       <% end %>
     </div>
+
+    <%# Active game indicator %>
+    <% if @team.has_active_game? %>
+      <div class="mb-4 p-3 bg-neon-cyan/10 border border-neon-cyan/30 rounded-lg">
+        <span class="neon-text-cyan">▶</span>
+        <span class="text-gray-200">Partie en cours:</span>
+        <%= link_to "Partie ##{@team.active_game.id}", game_path(@team.active_game), class: "neon-text-pink hover:underline ml-1" %>
+        <span class="text-xs text-gray-400 ml-2">(<%= @team.active_game.status.humanize %>)</span>
+      </div>
+    <% end %>
 
     <% if @games.empty? %>
       <p class="text-gray-500 text-center py-4">Aucune partie pour le moment.</p>
