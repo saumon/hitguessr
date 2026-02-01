@@ -1,14 +1,14 @@
 <div class="max-w-4xl mx-auto">
   <%# Header %>
-  <div class="flex justify-between items-center mb-8">
-    <div class="flex items-center gap-4">
-      <%= link_to "← Retour", teams_path, class: "neon-text-cyan hover:neon-text-pink transition-all duration-300" %>
-      <h1 class="font-display text-2xl font-bold neon-text-pink"><%= @team.name %></h1>
+  <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 sm:mb-8">
+    <div class="flex items-center gap-3 sm:gap-4 min-w-0">
+      <%= link_to "← Retour", teams_path, class: "neon-text-cyan hover:neon-text-pink transition-all duration-300 text-sm sm:text-base min-h-11 inline-flex items-center flex-shrink-0" %>
+      <h1 class="font-display text-xl sm:text-2xl font-bold neon-text-pink truncate"><%= @team.name %></h1>
     </div>
     <% if @team.organizer == current_user %>
-      <div class="flex gap-2">
-        <%= link_to "Éditer", edit_team_path(@team), class: "btn-neon btn-secondary px-4 py-2 rounded-lg text-sm" %>
-        <%= button_to "Supprimer", team_path(@team), method: :delete, data: { turbo_confirm: "Êtes-vous sûr de vouloir supprimer cette équipe ?" }, class: "btn-neon btn-danger px-4 py-2 rounded-lg text-sm cursor-pointer" %>
+      <div class="flex gap-2 w-full sm:w-auto">
+        <%= link_to "Éditer", edit_team_path(@team), class: "btn-neon btn-secondary px-4 py-2 rounded-lg text-sm min-h-11 flex items-center justify-center flex-1 sm:flex-initial" %>
+        <%= button_to "Supprimer", team_path(@team), method: :delete, data: { turbo_confirm: "Êtes-vous sûr de vouloir supprimer cette équipe ?" }, class: "btn-neon btn-danger px-4 py-2 rounded-lg text-sm cursor-pointer min-h-11 flex items-center justify-center flex-1 sm:flex-initial" %>
       </div>
     <% end %>
   </div>
@@ -55,9 +55,9 @@
       <% if @team.organizer == current_user %>
         <div class="mt-4 pt-4 border-t border-neon-purple/20">
           <h3 class="text-sm font-medium text-gray-300 mb-2">Ajouter un membre</h3>
-          <%= form_with url: team_memberships_path(@team), method: :post, class: "flex gap-2 mb-4" do |f| %>
-            <%= f.email_field :email, placeholder: "Email du membre à ajouter", class: "input-neon flex-1 px-4 py-2 rounded-lg text-gray-100 text-sm focus:outline-none transition-all duration-300", required: true %>
-            <%= f.submit "+ Ajouter", class: "btn-neon btn-primary px-4 py-2 rounded-lg text-sm cursor-pointer" %>
+          <%= form_with url: team_memberships_path(@team), method: :post, class: "flex flex-col sm:flex-row gap-2 mb-4" do |f| %>
+            <%= f.email_field :email, placeholder: "Email du membre à ajouter", class: "input-neon flex-1 px-4 py-2 rounded-lg text-gray-100 text-sm focus:outline-none transition-all duration-300 min-h-11", required: true %>
+            <%= f.submit "+ Ajouter", class: "btn-neon btn-primary px-4 py-2 rounded-lg text-sm cursor-pointer min-h-11" %>
           <% end %>
         </div>
       <% end %>
@@ -65,8 +65,8 @@
   </details>
 
   <%# Leaderboard Section %>
-  <div class="neon-border p-6 mb-6 leaderboard-section">
-    <h2 class="font-display text-lg font-semibold neon-text-purple mb-4">🏆 <%= t('teams.leaderboard.title') %></h2>
+  <div class="neon-border p-4 sm:p-6 mb-6 leaderboard-section">
+    <h2 class="font-display text-base sm:text-lg font-semibold neon-text-purple mb-4">🏆 <%= t('teams.leaderboard.title') %></h2>
     
     <% if @leaderboard.empty? %>
       <p class="text-gray-500 text-center py-4"><%= t('teams.leaderboard.empty') %></p>
@@ -81,19 +81,19 @@
                      else "#{rank}."
                      end %>
           <% is_winner = rank == 1 %>
-          <div class="flex items-center justify-between p-4 rounded-lg <%= is_winner ? 'bg-gradient-to-r from-neon-pink/20 to-neon-purple/20 border border-neon-pink/50' : 'bg-dark-700/50 border border-neon-purple/20' %> transition-all duration-300 hover:scale-[1.01]">
-            <div class="flex items-center gap-3">
-              <span class="text-2xl w-10 text-center <%= is_winner ? 'pulse-glow' : '' %>"><%= medal %></span>
-              <span class="font-medium <%= entry[:player] == current_user ? 'neon-text-cyan' : 'text-gray-200' %>">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 rounded-lg <%= is_winner ? 'bg-gradient-to-r from-neon-pink/20 to-neon-purple/20 border border-neon-pink/50' : 'bg-dark-700/50 border border-neon-purple/20' %> transition-all duration-300 hover:scale-[1.01] gap-2 sm:gap-0">
+            <div class="flex items-center gap-2 sm:gap-3">
+              <span class="text-xl sm:text-2xl w-8 sm:w-10 text-center <%= is_winner ? 'pulse-glow' : '' %>"><%= medal %></span>
+              <span class="font-medium text-sm sm:text-base <%= entry[:player] == current_user ? 'neon-text-cyan' : 'text-gray-200' %>">
                 <%= entry[:player].name %>
                 <% if entry[:player] == current_user %>
                   <span class="text-xs text-neon-cyan/70">(vous)</span>
                 <% end %>
               </span>
             </div>
-            <div class="text-right">
-              <span class="text-2xl font-bold <%= is_winner ? 'neon-text-pink' : 'text-gray-200' %>"><%= entry[:score] %></span>
-              <span class="text-sm text-gray-500 ml-1">pt<%= entry[:score] > 1 ? 's' : '' %></span>
+            <div class="text-right sm:text-left pl-10 sm:pl-0">
+              <span class="text-xl sm:text-2xl font-bold <%= is_winner ? 'neon-text-pink' : 'text-gray-200' %>"><%= entry[:score] %></span>
+              <span class="text-xs sm:text-sm text-gray-500 ml-1">pt<%= entry[:score] > 1 ? 's' : '' %></span>
             </div>
           </div>
         <% end %>
@@ -102,13 +102,13 @@
   </div>
 
   <%# Games Section %>
-  <div class="neon-border p-6">
-    <div class="flex justify-between items-center mb-4">
-      <h2 class="font-display text-lg font-semibold neon-text-pink">Parties récentes</h2>
+  <div class="neon-border p-4 sm:p-6">
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4 mb-4">
+      <h2 class="font-display text-base sm:text-lg font-semibold neon-text-pink">Parties récentes</h2>
       <% if @team.organizer == current_user %>
         <% if @team.has_active_game? %>
-          <span class="group relative inline-block">
-            <span class="btn-neon btn-primary px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 opacity-50 cursor-not-allowed">
+          <span class="group relative inline-block w-full sm:w-auto">
+            <span class="btn-neon btn-primary px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 opacity-50 cursor-not-allowed min-h-11 w-full sm:w-auto">
               🎮 Lancer une partie
             </span>
             <span class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-gray-900 text-gray-200 text-xs rounded whitespace-nowrap invisible group-hover:visible border border-neon-purple/30">
@@ -116,7 +116,7 @@
             </span>
           </span>
         <% else %>
-          <%= link_to new_team_game_path(@team), class: "btn-neon btn-primary px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2" do %>
+          <%= link_to new_team_game_path(@team), class: "btn-neon btn-primary px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 min-h-11 w-full sm:w-auto" do %>
             🎮 Lancer une partie
           <% end %>
         <% end %>
@@ -125,7 +125,7 @@
 
     <%# Active game indicator %>
     <% if @team.has_active_game? %>
-      <div class="mb-4 p-3 bg-neon-cyan/10 border border-neon-cyan/30 rounded-lg">
+      <div class="mb-4 p-3 bg-neon-cyan/10 border border-neon-cyan/30 rounded-lg text-sm sm:text-base">
         <span class="neon-text-cyan">▶</span>
         <span class="text-gray-200">Partie en cours:</span>
         <%= link_to "Partie ##{@team.active_game.id}", game_path(@team.active_game), class: "neon-text-pink hover:underline ml-1" %>
@@ -138,18 +138,18 @@
     <% else %>
       <div class="space-y-2">
         <% @games.each do |game| %>
-          <div class="flex justify-between items-center py-3 border-b border-neon-purple/20 last:border-0">
-            <div>
-              <span class="font-medium text-gray-200">Partie #<%= game.id %></span>
-              <span class="text-gray-500 text-sm ml-2"><%= l(game.created_at, format: :short) rescue game.created_at.strftime("%d/%m/%Y") %></span>
-              <span class="ml-2 text-xs px-2 py-1 rounded border <%= game.finished? ? 'bg-gray-500/20 text-gray-400 border-gray-500/30' : game.guessing? ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' : 'bg-neon-cyan/20 neon-text-cyan border-neon-cyan/30' %>">
+          <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center py-3 border-b border-neon-purple/20 last:border-0 gap-2 sm:gap-0">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="font-medium text-gray-200 text-sm sm:text-base">Partie #<%= game.id %></span>
+              <span class="text-gray-500 text-xs sm:text-sm"><%= l(game.created_at, format: :short) rescue game.created_at.strftime("%d/%m/%Y") %></span>
+              <span class="text-xs px-2 py-1 rounded border <%= game.finished? ? 'bg-gray-500/20 text-gray-400 border-gray-500/30' : game.guessing? ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' : 'bg-neon-cyan/20 neon-text-cyan border-neon-cyan/30' %>">
                 <%= game.status.humanize %>
               </span>
             </div>
-            <div class="flex gap-3">
-              <%= link_to "Voir", game_path(game), class: "neon-text-cyan hover:neon-text-pink text-sm transition-all duration-300" %>
+            <div class="flex gap-3 pl-0 sm:pl-4">
+              <%= link_to "Voir", game_path(game), class: "neon-text-cyan hover:neon-text-pink text-sm transition-all duration-300 min-h-11 inline-flex items-center" %>
               <% if game.finished? %>
-                <%= link_to "Résultats", game_results_path(game), class: "neon-text-pink hover:neon-text-cyan text-sm transition-all duration-300" %>
+                <%= link_to "Résultats", game_results_path(game), class: "neon-text-pink hover:neon-text-cyan text-sm transition-all duration-300 min-h-11 inline-flex items-center" %>
               <% end %>
             </div>
           </div>

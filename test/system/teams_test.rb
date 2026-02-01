@@ -73,7 +73,7 @@ class TeamsTest < ApplicationSystemTestCase
   end
 
   test "user sees their teams on index page" do
-    team1 = Team.create!(name: "Les Mélomanes", organizer: @organizer)
+    Team.create!(name: "Les Mélomanes", organizer: @organizer)
     team2 = Team.create!(name: "Rock Fans", organizer: @member)
     team2.memberships.create!(user: @organizer)
 

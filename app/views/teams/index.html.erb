@@ -1,36 +1,36 @@
 <div class="max-w-4xl mx-auto">
-  <div class="flex justify-between items-center mb-8">
-    <h1 class="font-display text-3xl font-bold neon-text-cyan">Mes Équipes</h1>
-    <%= link_to new_team_path, class: "btn-neon btn-primary px-6 py-3 rounded-lg font-medium flex items-center gap-2" do %>
+  <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 sm:mb-8">
+    <h1 class="font-display text-2xl sm:text-3xl font-bold neon-text-cyan">Mes Équipes</h1>
+    <%= link_to new_team_path, class: "btn-neon btn-primary px-5 sm:px-6 py-3 rounded-lg font-medium flex items-center justify-center gap-2 min-h-11 w-full sm:w-auto" do %>
       <span>+</span> Créer une équipe
     <% end %>
   </div>
 
   <% if @teams.empty? %>
-    <div class="neon-border p-10 text-center">
-      <div class="text-5xl mb-4 pulse-glow">🎵</div>
+    <div class="neon-border p-8 sm:p-10 text-center">
+      <div class="text-4xl sm:text-5xl mb-4 pulse-glow">🎵</div>
       <p class="text-gray-500 mb-4">Vous n'avez pas encore d'équipe.</p>
       <%= link_to "Créer ma première équipe", new_team_path, class: "neon-text-cyan hover:neon-text-pink font-medium transition-all duration-300" %>
     </div>
   <% else %>
     <div class="space-y-4">
       <% @teams.each do |team| %>
-        <div class="neon-border p-6 hover:scale-[1.02] transition-transform duration-300">
-          <div class="flex justify-between items-start">
-            <div>
-              <div class="flex items-center gap-3">
-                <span class="text-3xl pulse-glow neon-text-pink">♫</span>
-                <h2 class="font-display text-xl font-semibold neon-text-pink"><%= team.name %></h2>
+        <div class="neon-border p-4 sm:p-6 hover:scale-[1.02] transition-transform duration-300">
+          <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 sm:gap-3">
+                <span class="text-2xl sm:text-3xl pulse-glow neon-text-pink flex-shrink-0">♫</span>
+                <h2 class="font-display text-lg sm:text-xl font-semibold neon-text-pink truncate"><%= team.name %></h2>
               </div>
-              <p class="text-gray-400 mt-2">
+              <p class="text-gray-400 mt-2 text-sm sm:text-base">
                 Organisateur: <span class="neon-text-cyan"><%= team.organizer == current_user ? "Moi" : team.organizer.name %></span>
               </p>
-              <p class="text-sm text-gray-500 mt-1">
+              <p class="text-xs sm:text-sm text-gray-500 mt-1">
                 <%= pluralize(team.members.count, "membre") %> • <%= pluralize(team.games.count, "partie") %> jouée<%= team.games.count > 1 ? "s" : "" %>
               </p>
             </div>
-            <div class="flex gap-3">
-              <%= link_to "Jouer", team, class: "btn-neon btn-primary px-4 py-2 rounded-lg text-sm" %>
+            <div class="flex gap-3 w-full sm:w-auto">
+              <%= link_to "Jouer", team, class: "btn-neon btn-primary px-4 py-2 rounded-lg text-sm min-h-11 flex items-center justify-center flex-1 sm:flex-initial" %>
             </div>
           </div>
         </div>

@@ -1,38 +1,38 @@
-<div class="mt-8 pt-6 border-t border-neon-purple/30 text-center text-sm space-y-3">
+<div class="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-neon-purple/30 text-center text-sm space-y-2 sm:space-y-3">
   <%- if controller_name != 'sessions' %>
-    <p>
-      <%= link_to "Se connecter", new_session_path(resource_name), class: "neon-text-cyan hover:neon-text-pink font-medium transition-all duration-300" %>
+    <p class="min-h-11 flex items-center justify-center">
+      <%= link_to "Se connecter", new_session_path(resource_name), class: "neon-text-cyan hover:neon-text-pink font-medium transition-all duration-300 py-2 px-4" %>
     </p>
   <% end %>
 
   <%- if devise_mapping.registerable? && controller_name != 'registrations' %>
-    <p>
-      <%= link_to "Créer un compte", new_registration_path(resource_name), class: "neon-text-cyan hover:neon-text-pink font-medium transition-all duration-300" %>
+    <p class="min-h-11 flex items-center justify-center">
+      <%= link_to "Créer un compte", new_registration_path(resource_name), class: "neon-text-cyan hover:neon-text-pink font-medium transition-all duration-300 py-2 px-4" %>
     </p>
   <% end %>
 
   <%- if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations' %>
-    <p>
-      <%= link_to "Mot de passe oublié ?", new_password_path(resource_name), class: "neon-text-cyan hover:neon-text-pink font-medium transition-all duration-300" %>
+    <p class="min-h-11 flex items-center justify-center">
+      <%= link_to "Mot de passe oublié ?", new_password_path(resource_name), class: "neon-text-cyan hover:neon-text-pink font-medium transition-all duration-300 py-2 px-4" %>
     </p>
   <% end %>
 
   <%- if devise_mapping.confirmable? && controller_name != 'confirmations' %>
-    <p>
-      <%= link_to "Renvoyer les instructions de confirmation", new_confirmation_path(resource_name), class: "neon-text-cyan hover:neon-text-pink font-medium transition-all duration-300" %>
+    <p class="min-h-11 flex items-center justify-center">
+      <%= link_to "Renvoyer les instructions de confirmation", new_confirmation_path(resource_name), class: "neon-text-cyan hover:neon-text-pink font-medium transition-all duration-300 py-2 px-4 text-xs sm:text-sm" %>
     </p>
   <% end %>
 
   <%- if devise_mapping.lockable? && resource_class.unlock_strategy_enabled?(:email) && controller_name != 'unlocks' %>
-    <p>
-      <%= link_to "Renvoyer les instructions de déverrouillage", new_unlock_path(resource_name), class: "neon-text-cyan hover:neon-text-pink font-medium transition-all duration-300" %>
+    <p class="min-h-11 flex items-center justify-center">
+      <%= link_to "Renvoyer les instructions de déverrouillage", new_unlock_path(resource_name), class: "neon-text-cyan hover:neon-text-pink font-medium transition-all duration-300 py-2 px-4 text-xs sm:text-sm" %>
     </p>
   <% end %>
 
   <%- if devise_mapping.omniauthable? %>
     <%- resource_class.omniauth_providers.each do |provider| %>
-      <p class="mb-2">
-        <%= button_to "Se connecter avec #{OmniAuth::Utils.camelize(provider)}", omniauth_authorize_path(resource_name, provider), data: { turbo: false }, class: "text-neon-cyan hover:text-neon-pink font-medium transition-colors duration-300" %>
+      <p class="mb-2 min-h-11 flex items-center justify-center">
+        <%= button_to "Se connecter avec #{OmniAuth::Utils.camelize(provider)}", omniauth_authorize_path(resource_name, provider), data: { turbo: false }, class: "text-neon-cyan hover:text-neon-pink font-medium transition-colors duration-300 py-2 px-4" %>
       </p>
     <% end %>
   <% end %>
