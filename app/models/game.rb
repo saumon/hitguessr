@@ -29,6 +29,11 @@ class Game < ApplicationRecord
     update!(status: :finished, finished_at: Time.current)
   end
 
+  # Check if the game can be cancelled (only active games)
+  def can_cancel?
+    collecting? || guessing?
+  end
+
   # Score calculation
   def calculate_scores
     proposals.includes(:player, :guesses).map do |proposal|

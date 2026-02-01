@@ -1,8 +1,8 @@
 class GamesController < ApplicationController
   before_action :set_team, only: [ :index, :new, :create ]
-  before_action :set_game, only: [ :show, :start_guessing, :finish ]
+  before_action :set_game, only: [ :show, :start_guessing, :finish, :destroy ]
   before_action :authorize_team_member!, only: [ :show ]
-  before_action :authorize_organizer_for_game!, only: [ :new, :create, :start_guessing, :finish ]
+  before_action :authorize_organizer_for_game!, only: [ :new, :create, :start_guessing, :finish, :destroy ]
 
   def index
     @games = @team.games.order(created_at: :desc)
@@ -47,6 +47,23 @@ class GamesController < ApplicationController
     redirect_to game_results_path(@game), notice: "Partie terminée ! Découvrez les résultats."
   rescue Game::InvalidTransitionError => e
     redirect_to @game, alert: e.message
+  end
+
+  def destroy
+    @team = @game.team
+
+    unless @game.can_cancel?
+      redirect_to @game, alert: I18n.t("games.destroy.cannot_cancel_finished")
+      return
+    end
+
+    ActiveRecord::Base.transaction do
+      @game.destroy!
+    end
+
+    redirect_to team_games_path(@team), notice: I18n.t("games.destroy.success")
+  rescue ActiveRecord::RecordNotDestroyed
+    redirect_to @game, alert: I18n.t("games.destroy.error")
   end
 
   private

@@ -1,4 +1,10 @@
 fr:
+  games:
+    destroy:
+      success: "Partie annulée avec succès."
+      error: "Une erreur s'est produite lors de l'annulation de la partie."
+      cannot_cancel_finished: "Impossible d'annuler une partie terminée."
+      confirm: "Voulez-vous vraiment annuler cette partie ? Cette action est irréversible."
   activerecord:
     models:
       user: "Utilisateur"

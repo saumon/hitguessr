@@ -52,7 +52,10 @@
 <% if team.organizer == current_user %>
   <div class="border-t border-neon-purple/20 pt-6">
     <p class="text-sm text-gray-500 mb-3">(Organisateur uniquement)</p>
-    <%= button_to "⚠️ Terminer la partie", finish_game_path(game), method: :patch, data: { turbo_confirm: "Terminer la partie ? Les joueurs sans réponse auront un score de 0." }, class: "btn-neon btn-danger font-medium py-2 px-4 rounded-lg cursor-pointer" %>
+    <div class="flex flex-wrap gap-3">
+      <%= button_to "⚠️ Terminer la partie", finish_game_path(game), method: :patch, data: { turbo_confirm: "Terminer la partie ? Les joueurs sans réponse auront un score de 0." }, class: "btn-neon btn-danger font-medium py-2 px-4 rounded-lg cursor-pointer" %>
+      <%= button_to "🗑️ Annuler la partie", game_path(game), method: :delete, data: { turbo_confirm: t("games.destroy.confirm") }, class: "btn-neon bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/50 font-medium py-2 px-4 rounded-lg cursor-pointer transition-all duration-300" %>
+    </div>
     <p class="text-xs text-gray-500 mt-2">Les joueurs sans réponse auront un score de 0</p>
   </div>
 <% end %>

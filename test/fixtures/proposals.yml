@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+proposal_one:
+  game: collecting_game
+  player: organizer
+  url: "https://example.com/song1"
+
+proposal_two:
+  game: collecting_game
+  player: member
+  url: "https://example.com/song2"
