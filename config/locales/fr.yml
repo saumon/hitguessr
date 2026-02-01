@@ -5,6 +5,10 @@ fr:
       error: "Une erreur s'est produite lors de l'annulation de la partie."
       cannot_cancel_finished: "Impossible d'annuler une partie terminée."
       confirm: "Voulez-vous vraiment annuler cette partie ? Cette action est irréversible."
+  teams:
+    leaderboard:
+      title: "Classement général"
+      empty: "Aucun classement disponible. Terminez des parties pour voir le classement."
   activerecord:
     models:
       user: "Utilisateur"

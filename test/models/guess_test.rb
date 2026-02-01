@@ -51,7 +51,12 @@ class GuessTest < ActiveSupport::TestCase
   end
 
   test "should only allow guesses during guessing phase" do
-    game2 = @team.games.create!  # Still in collecting phase
+    # Create a new team for this test to avoid the one-active-game-per-team constraint
+    team2 = Team.create!(name: "Autre équipe", organizer: @organizer)
+    team2.memberships.create!(user: @player1)
+    team2.memberships.create!(user: @player2)
+
+    game2 = team2.games.create!  # Still in collecting phase
     game2.proposals.create!(player: @player1, url: "https://youtube.com/d")
     game2.proposals.create!(player: @player2, url: "https://youtube.com/e")
     proposal = game2.proposals.first

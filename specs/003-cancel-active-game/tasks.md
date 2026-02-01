@@ -119,7 +119,7 @@
 
 ### Phase Dependencies
 
-```
+```text
 Phase 1 (Setup)
     ↓
 Phase 2 (Foundational)
@@ -135,7 +135,7 @@ Phase 6 (Polish)
 ### User Story Dependencies
 
 | Story | Depends On | Can Parallelize With |
-|-------|-----------|---------------------|
+| ----- | --------- | ------------------- |
 | US1 (P1) | Phase 2 | - |
 | US2 (P2) | Phase 2, T008 (destroy action exists) | US3 |
 | US3 (P3) | Phase 2, T008 (destroy action exists) | US2 |
@@ -143,12 +143,14 @@ Phase 6 (Polish)
 ### Parallel Execution Examples
 
 **Team of 1** (Sequential by priority):
-```
+
+```text
 T001 → T002 → T003 → T004 → T005-T007 (parallel) → T008 → T009-T011 (parallel) → T012 → T013-T014 (parallel) → T015-T016 → T017-T018 (parallel) → T019-T020 → T021-T024
 ```
 
 **Team of 2** (User stories in parallel after foundation):
-```
+
+```text
 Dev A: T001-T004 → US1 (T005-T012) → Polish (T021-T025)
 Dev B: (wait for T004) → US2 (T013-T016) + US3 (T017-T020)
 ```
@@ -160,6 +162,7 @@ Dev B: (wait for T004) → US2 (T013-T016) + US3 (T017-T020)
 ### MVP Scope (Recommended first delivery)
 
 Implement **Phase 1 + Phase 2 + User Story 1** only:
+
 - Tasks: T001-T012
 - Delivers: Core cancellation feature for organizers
 - Testable: Organizer can cancel active games with confirmation
@@ -167,6 +170,7 @@ Implement **Phase 1 + Phase 2 + User Story 1** only:
 ### Full Feature
 
 All phases (T001-T025):
+
 - Authorization checks (US2)
 - Edge case handling (US3)
 - Polish and validation
@@ -176,7 +180,7 @@ All phases (T001-T025):
 ## Summary
 
 | Metric | Value |
-|--------|-------|
+| ------ | ----- |
 | Total tasks | 25 |
 | Setup tasks | 2 |
 | Foundational tasks | 2 |
