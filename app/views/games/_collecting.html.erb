@@ -1,11 +1,11 @@
 <%# Phase: Collecte des propositions %>
 
-<div class="bg-neon-cyan/10 border border-neon-cyan/30 rounded-lg p-4 mb-6">
-  <div class="flex items-center gap-3">
-    <span class="text-3xl pulse-glow neon-text-cyan">📝</span>
-    <div>
-      <h2 class="font-display font-semibold neon-text-cyan">PHASE: Collecte des propositions</h2>
-      <p class="text-sm text-gray-400">Chaque joueur soumet sa musique secrète</p>
+<div class="bg-neon-cyan/10 border border-neon-cyan/30 rounded-lg p-3 sm:p-4 mb-4 sm:mb-6">
+  <div class="flex items-center gap-2 sm:gap-3">
+    <span class="text-2xl sm:text-3xl pulse-glow neon-text-cyan flex-shrink-0">📝</span>
+    <div class="min-w-0">
+      <h2 class="font-display font-semibold neon-text-cyan text-sm sm:text-base">PHASE: Collecte des propositions</h2>
+      <p class="text-xs sm:text-sm text-gray-400">Chaque joueur soumet sa musique secrète</p>
     </div>
   </div>
 </div>
@@ -15,26 +15,26 @@
 <% submitted_count = proposals.count %>
 <% progress_pct = total_members > 0 ? (submitted_count.to_f / total_members * 100).round : 0 %>
 
-<div class="neon-border p-6 mb-6">
-  <h3 class="font-medium text-gray-300 mb-3">Progression: <%= submitted_count %>/<%= total_members %> propositions reçues</h3>
-  <div class="w-full bg-dark-700 rounded-full h-4 overflow-hidden">
-    <div class="bg-gradient-to-r from-neon-cyan to-neon-purple h-4 rounded-full transition-all duration-500" style="width: <%= progress_pct %>%"></div>
+<div class="neon-border p-4 sm:p-6 mb-4 sm:mb-6">
+  <h3 class="font-medium text-gray-300 mb-3 text-sm sm:text-base">Progression: <%= submitted_count %>/<%= total_members %> propositions reçues</h3>
+  <div class="w-full bg-dark-700 rounded-full h-3 sm:h-4 overflow-hidden">
+    <div class="bg-gradient-to-r from-neon-cyan to-neon-purple h-3 sm:h-4 rounded-full transition-all duration-500" style="width: <%= progress_pct %>%"></div>
   </div>
-  <p class="text-sm text-gray-500 mt-2"><%= progress_pct %>%</p>
+  <p class="text-xs sm:text-sm text-gray-500 mt-2"><%= progress_pct %>%</p>
 </div>
 
 <%# Player status %>
-<div class="neon-border p-6 mb-6">
-  <h3 class="font-medium text-gray-300 mb-4">Statut des joueurs:</h3>
+<div class="neon-border p-4 sm:p-6 mb-4 sm:mb-6">
+  <h3 class="font-medium text-gray-300 mb-3 sm:mb-4 text-sm sm:text-base">Statut des joueurs:</h3>
   <div class="space-y-2">
     <% members.each do |member| %>
       <% has_proposal = players_with_proposals.include?(member) %>
-      <div class="flex items-center gap-3 py-3 border-b border-neon-purple/20 last:border-0">
-        <span class="text-xl <%= has_proposal ? 'neon-text-cyan' : 'text-gray-600' %>">
+      <div class="flex items-center gap-2 sm:gap-3 py-2 sm:py-3 border-b border-neon-purple/20 last:border-0">
+        <span class="text-lg sm:text-xl <%= has_proposal ? 'neon-text-cyan' : 'text-gray-600' %> flex-shrink-0">
           <%= has_proposal ? '✅' : '⏳' %>
         </span>
-        <span class="text-gray-200"><%= member.name %></span>
-        <span class="text-sm <%= has_proposal ? 'neon-text-cyan' : 'text-gray-500' %>">
+        <span class="text-gray-200 text-sm sm:text-base truncate"><%= member.name %></span>
+        <span class="text-xs sm:text-sm <%= has_proposal ? 'neon-text-cyan' : 'text-gray-500' %> hidden sm:inline">
           - <%= has_proposal ? 'Proposition soumise' : 'En attente' %>
         </span>
       </div>
@@ -43,17 +43,17 @@
 </div>
 
 <%# My proposal action %>
-<div class="neon-border p-6 mb-6">
+<div class="neon-border p-4 sm:p-6 mb-4 sm:mb-6">
   <% if my_proposal %>
-    <div class="flex items-center gap-3 neon-text-cyan">
-      <span class="text-2xl">✅</span>
-      <span class="font-medium">Ma proposition: Soumise</span>
+    <div class="flex items-center gap-2 sm:gap-3 neon-text-cyan">
+      <span class="text-xl sm:text-2xl flex-shrink-0">✅</span>
+      <span class="font-medium text-sm sm:text-base">Ma proposition: Soumise</span>
     </div>
-    <p class="text-sm text-gray-400 mt-3">
+    <p class="text-xs sm:text-sm text-gray-400 mt-2 sm:mt-3">
       <%= link_to "Voir ma proposition", game_proposal_path(game, my_proposal), class: "neon-text-pink hover:neon-text-cyan transition-all duration-300" %>
     </p>
   <% else %>
-    <%= link_to new_game_proposal_path(game), class: "btn-neon btn-primary inline-flex items-center gap-2 font-medium py-3 px-6 rounded-lg" do %>
+    <%= link_to new_game_proposal_path(game), class: "btn-neon btn-primary inline-flex items-center gap-2 font-medium py-3 px-5 sm:px-6 rounded-lg text-sm sm:text-base min-h-11 w-full sm:w-auto justify-center" do %>
       🎵 Soumettre ma musique
     <% end %>
   <% end %>
@@ -61,17 +61,17 @@
 
 <%# Organizer actions %>
 <% if team.organizer == current_user %>
-  <div class="border-t border-neon-purple/20 pt-6">
-    <p class="text-sm text-gray-500 mb-3">(Organisateur uniquement)</p>
-    <div class="flex flex-wrap gap-3">
+  <div class="border-t border-neon-purple/20 pt-4 sm:pt-6">
+    <p class="text-xs sm:text-sm text-gray-500 mb-2 sm:mb-3">(Organisateur uniquement)</p>
+    <div class="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3">
       <% if proposals.count >= 2 %>
-        <%= button_to "⚠️ Passer aux devinettes", start_guessing_game_path(game), method: :patch, data: { turbo_confirm: "Passer aux devinettes ? Les joueurs sans proposition seront exclus." }, class: "btn-neon bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-400 border border-yellow-500/50 font-medium py-2 px-4 rounded-lg cursor-pointer transition-all duration-300" %>
+        <%= button_to "⚠️ Passer aux devinettes", start_guessing_game_path(game), method: :patch, data: { turbo_confirm: "Passer aux devinettes ? Les joueurs sans proposition seront exclus." }, class: "btn-neon bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-400 border border-yellow-500/50 font-medium py-2 px-4 rounded-lg cursor-pointer transition-all duration-300 text-sm min-h-11 w-full sm:w-auto" %>
       <% else %>
-        <button disabled class="bg-dark-700 text-gray-500 font-medium py-2 px-4 rounded-lg cursor-not-allowed border border-dark-500">
+        <button disabled class="bg-dark-700 text-gray-500 font-medium py-2 px-4 rounded-lg cursor-not-allowed border border-dark-500 text-sm min-h-11 w-full sm:w-auto">
           ⚠️ Passer aux devinettes
         </button>
       <% end %>
-      <%= button_to "🗑️ Annuler la partie", game_path(game), method: :delete, data: { turbo_confirm: t("games.destroy.confirm") }, class: "btn-neon bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/50 font-medium py-2 px-4 rounded-lg cursor-pointer transition-all duration-300" %>
+      <%= button_to "🗑️ Annuler la partie", game_path(game), method: :delete, data: { turbo_confirm: t("games.destroy.confirm") }, class: "btn-neon bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/50 font-medium py-2 px-4 rounded-lg cursor-pointer transition-all duration-300 text-sm min-h-11 w-full sm:w-auto" %>
     </div>
     <% if proposals.count < 2 %>
       <p class="text-xs neon-text-pink mt-2">Au moins 2 joueurs doivent avoir soumis une proposition pour passer aux devinettes</p>

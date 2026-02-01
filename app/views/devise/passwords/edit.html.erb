@@ -1,9 +1,9 @@
-<div class="max-w-md mx-auto">
-  <div class="neon-border p-8">
-    <div class="text-center mb-6">
-      <div class="text-5xl mb-4 pulse-glow inline-block" style="color: #00ffff;">🔑</div>
-      <h2 class="font-display text-2xl font-bold text-neon-cyan neon-text-subtle mt-2">Nouveau mot de passe</h2>
-      <p class="text-gray-400 mt-1">Choisissez votre nouveau mot de passe</p>
+<div class="max-w-md mx-auto px-4 sm:px-0">
+  <div class="neon-border p-4 sm:p-8">
+    <div class="text-center mb-5 sm:mb-6">
+      <div class="text-4xl sm:text-5xl mb-3 sm:mb-4 pulse-glow inline-block" style="color: #00ffff;">🔑</div>
+      <h2 class="font-display text-xl sm:text-2xl font-bold text-neon-cyan neon-text-subtle mt-2">Nouveau mot de passe</h2>
+      <p class="text-gray-400 mt-1 text-sm sm:text-base">Choisissez votre nouveau mot de passe</p>
     </div>
 
     <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
@@ -15,16 +15,16 @@
         <% if @minimum_password_length %>
           <p class="text-xs text-gray-500 mb-1"><%= @minimum_password_length %> caractères minimum</p>
         <% end %>
-        <%= f.password_field :password, autofocus: true, autocomplete: "new-password", class: "input-neon w-full px-4 py-3 bg-dark-700 border border-dark-500 rounded-lg text-gray-100 placeholder-gray-500 focus:outline-none transition-all duration-300" %>
+        <%= f.password_field :password, autofocus: true, autocomplete: "new-password", class: "input-neon w-full px-4 py-3 bg-dark-700 border border-dark-500 rounded-lg text-gray-100 placeholder-gray-500 focus:outline-none transition-all duration-300 min-h-11" %>
       </div>
 
-      <div class="mb-6">
+      <div class="mb-5 sm:mb-6">
         <%= f.label :password_confirmation, "Confirmer le mot de passe", class: "block text-sm font-medium text-gray-300 mb-1" %>
-        <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "input-neon w-full px-4 py-3 bg-dark-700 border border-dark-500 rounded-lg text-gray-100 placeholder-gray-500 focus:outline-none transition-all duration-300" %>
+        <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "input-neon w-full px-4 py-3 bg-dark-700 border border-dark-500 rounded-lg text-gray-100 placeholder-gray-500 focus:outline-none transition-all duration-300 min-h-11" %>
       </div>
 
       <div class="mb-4">
-        <%= f.submit "Changer le mot de passe", class: "btn-neon w-full bg-gradient-to-r from-neon-cyan to-neon-purple text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 cursor-pointer hover:shadow-lg hover:shadow-neon-cyan/30" %>
+        <%= f.submit "Changer le mot de passe", class: "btn-neon w-full bg-gradient-to-r from-neon-cyan to-neon-purple text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 cursor-pointer hover:shadow-lg hover:shadow-neon-cyan/30 min-h-11" %>
       </div>
     <% end %>
 

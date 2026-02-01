@@ -1,11 +1,11 @@
 <%# Phase: Devinettes %>
 
-<div class="bg-neon-purple/10 border border-neon-purple/30 rounded-lg p-4 mb-6">
-  <div class="flex items-center gap-3">
-    <span class="text-3xl pulse-glow neon-text-purple">🎯</span>
-    <div>
-      <h2 class="font-display font-semibold neon-text-purple">PHASE: Devinettes</h2>
-      <p class="text-sm text-gray-400">Associez chaque musique à son auteur</p>
+<div class="bg-neon-purple/10 border border-neon-purple/30 rounded-lg p-3 sm:p-4 mb-4 sm:mb-6">
+  <div class="flex items-center gap-2 sm:gap-3">
+    <span class="text-2xl sm:text-3xl pulse-glow neon-text-purple flex-shrink-0">🎯</span>
+    <div class="min-w-0">
+      <h2 class="font-display font-semibold neon-text-purple text-sm sm:text-base">PHASE: Devinettes</h2>
+      <p class="text-xs sm:text-sm text-gray-400">Associez chaque musique à son auteur</p>
     </div>
   </div>
 </div>
@@ -17,32 +17,32 @@
 <% submitted_players = Guess.joins(:proposal).where(proposals: { game_id: game.id }).select(:player_id).distinct.count %>
 <% progress_pct = players_count > 0 ? (submitted_players.to_f / players_count * 100).round : 0 %>
 
-<div class="neon-border p-6 mb-6">
-  <h3 class="font-medium text-gray-300 mb-3">Progression: <%= submitted_players %>/<%= players_count %> joueurs ont répondu</h3>
-  <div class="w-full bg-dark-700 rounded-full h-4 overflow-hidden">
-    <div class="bg-gradient-to-r from-neon-purple to-neon-pink h-4 rounded-full transition-all duration-500" style="width: <%= progress_pct %>%"></div>
+<div class="neon-border p-4 sm:p-6 mb-4 sm:mb-6">
+  <h3 class="font-medium text-gray-300 mb-3 text-sm sm:text-base">Progression: <%= submitted_players %>/<%= players_count %> joueurs ont répondu</h3>
+  <div class="w-full bg-dark-700 rounded-full h-3 sm:h-4 overflow-hidden">
+    <div class="bg-gradient-to-r from-neon-purple to-neon-pink h-3 sm:h-4 rounded-full transition-all duration-500" style="width: <%= progress_pct %>%"></div>
   </div>
-  <p class="text-sm text-gray-500 mt-2"><%= progress_pct %>%</p>
+  <p class="text-xs sm:text-sm text-gray-500 mt-2"><%= progress_pct %>%</p>
 </div>
 
 <%# My guesses action %>
 <% my_guesses = current_user.guesses.joins(:proposal).where(proposals: { game_id: game.id }) %>
 <% has_submitted_guesses = my_guesses.count == (proposals.count - 1) && my_proposal.present? %>
 
-<div class="neon-border p-6 mb-6">
+<div class="neon-border p-4 sm:p-6 mb-4 sm:mb-6">
   <% if !my_proposal %>
-    <div class="text-gray-400 flex items-center gap-3">
-      <span class="text-xl">⚠️</span>
-      <span>Vous n'avez pas soumis de proposition pour cette partie.</span>
+    <div class="text-gray-400 flex items-center gap-2 sm:gap-3">
+      <span class="text-lg sm:text-xl flex-shrink-0">⚠️</span>
+      <span class="text-sm sm:text-base">Vous n'avez pas soumis de proposition pour cette partie.</span>
     </div>
   <% elsif has_submitted_guesses %>
-    <div class="flex items-center gap-3 neon-text-cyan">
-      <span class="text-2xl">✅</span>
-      <span class="font-medium">Mes devinettes: Soumises</span>
+    <div class="flex items-center gap-2 sm:gap-3 neon-text-cyan">
+      <span class="text-xl sm:text-2xl flex-shrink-0">✅</span>
+      <span class="font-medium text-sm sm:text-base">Mes devinettes: Soumises</span>
     </div>
-    <p class="text-sm text-gray-400 mt-3">Attendez que tous les joueurs aient répondu...</p>
+    <p class="text-xs sm:text-sm text-gray-400 mt-2 sm:mt-3">Attendez que tous les joueurs aient répondu...</p>
   <% else %>
-    <%= link_to new_game_guess_path(game), class: "btn-neon btn-primary inline-flex items-center gap-2 font-medium py-3 px-6 rounded-lg" do %>
+    <%= link_to new_game_guess_path(game), class: "btn-neon btn-primary inline-flex items-center gap-2 font-medium py-3 px-5 sm:px-6 rounded-lg text-sm sm:text-base min-h-11 w-full sm:w-auto justify-center" do %>
       🎯 Faire mes devinettes
     <% end %>
   <% end %>
@@ -50,11 +50,11 @@
 
 <%# Organizer actions %>
 <% if team.organizer == current_user %>
-  <div class="border-t border-neon-purple/20 pt-6">
-    <p class="text-sm text-gray-500 mb-3">(Organisateur uniquement)</p>
-    <div class="flex flex-wrap gap-3">
-      <%= button_to "⚠️ Terminer la partie", finish_game_path(game), method: :patch, data: { turbo_confirm: "Terminer la partie ? Les joueurs sans réponse auront un score de 0." }, class: "btn-neon btn-danger font-medium py-2 px-4 rounded-lg cursor-pointer" %>
-      <%= button_to "🗑️ Annuler la partie", game_path(game), method: :delete, data: { turbo_confirm: t("games.destroy.confirm") }, class: "btn-neon bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/50 font-medium py-2 px-4 rounded-lg cursor-pointer transition-all duration-300" %>
+  <div class="border-t border-neon-purple/20 pt-4 sm:pt-6">
+    <p class="text-xs sm:text-sm text-gray-500 mb-2 sm:mb-3">(Organisateur uniquement)</p>
+    <div class="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3">
+      <%= button_to "⚠️ Terminer la partie", finish_game_path(game), method: :patch, data: { turbo_confirm: "Terminer la partie ? Les joueurs sans réponse auront un score de 0." }, class: "btn-neon btn-danger font-medium py-2 px-4 rounded-lg cursor-pointer text-sm min-h-11 w-full sm:w-auto" %>
+      <%= button_to "🗑️ Annuler la partie", game_path(game), method: :delete, data: { turbo_confirm: t("games.destroy.confirm") }, class: "btn-neon bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/50 font-medium py-2 px-4 rounded-lg cursor-pointer transition-all duration-300 text-sm min-h-11 w-full sm:w-auto" %>
     </div>
     <p class="text-xs text-gray-500 mt-2">Les joueurs sans réponse auront un score de 0</p>
   </div>

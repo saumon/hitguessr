@@ -1,9 +1,9 @@
-<div class="max-w-md mx-auto">
-  <div class="neon-border p-8">
-    <div class="text-center mb-6">
-      <div class="text-5xl mb-4 pulse-glow inline-block" style="color: #ff00ff;">👤</div>
-      <h2 class="font-display text-2xl font-bold text-neon-pink neon-text-subtle mt-2">Mon profil</h2>
-      <p class="text-gray-400 mt-1">Modifier vos informations</p>
+<div class="max-w-md mx-auto px-4 sm:px-0">
+  <div class="neon-border p-4 sm:p-8">
+    <div class="text-center mb-5 sm:mb-6">
+      <div class="text-4xl sm:text-5xl mb-3 sm:mb-4 pulse-glow inline-block" style="color: #ff00ff;">👤</div>
+      <h2 class="font-display text-xl sm:text-2xl font-bold text-neon-pink neon-text-subtle mt-2">Mon profil</h2>
+      <p class="text-gray-400 mt-1 text-sm sm:text-base">Modifier vos informations</p>
     </div>
 
     <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
@@ -11,11 +11,11 @@
 
       <div class="mb-4">
         <%= f.label :email, "Email", class: "block text-sm font-medium text-gray-300 mb-1" %>
-        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "input-neon w-full px-4 py-3 bg-dark-700 border border-dark-500 rounded-lg text-gray-100 placeholder-gray-500 focus:outline-none transition-all duration-300" %>
+        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "input-neon w-full px-4 py-3 bg-dark-700 border border-dark-500 rounded-lg text-gray-100 placeholder-gray-500 focus:outline-none transition-all duration-300 min-h-11" %>
       </div>
 
       <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
-        <div class="mb-4 bg-dark-700/90 border border-yellow-500/50 text-yellow-400 px-4 py-3 rounded-lg text-sm">
+        <div class="mb-4 bg-dark-700/90 border border-yellow-500/50 text-yellow-400 px-3 sm:px-4 py-3 rounded-lg text-xs sm:text-sm">
           En attente de confirmation pour : <%= resource.unconfirmed_email %>
         </div>
       <% end %>
@@ -23,7 +23,7 @@
       <div class="mb-4">
         <%= f.label :password, "Nouveau mot de passe", class: "block text-sm font-medium text-gray-300 mb-1" %>
         <p class="text-xs text-gray-500 mb-1">Laissez vide si vous ne souhaitez pas le changer</p>
-        <%= f.password_field :password, autocomplete: "new-password", class: "input-neon w-full px-4 py-3 bg-dark-700 border border-dark-500 rounded-lg text-gray-100 placeholder-gray-500 focus:outline-none transition-all duration-300" %>
+        <%= f.password_field :password, autocomplete: "new-password", class: "input-neon w-full px-4 py-3 bg-dark-700 border border-dark-500 rounded-lg text-gray-100 placeholder-gray-500 focus:outline-none transition-all duration-300 min-h-11" %>
         <% if @minimum_password_length %>
           <p class="text-xs text-gray-500 mt-1"><%= @minimum_password_length %> caractères minimum</p>
         <% end %>
@@ -31,31 +31,31 @@
 
       <div class="mb-4">
         <%= f.label :password_confirmation, "Confirmer le mot de passe", class: "block text-sm font-medium text-gray-300 mb-1" %>
-        <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "input-neon w-full px-4 py-3 bg-dark-700 border border-dark-500 rounded-lg text-gray-100 placeholder-gray-500 focus:outline-none transition-all duration-300" %>
+        <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "input-neon w-full px-4 py-3 bg-dark-700 border border-dark-500 rounded-lg text-gray-100 placeholder-gray-500 focus:outline-none transition-all duration-300 min-h-11" %>
       </div>
 
-      <div class="mb-6">
+      <div class="mb-5 sm:mb-6">
         <%= f.label :current_password, "Mot de passe actuel", class: "block text-sm font-medium text-gray-300 mb-1" %>
         <p class="text-xs text-gray-500 mb-1">Nécessaire pour confirmer vos modifications</p>
-        <%= f.password_field :current_password, autocomplete: "current-password", class: "input-neon w-full px-4 py-3 bg-dark-700 border border-dark-500 rounded-lg text-gray-100 placeholder-gray-500 focus:outline-none transition-all duration-300" %>
+        <%= f.password_field :current_password, autocomplete: "current-password", class: "input-neon w-full px-4 py-3 bg-dark-700 border border-dark-500 rounded-lg text-gray-100 placeholder-gray-500 focus:outline-none transition-all duration-300 min-h-11" %>
       </div>
 
       <div class="mb-4">
-        <%= f.submit "Mettre à jour", class: "btn-neon w-full bg-gradient-to-r from-neon-purple to-neon-pink text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 cursor-pointer hover:shadow-lg hover:shadow-neon-pink/30" %>
+        <%= f.submit "Mettre à jour", class: "btn-neon w-full bg-gradient-to-r from-neon-purple to-neon-pink text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 cursor-pointer hover:shadow-lg hover:shadow-neon-pink/30 min-h-11" %>
       </div>
     <% end %>
 
-    <div class="mt-8 pt-6 border-t border-neon-pink/30">
-      <h3 class="text-lg font-medium text-neon-pink mb-3">Supprimer mon compte</h3>
-      <p class="text-sm text-gray-400 mb-4">Cette action est irréversible.</p>
+    <div class="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-neon-pink/30">
+      <h3 class="text-base sm:text-lg font-medium text-neon-pink mb-2 sm:mb-3">Supprimer mon compte</h3>
+      <p class="text-xs sm:text-sm text-gray-400 mb-3 sm:mb-4">Cette action est irréversible.</p>
       <%= button_to "Supprimer mon compte", registration_path(resource_name), 
           data: { confirm: "Êtes-vous sûr ?", turbo_confirm: "Êtes-vous sûr ?" }, 
           method: :delete,
-          class: "btn-neon bg-transparent border border-neon-pink/50 text-neon-pink font-medium py-2 px-4 rounded-lg transition-all duration-300 cursor-pointer hover:bg-neon-pink/10" %>
+          class: "btn-neon bg-transparent border border-neon-pink/50 text-neon-pink font-medium py-2 px-4 rounded-lg transition-all duration-300 cursor-pointer hover:bg-neon-pink/10 min-h-11" %>
     </div>
 
-    <div class="mt-6 text-center">
-      <%= link_to "← Retour", :back, class: "text-neon-cyan hover:text-neon-pink font-medium transition-colors duration-300" %>
+    <div class="mt-5 sm:mt-6 text-center">
+      <%= link_to "← Retour", :back, class: "text-neon-cyan hover:text-neon-pink font-medium transition-colors duration-300 inline-block py-2 px-4 min-h-11" %>
     </div>
   </div>
 </div>
