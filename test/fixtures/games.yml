@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+collecting_game:
+  team: team_one
+  status: 0
+  started_at: null
+  finished_at: null
+
+guessing_game:
+  team: team_two
+  status: 1
+  started_at: <%= Time.current %>
+  finished_at: null
+
+finished_game:
+  team: team_two
+  status: 2
+  started_at: <%= 1.hour.ago %>
+  finished_at: <%= Time.current %>

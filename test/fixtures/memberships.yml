@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+organizer_membership:
+  team: team_one
+  user: organizer
+
+member_membership:
+  team: team_one
+  user: member
+
+organizer_two_membership:
+  team: team_two
+  user: organizer_two

@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   end
 
   # Games with nested proposals, guesses, and results
-  resources :games, only: [ :show ] do
+  resources :games, only: [ :show, :destroy ] do
     member do
       patch :start_guessing
       patch :finish

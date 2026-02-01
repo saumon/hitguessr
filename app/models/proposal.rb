@@ -19,7 +19,7 @@ class Proposal < ApplicationRecord
   def normalize_url
     return if url.blank?
 
-    normalized = url.strip.downcase
+    normalized = url.strip
     normalized = normalized.chomp("/") # Remove trailing slash
     normalized = normalized.gsub(/#.*$/, "") # Remove fragment
     self.url = normalized

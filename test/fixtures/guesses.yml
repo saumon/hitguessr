@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+guess_one:
+  proposal: proposal_one
+  player: member
+  guessed_author: organizer
+
+guess_two:
+  proposal: proposal_two
+  player: organizer
+  guessed_author: member

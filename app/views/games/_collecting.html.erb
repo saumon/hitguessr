@@ -63,14 +63,18 @@
 <% if team.organizer == current_user %>
   <div class="border-t border-neon-purple/20 pt-6">
     <p class="text-sm text-gray-500 mb-3">(Organisateur uniquement)</p>
-    <% if proposals.count >= 2 %>
-      <%= button_to "⚠️ Passer aux devinettes", start_guessing_game_path(game), method: :patch, data: { turbo_confirm: "Passer aux devinettes ? Les joueurs sans proposition seront exclus." }, class: "btn-neon bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-400 border border-yellow-500/50 font-medium py-2 px-4 rounded-lg cursor-pointer transition-all duration-300" %>
-      <p class="text-xs text-gray-500 mt-2">Les joueurs sans proposition seront exclus de la phase de devinettes</p>
-    <% else %>
-      <button disabled class="bg-dark-700 text-gray-500 font-medium py-2 px-4 rounded-lg cursor-not-allowed border border-dark-500">
-        ⚠️ Passer aux devinettes
-      </button>
-      <p class="text-xs neon-text-pink mt-2">Au moins 2 joueurs doivent avoir soumis une proposition</p>
+    <div class="flex flex-wrap gap-3">
+      <% if proposals.count >= 2 %>
+        <%= button_to "⚠️ Passer aux devinettes", start_guessing_game_path(game), method: :patch, data: { turbo_confirm: "Passer aux devinettes ? Les joueurs sans proposition seront exclus." }, class: "btn-neon bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-400 border border-yellow-500/50 font-medium py-2 px-4 rounded-lg cursor-pointer transition-all duration-300" %>
+      <% else %>
+        <button disabled class="bg-dark-700 text-gray-500 font-medium py-2 px-4 rounded-lg cursor-not-allowed border border-dark-500">
+          ⚠️ Passer aux devinettes
+        </button>
+      <% end %>
+      <%= button_to "🗑️ Annuler la partie", game_path(game), method: :delete, data: { turbo_confirm: t("games.destroy.confirm") }, class: "btn-neon bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/50 font-medium py-2 px-4 rounded-lg cursor-pointer transition-all duration-300" %>
+    </div>
+    <% if proposals.count < 2 %>
+      <p class="text-xs neon-text-pink mt-2">Au moins 2 joueurs doivent avoir soumis une proposition pour passer aux devinettes</p>
     <% end %>
   </div>
 <% end %>
