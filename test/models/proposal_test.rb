@@ -48,13 +48,14 @@ class ProposalTest < ActiveSupport::TestCase
     assert proposal.valid?
   end
 
-  test "should normalize URL - lowercase" do
+  test "should normalize URL - preserve case" do
     proposal = Proposal.create!(
       game: @game,
       player: @user,
       url: "HTTPS://WWW.YOUTUBE.COM/watch?v=ABC"
     )
-    assert_equal "https://www.youtube.com/watch?v=abc", proposal.url
+    # Case is preserved (no lowercase conversion)
+    assert_equal "HTTPS://WWW.YOUTUBE.COM/watch?v=ABC", proposal.url
   end
 
   test "should normalize URL - remove trailing slash" do
@@ -104,16 +105,24 @@ class ProposalTest < ActiveSupport::TestCase
     other_player = User.create!(email: "other@example.com", name: "Autre", password: "password123")
     @team.memberships.create!(user: other_player)
 
+    # Same URL with trailing slash (normalized to same)
     duplicate = Proposal.new(
       game: @game,
       player: other_player,
-      url: "HTTPS://YOUTUBE.COM/watch?v=ABC/"  # Same after normalization
+      url: "https://youtube.com/watch?v=abc/"
     )
     assert_not duplicate.valid?
   end
 
   test "should allow same URL in different games" do
     Proposal.create!(game: @game, player: @user, url: "https://youtube.com/watch?v=abc")
+
+    # Finish the first game to allow creating a new one
+    other_player = User.create!(email: "other2@example.com", name: "Autre2", password: "password123")
+    @team.memberships.create!(user: other_player)
+    @game.proposals.create!(player: other_player, url: "https://youtube.com/watch?v=xyz")
+    @game.start_guessing!
+    @game.finish!
 
     other_game = @team.games.create!
     proposal = Proposal.new(game: other_game, player: @user, url: "https://youtube.com/watch?v=abc")

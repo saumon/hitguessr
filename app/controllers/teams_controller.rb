@@ -9,6 +9,7 @@ class TeamsController < ApplicationController
   def show
     @members = @team.members
     @games = @team.games.order(created_at: :desc)
+    @leaderboard = @team.leaderboard
   end
 
   def new

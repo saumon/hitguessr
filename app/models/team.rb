@@ -20,6 +20,39 @@ class Team < ApplicationRecord
     games.active.exists?
   end
 
+  # Leaderboard: cumulative scores across all finished games
+  # Returns array of { player:, score:, rank: } sorted by score descending
+  # Players with equal scores share the same rank (ex aequo)
+  def leaderboard
+    # Aggregate scores from all finished games
+    scores_by_player = Hash.new(0)
+
+    games.finished.each do |game|
+      game.calculate_scores.each do |entry|
+        scores_by_player[entry[:player]] += entry[:score]
+      end
+    end
+
+    # Convert to array and sort by score descending
+    sorted_scores = scores_by_player.map do |player, score|
+      { player: player, score: score }
+    end.sort_by { |entry| -entry[:score] }
+
+    # Assign ranks with ex aequo handling (same pattern as Game#ranking)
+    rank = 0
+    previous_score = nil
+
+    sorted_scores.each_with_index do |entry, index|
+      if entry[:score] != previous_score
+        rank = index + 1
+        previous_score = entry[:score]
+      end
+      entry[:rank] = rank
+    end
+
+    sorted_scores
+  end
+
   private
 
   def add_organizer_as_member
