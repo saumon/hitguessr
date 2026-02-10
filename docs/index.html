@@ -1,0 +1,184 @@
+<!-- BEGIN app/views/layouts/application.html.erb
+-->
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>HitGuessr</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="HitGuessr">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="csrf-param" content="authenticity_token" />
+  <meta name="csrf-token"
+    content="Csfc-1V-EBD5hC8GSkcNYJAcNGI-9-ZyPuveD7bOgk19StENDgay4ITUI4kEHDV8zAKq0xRBFxu2jm0vPUqmMQ" />
+
+
+
+
+
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="icon" href="./icon.png" type="image/png">
+  <link rel="apple-touch-icon" href="./icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="./assets/tailwind-1eef3994.css" data-turbo-track="reload" />
+  <script type="importmap" data-turbo-track="reload">{
+  "imports": {
+    "application": "./assets/application-bfcdf840.js",
+    "@hotwired/turbo-rails": "./assets/turbo.min-9fd88cd5.js",
+    "@hotwired/stimulus": "./assets/stimulus.min-4b1e420e.js",
+    "@hotwired/stimulus-loading": "./assets/stimulus-loading-1fc53fe7.js",
+    "controllers/application": "./assets/controllers/application-3affb389.js",
+    "controllers/hello_controller": "./assets/controllers/hello_controller-708796bd.js",
+    "controllers": "./assets/controllers/index-ee64e1f1.js"
+  }
+}</script>
+  <link rel="modulepreload" href="./assets/application-bfcdf840.js">
+  <link rel="modulepreload" href="./assets/turbo.min-9fd88cd5.js">
+  <link rel="modulepreload" href="./assets/stimulus.min-4b1e420e.js">
+  <link rel="modulepreload" href="./assets/stimulus-loading-1fc53fe7.js">
+  <link rel="modulepreload" href="./assets/controllers/application-3affb389.js">
+  <link rel="modulepreload" href="./assets/controllers/hello_controller-708796bd.js">
+  <link rel="modulepreload" href="./assets/controllers/index-ee64e1f1.js">
+  <script type="module">import "application"</script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+
+    .font-display {
+      font-family: 'Orbitron', sans-serif;
+    }
+  </style>
+</head>
+
+<body class="bg-dark-950 bg-music-gradient min-h-screen flex flex-col text-gray-200 music-bg overflow-x-hidden">
+  <header class="bg-dark-900/90 backdrop-blur-lg border-b border-neon-purple/20 sticky top-0 z-50">
+    <div class="container mx-auto px-3 sm:px-4 py-3 sm:py-4 flex justify-between items-center max-w-full">
+      <div class="flex items-center space-x-2 sm:space-x-3">
+        <div class="equalizer text-neon-pink hidden sm:flex">
+          <div class="equalizer-bar"></div>
+          <div class="equalizer-bar"></div>
+          <div class="equalizer-bar"></div>
+          <div class="equalizer-bar"></div>
+          <div class="equalizer-bar"></div>
+        </div>
+        <div
+          class="font-display text-xl sm:text-2xl font-bold neon-text-cyan hover:neon-text-pink transition-all duration-300 min-h-11 inline-flex items-center">
+          HitGuessr
+        </div>
+      </div>
+      <nav class="flex items-center space-x-2 sm:space-x-4">
+      </nav>
+    </div>
+  </header>
+
+
+  <main class="container mx-auto px-3 sm:px-4 py-6 sm:py-8 flex-grow relative z-10 max-w-full overflow-x-hidden">
+    <!-- BEGIN app/views/home/index.html.erb
+-->
+    <div class="max-w-4xl mx-auto text-center px-1">
+      <div class="py-10 sm:py-16">
+        <div class="mb-6 sm:mb-8">
+          <span class="text-5xl sm:text-7xl inline-block pulse-glow neon-text-pink">♪</span>
+          <span class="text-4xl sm:text-6xl inline-block pulse-glow mx-2 sm:mx-3 neon-text-cyan"
+            style="animation-delay: 0.3s;">♫</span>
+          <span class="text-5xl sm:text-7xl inline-block pulse-glow neon-text-purple"
+            style="animation-delay: 0.6s;">♬</span>
+        </div>
+        <h1 class="font-display text-4xl sm:text-5xl md:text-7xl font-bold mb-4 sm:mb-6">
+          <span class="neon-text-cyan">Hit</span><span class="neon-text-pink">Guessr</span>
+        </h1>
+        <p class="text-lg sm:text-xl text-gray-400 mb-8 sm:mb-12 max-w-2xl mx-auto leading-relaxed px-2">
+          Le jeu de devinettes musicales entre amis ! Proposez vos morceaux préférés et devinez qui a choisi quoi.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 sm:gap-5 justify-center px-4 sm:px-0">
+          <a class="btn-neon btn-primary text-white font-semibold py-3 sm:py-4 px-8 sm:px-12 rounded-lg text-base sm:text-lg transition-all duration-300 min-h-11 inline-flex items-center justify-center gap-3"
+            href="https://github.com/saumon/hitguessr" style="justify-content: center;">
+            <img src="./github.png" alt="GitHub" class="h-6 w-6" style="height: 24px; width: 24px;">
+            <span>Voir sur GitHub</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="py-10 sm:py-16 border-t border-neon-purple/15">
+        <h2 class="font-display text-2xl sm:text-3xl font-bold neon-text-cyan mb-8 sm:mb-12">Comment ça marche ?</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+          <div class="neon-border p-6 sm:p-8 hover:scale-105 transition-all duration-300">
+            <span class="text-4xl sm:text-5xl mb-3 sm:mb-4 inline-block">👥</span>
+            <h3 class="font-display text-lg sm:text-xl font-semibold neon-text-pink mb-2 sm:mb-3">1. Créez votre équipe
+            </h3>
+            <p class="text-gray-400 leading-relaxed text-sm sm:text-base">Invitez vos amis à rejoindre votre équipe pour
+              jouer ensemble.</p>
+          </div>
+          <div class="neon-border p-6 sm:p-8 hover:scale-105 transition-all duration-300">
+            <span class="text-4xl sm:text-5xl mb-3 sm:mb-4 inline-block">🎶</span>
+            <h3 class="font-display text-lg sm:text-xl font-semibold neon-text-cyan mb-2 sm:mb-3">2. Proposez un morceau
+            </h3>
+            <p class="text-gray-400 leading-relaxed text-sm sm:text-base">Chaque joueur soumet secrètement un lien
+              YouTube vers sa chanson.</p>
+          </div>
+          <div class="neon-border p-6 sm:p-8 hover:scale-105 transition-all duration-300">
+            <span class="text-4xl sm:text-5xl mb-3 sm:mb-4 inline-block">🤔</span>
+            <h3 class="font-display text-lg sm:text-xl font-semibold neon-text-purple mb-2 sm:mb-3">3. Devinez !</h3>
+            <p class="text-gray-400 leading-relaxed text-sm sm:text-base">Écoutez les morceaux et devinez qui a proposé
+              chaque chanson.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="py-10 sm:py-16 border-t border-neon-purple/15">
+        <h2 class="font-display text-2xl sm:text-3xl font-bold neon-text-pink mb-8 sm:mb-12">Système de points</h2>
+        <div class="neon-border p-6 sm:p-10 max-w-lg mx-auto">
+          <div class="space-y-6 sm:space-y-8 text-left">
+            <div class="flex items-center">
+              <span class="text-3xl sm:text-4xl mr-4 sm:mr-5 flex-shrink-0">🎯</span>
+              <div>
+                <span class="font-bold text-base sm:text-lg neon-text-cyan">+1 point</span>
+                <span class="text-gray-400 text-base sm:text-lg"> pour chaque bonne devinette</span>
+              </div>
+            </div>
+            <div class="flex items-center">
+              <span class="text-3xl sm:text-4xl mr-4 sm:mr-5 flex-shrink-0">🛡️</span>
+              <div>
+                <span class="font-bold text-base sm:text-lg neon-text-pink">+1 point</span>
+                <span class="text-gray-400 text-base sm:text-lg"> quand personne ne devine votre morceau</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="py-10 sm:py-16 border-t border-neon-purple/15">
+        <p class="text-lg sm:text-xl text-gray-400 mb-6 sm:mb-8">Prêt à jouer ?</p>
+        <a class="btn-neon btn-primary text-white font-semibold py-3 sm:py-4 px-8 sm:px-12 rounded-lg text-lg sm:text-xl transition-all duration-300 inline-block min-h-11"
+          href="https://hitguessr.hopto.org/">Commencer maintenant</a>
+      </div>
+    </div>
+    <!-- END app/views/home/index.html.erb -->
+  </main>
+
+  <footer class="bg-dark-900/90 backdrop-blur-lg border-t border-neon-purple/15 py-4 sm:py-6 mt-auto">
+    <div class="container mx-auto px-3 sm:px-4 text-center max-w-full">
+      <div class="flex items-center justify-center space-x-2 sm:space-x-3 mb-2 sm:mb-3">
+        <span class="text-xl sm:text-2xl neon-text-pink">♪</span>
+        <span class="text-xl sm:text-2xl neon-text-cyan">♫</span>
+        <span class="text-xl sm:text-2xl neon-text-purple">♬</span>
+      </div>
+      <p class="text-gray-500 text-xs sm:text-sm">
+        © 2026 <span class="font-display neon-text-purple">HitGuessr</span><span class="hidden sm:inline"> - Un jeu de
+          devinettes musicales entre amis</span>
+      </p>
+    </div>
+  </footer>
+</body>
+
+</html>
+<!-- END app/views/layouts/application.html.erb -->
