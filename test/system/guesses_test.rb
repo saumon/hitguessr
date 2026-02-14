@@ -110,4 +110,40 @@ class GuessesTest < ApplicationSystemTestCase
     assert_text "youtube.com/b"
     assert_text "youtube.com/c"
   end
+
+  test "displays player guess status table during guessing phase" do
+    sign_in_as @player1
+
+    visit game_path(@game)
+
+    # Should see the player status section
+    assert_selector "h3", text: "Statut des joueurs:"
+
+    # Should see all players in the pool
+    assert_text "Joueur 1"
+    assert_text "Joueur 2"
+    assert_text "Joueur 3"
+
+    # All should be "En attente" initially
+    assert_selector "span", text: "⏳", count: 3
+  end
+
+  test "player status updates after submitting guesses" do
+    # Player1 submits all guesses
+    proposals = @game.proposals.where.not(player: @player1)
+    proposals.each do |proposal|
+      Guess.create!(player: @player1, proposal: proposal, guessed_author: proposal.player)
+    end
+
+    sign_in_as @player2
+
+    visit game_path(@game)
+
+    # Should see the status table
+    assert_selector "h3", text: "Statut des joueurs:"
+
+    # Player1 should show as submitted (✅), others as waiting (⏳)
+    assert_selector "span", text: "✅", minimum: 1
+    assert_selector "span", text: "⏳", minimum: 2
+  end
 end
