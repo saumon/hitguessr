@@ -106,7 +106,7 @@ class TeamTest < ActiveSupport::TestCase
     game.proposals.create!(player: player1, url: "https://youtube.com/a")
     game.proposals.create!(player: player2, url: "https://youtube.com/b")
     game.start_guessing!
-    game.finish!
+    game.finish! unless game.finished?
 
     assert_nil team.active_game
   end
@@ -151,7 +151,7 @@ class TeamTest < ActiveSupport::TestCase
     game.proposals.create!(player: player1, url: "https://youtube.com/a")
     game.proposals.create!(player: player2, url: "https://youtube.com/b")
     game.start_guessing!
-    game.finish!
+    game.finish! unless game.finished?
 
     assert_not team.has_active_game?
   end
@@ -194,7 +194,7 @@ class TeamTest < ActiveSupport::TestCase
     # player3 guesses prop1 (wrong) and prop2 (wrong)
     prop1_g1.guesses.create!(player: player3, guessed_author: player2) # wrong
     prop2_g1.guesses.create!(player: player3, guessed_author: player1) # wrong
-    game1.finish!
+    game1.finish! unless game1.finished?
     # Game1 scores: player1=2, player2=1, player3=0
 
     # Game 2: player2 dominates
@@ -212,7 +212,7 @@ class TeamTest < ActiveSupport::TestCase
     # player3 guesses 0 correct
     prop1_g2.guesses.create!(player: player3, guessed_author: player2) # wrong
     prop2_g2.guesses.create!(player: player3, guessed_author: player1) # wrong
-    game2.finish!
+    game2.finish! unless game2.finished?
     # Game2 scores: player1=1, player2=2, player3=0
 
     leaderboard = team.leaderboard
@@ -247,7 +247,7 @@ class TeamTest < ActiveSupport::TestCase
     # player3 scores 0
     prop1.guesses.create!(player: player3, guessed_author: player2) # wrong
     prop2.guesses.create!(player: player3, guessed_author: player1) # wrong
-    game.finish!
+    game.finish! unless game.finished?
 
     leaderboard = team.leaderboard
 
@@ -281,7 +281,7 @@ class TeamTest < ActiveSupport::TestCase
     # player3 scores 0
     prop1.guesses.create!(player: player3, guessed_author: player2) # wrong
     prop2.guesses.create!(player: player3, guessed_author: player1) # wrong
-    game.finish!
+    game.finish! unless game.finished?
 
     leaderboard = team.leaderboard
 
@@ -311,7 +311,7 @@ class TeamTest < ActiveSupport::TestCase
     prop3.guesses.create!(player: player2, guessed_author: player1) # wrong
     prop1.guesses.create!(player: player3, guessed_author: player2) # wrong
     prop2.guesses.create!(player: player3, guessed_author: player1) # wrong
-    game.finish!
+    game.finish! unless game.finished?
 
     leaderboard = team.leaderboard
 
@@ -345,7 +345,7 @@ class TeamTest < ActiveSupport::TestCase
     prop1.guesses.create!(player: player2, guessed_author: player1)
     prop3.guesses.create!(player: player2, guessed_author: player3)
     # player3 does not guess
-    game.finish!
+    game.finish! unless game.finished?
 
     leaderboard = team.leaderboard
 
@@ -375,7 +375,7 @@ class TeamTest < ActiveSupport::TestCase
     prop3.guesses.create!(player: player1, guessed_author: player3)
     prop1.guesses.create!(player: player2, guessed_author: player1)
     prop3.guesses.create!(player: player2, guessed_author: player1) # wrong
-    game1.finish!
+    game1.finish! unless game1.finished?
 
     leaderboard = team.leaderboard
 

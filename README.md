@@ -82,8 +82,8 @@ A demo team "**Les Mélomanes**" is pre-created with a finished game showing the
 │  (anonymous)    │                     │                             │
 └────────┬────────┴──────────┬──────────┴──────────────┬──────────────┘
          │                   │                         │
-    Organizer           Organizer                 Automatic
-    starts game        closes collecting          after all guesses
+    Auto or Manual      Auto or Manual            Automatic
+    (all submitted)    (all guesses done)        after all guesses
 ```
 
 ### Roles
@@ -94,6 +94,12 @@ A demo team "**Les Mélomanes**" is pre-created with a finished game showing the
 | **Player**    | Submit music proposals, make guesses, view results                       |
 
 > Note: The organizer is also a player and participates in the game.
+
+### Phase Transitions
+
+- **Automatic**: When 100% of players have submitted, the game progresses automatically
+- **Manual**: The organizer can also manually advance phases at any time
+- Players are notified when automatic transitions occur
 
 ### Rules
 
@@ -379,6 +385,7 @@ The app is localized in **French** by default. Translation files are in `config/
 ### v1.1.0 *(upcoming)*
 
 - ✨ **Player guess status board during guessing phase** — See who has submitted their guesses and who is still pending ([#006](specs/006-player-guess-status/spec.md))
+- ⚡ **Automatic phase progression** — Game advances automatically when 100% of players have submitted their proposals or guesses ([#007](specs/007-auto-phase-progression/spec.md))
 
 ### v1.0.0 *(February 10, 2026)* — MVP
 

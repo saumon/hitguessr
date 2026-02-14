@@ -10,7 +10,14 @@ class Guess < ApplicationRecord
   validate :game_must_be_guessing, on: :create
   validate :cannot_guess_own_proposal
 
+  # Callbacks
+  after_create_commit :try_auto_finish_game
+
   private
+
+  def try_auto_finish_game
+    proposal.game.try_auto_finish!
+  end
 
   def guessed_author_must_be_team_player
     return if proposal.nil? || guessed_author.nil?
