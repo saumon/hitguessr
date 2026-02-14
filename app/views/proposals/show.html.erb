@@ -1,0 +1,33 @@
+<div class="max-w-md mx-auto">
+  <div class="mb-4 sm:mb-6">
+    <%= link_to "← Retour à la partie", game_path(@game), class: "text-gray-400 hover:neon-text-cyan transition-all duration-300 text-sm sm:text-base min-h-11 inline-flex items-center" %>
+  </div>
+
+  <div class="neon-border p-4 sm:p-6">
+    <h1 class="text-xl sm:text-2xl font-display font-bold neon-text-pink mb-3 sm:mb-4">Ma proposition</h1>
+    
+    <div class="bg-neon-cyan/10 border border-neon-cyan/30 rounded-lg p-3 sm:p-4 mb-4">
+      <div class="flex items-center gap-2 sm:gap-3 neon-text-cyan mb-2">
+        <span class="text-lg sm:text-xl flex-shrink-0">✅</span>
+        <span class="font-medium text-sm sm:text-base">Proposition soumise</span>
+      </div>
+      <p class="text-xs sm:text-sm text-gray-400">
+        Soumise le <%= @proposal.created_at.strftime("%d/%m/%Y à %H:%M") %>
+      </p>
+    </div>
+
+    <div class="border border-neon-purple/30 rounded-lg p-3 sm:p-4 bg-dark-700/50">
+      <h3 class="text-xs sm:text-sm font-medium text-gray-400 mb-2">Lien musical:</h3>
+      <a href="<%= @proposal.url %>" target="_blank" rel="noopener noreferrer" class="neon-text-cyan hover:neon-text-pink transition-all duration-300 break-all text-sm sm:text-base">
+        <%= @proposal.url %>
+      </a>
+    </div>
+
+    <div class="mt-4 sm:mt-6 text-center">
+      <p class="text-xs sm:text-sm text-gray-500">
+        Votre proposition est enregistrée et invisible aux autres joueurs.<br>
+        Attendez que l'organisateur lance la phase de devinettes.
+      </p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,22 @@
+<%# Phase: Terminée %>
+
+<div class="bg-neon-pink/10 border border-neon-pink/30 rounded-lg p-3 sm:p-4 mb-4 sm:mb-6">
+  <div class="flex items-center gap-2 sm:gap-3">
+    <span class="text-2xl sm:text-3xl pulse-glow neon-text-pink flex-shrink-0">✅</span>
+    <div class="min-w-0">
+      <h2 class="font-display font-semibold neon-text-pink text-sm sm:text-base">PARTIE TERMINÉE</h2>
+      <p class="text-xs sm:text-sm text-gray-400">
+        <% if game.finished_at %>
+          Terminée le <%= game.finished_at.strftime("%d/%m/%Y à %H:%M") %>
+        <% end %>
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="neon-border p-6 sm:p-8 text-center">
+  <p class="text-gray-300 mb-4 sm:mb-6 text-base sm:text-lg">La partie est terminée. Découvrez les résultats !</p>
+  <%= link_to game_results_path(game), class: "btn-neon btn-primary inline-flex items-center justify-center gap-2 font-medium py-3 px-6 sm:px-8 rounded-lg text-base sm:text-lg min-h-11 w-full sm:w-auto" do %>
+    🏆 Voir les résultats
+  <% end %>
+</div>

@@ -1,0 +1,51 @@
+<div class="max-w-4xl mx-auto">
+  <div class="flex justify-between items-center mb-8">
+    <div class="flex items-center gap-4">
+      <%= link_to "← #{@team.name}", team_path(@team), class: "neon-text-cyan hover:neon-text-pink transition-all duration-300" %>
+      <h1 class="font-display text-2xl font-bold neon-text-pink">Parties</h1>
+    </div>
+    <% if @team.organizer == current_user %>
+      <%= link_to new_team_game_path(@team), class: "btn-neon btn-primary px-5 py-3 rounded-lg font-medium flex items-center gap-2" do %>
+        🎮 Lancer une partie
+      <% end %>
+    <% end %>
+  </div>
+
+  <% if @games.empty? %>
+    <div class="neon-border p-10 text-center">
+      <div class="text-5xl mb-4 pulse-glow">🎵</div>
+      <p class="text-gray-400 mb-4">Aucune partie pour cette équipe.</p>
+      <% if @team.organizer == current_user %>
+        <%= link_to "Lancer la première partie", new_team_game_path(@team), class: "neon-text-cyan hover:neon-text-pink font-medium transition-all duration-300" %>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="space-y-4">
+      <% @games.each do |game| %>
+        <div class="neon-border p-6 hover:scale-[1.02] transition-transform duration-300">
+          <div class="flex justify-between items-center">
+            <div>
+              <h2 class="font-display text-lg font-semibold neon-text-pink">Partie #<%= game.id %></h2>
+              <p class="text-gray-500 text-sm mt-1">
+                Créée le <%= game.created_at.strftime("%d/%m/%Y à %H:%M") %>
+              </p>
+              <span class="inline-block mt-2 text-xs px-3 py-1 rounded-full border <%= game.finished? ? 'bg-gray-500/20 text-gray-400 border-gray-500/30' : game.guessing? ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' : 'bg-neon-cyan/20 neon-text-cyan border-neon-cyan/30' %>">
+                <%= case game.status
+                    when "collecting" then "📝 Collecte en cours"
+                    when "guessing" then "🎯 Devinettes en cours"
+                    when "finished" then "✅ Terminée"
+                    end %>
+              </span>
+            </div>
+            <div class="flex gap-3">
+              <%= link_to "Voir", game_path(game), class: "btn-neon btn-secondary px-4 py-2 rounded-lg text-sm" %>
+              <% if game.finished? %>
+                <%= link_to "Résultats", game_results_path(game), class: "btn-neon btn-primary px-4 py-2 rounded-lg text-sm" %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>

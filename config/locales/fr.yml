@@ -1,0 +1,138 @@
+fr:
+  games:
+    destroy:
+      success: "Partie annulée avec succès."
+      error: "Une erreur s'est produite lors de l'annulation de la partie."
+      cannot_cancel_finished: "Impossible d'annuler une partie terminée."
+      confirm: "Voulez-vous vraiment annuler cette partie ? Cette action est irréversible."
+  teams:
+    leaderboard:
+      title: "Classement général"
+      empty: "Aucun classement disponible. Terminez des parties pour voir le classement."
+  activerecord:
+    models:
+      user: "Utilisateur"
+      team: "Équipe"
+      membership: "Membre"
+      game: "Partie"
+      proposal: "Proposition"
+      guess: "Devinette"
+    attributes:
+      user:
+        name: "Nom"
+        email: "Email"
+        password: "Mot de passe"
+        password_confirmation: "Confirmation du mot de passe"
+        current_password: "Mot de passe actuel"
+        remember_me: "Se souvenir de moi"
+      team:
+        name: "Nom de l'équipe"
+        organizer: "Organisateur"
+      membership:
+        user: "Membre"
+        team: "Équipe"
+      game:
+        team: "Équipe"
+        status: "Phase"
+        started_at: "Démarré le"
+        finished_at: "Terminé le"
+      proposal:
+        url: "Lien musical"
+        player: "Joueur"
+        game: "Partie"
+      guess:
+        player: "Joueur"
+        proposal: "Proposition"
+        guessed_author: "Auteur supposé"
+    errors:
+      models:
+        user:
+          attributes:
+            name:
+              blank: "ne peut pas être vide"
+            email:
+              blank: "ne peut pas être vide"
+              taken: "est déjà utilisé"
+              invalid: "n'est pas valide"
+            password:
+              blank: "ne peut pas être vide"
+              too_short: "est trop court (minimum %{count} caractères)"
+            password_confirmation:
+              confirmation: "ne correspond pas au mot de passe"
+        team:
+          attributes:
+            name:
+              blank: "ne peut pas être vide"
+              too_short: "est trop court (minimum 2 caractères)"
+              too_long: "est trop long (maximum 100 caractères)"
+        proposal:
+          attributes:
+            url:
+              blank: "ne peut pas être vide"
+              invalid: "doit être une URL valide (http/https)"
+              taken: "a déjà été proposée dans cette partie"
+            player_id:
+              taken: "a déjà soumis une proposition pour cette partie"
+        guess:
+          attributes:
+            player_id:
+              taken: "a déjà deviné pour cette proposition"
+  helpers:
+    submit:
+      create: "Créer"
+      submit: "Enregistrer"
+      update: "Mettre à jour"
+  date:
+    formats:
+      default: "%d/%m/%Y"
+      short: "%d %b"
+      long: "%d %B %Y"
+    day_names:
+      - dimanche
+      - lundi
+      - mardi
+      - mercredi
+      - jeudi
+      - vendredi
+      - samedi
+    abbr_day_names:
+      - dim
+      - lun
+      - mar
+      - mer
+      - jeu
+      - ven
+      - sam
+    month_names:
+      - ~
+      - janvier
+      - février
+      - mars
+      - avril
+      - mai
+      - juin
+      - juillet
+      - août
+      - septembre
+      - octobre
+      - novembre
+      - décembre
+    abbr_month_names:
+      - ~
+      - jan.
+      - fév.
+      - mar.
+      - avr.
+      - mai
+      - juin
+      - juil.
+      - août
+      - sept.
+      - oct.
+      - nov.
+      - déc.
+  time:
+    formats:
+      default: "%d/%m/%Y %H:%M"
+      short: "%d %b %H:%M"
+      long: "%A %d %B %Y %H:%M"

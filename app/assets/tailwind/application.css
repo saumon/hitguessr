@@ -1,0 +1,464 @@
+@import "tailwindcss";
+
+/* Custom theme colors */
+@theme {
+  --color-neon-pink: #ff2d95;
+  --color-neon-cyan: #00f5ff;
+  --color-neon-purple: #b026ff;
+  --color-neon-blue: #00a2ff;
+  --color-neon-green: #39ff14;
+  --color-neon-yellow: #ffff00;
+  --color-neon-orange: #ff6600;
+  --color-dark-950: #050508;
+  --color-dark-900: #0a0a0f;
+  --color-dark-800: #0f0f18;
+  --color-dark-700: #161622;
+  --color-dark-600: #1e1e2e;
+  --color-dark-500: #2a2a3d;
+  --color-dark-400: #3d3d56;
+}
+
+/* Global dark mode base */
+html {
+  color-scheme: dark;
+  overflow-x: hidden;
+}
+
+body {
+  background-color: #050508;
+  color: #e0e0e0;
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* Prevent horizontal scroll on all containers */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Respect user motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .equalizer-bar {
+    animation: none;
+    height: 12px;
+  }
+  
+  .pulse-glow {
+    animation: none;
+    filter: drop-shadow(0 0 5px currentColor);
+  }
+  
+  .vinyl-spin {
+    animation: none;
+  }
+  
+  .neon-border::before {
+    animation: none;
+  }
+  
+  .music-bg::before,
+  .music-bg::after {
+    animation: none;
+  }
+  
+  .btn-neon::before {
+    transition: none;
+  }
+  
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Neon glow effects */
+.neon-text {
+  text-shadow: 
+    0 0 5px currentColor,
+    0 0 10px currentColor,
+    0 0 20px currentColor,
+    0 0 40px currentColor,
+    0 0 80px currentColor;
+}
+
+.neon-text-subtle {
+  text-shadow: 
+    0 0 5px currentColor,
+    0 0 10px currentColor,
+    0 0 15px currentColor;
+}
+
+.neon-text-pink {
+  color: #ff2d95;
+  text-shadow: 
+    0 0 5px rgba(255, 45, 149, 0.8),
+    0 0 10px rgba(255, 45, 149, 0.6),
+    0 0 20px rgba(255, 45, 149, 0.4),
+    0 0 40px rgba(255, 45, 149, 0.2);
+}
+
+.neon-text-cyan {
+  color: #00f5ff;
+  text-shadow: 
+    0 0 5px rgba(0, 245, 255, 0.8),
+    0 0 10px rgba(0, 245, 255, 0.6),
+    0 0 20px rgba(0, 245, 255, 0.4),
+    0 0 40px rgba(0, 245, 255, 0.2);
+}
+
+.neon-text-purple {
+  color: #b026ff;
+  text-shadow: 
+    0 0 5px rgba(176, 38, 255, 0.8),
+    0 0 10px rgba(176, 38, 255, 0.6),
+    0 0 20px rgba(176, 38, 255, 0.4),
+    0 0 40px rgba(176, 38, 255, 0.2);
+}
+
+.neon-box {
+  box-shadow: 
+    0 0 5px currentColor,
+    0 0 10px currentColor,
+    0 0 20px currentColor,
+    inset 0 0 15px rgba(255, 255, 255, 0.05);
+}
+
+.neon-box-subtle {
+  box-shadow: 
+    0 0 5px currentColor,
+    0 0 10px currentColor;
+}
+
+/* Gradient backgrounds */
+.bg-music-gradient {
+  background: 
+    radial-gradient(ellipse at 20% 20%, rgba(176, 38, 255, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(0, 245, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(255, 45, 149, 0.08) 0%, transparent 70%),
+    linear-gradient(180deg, #050508 0%, #0a0a12 50%, #050508 100%);
+}
+
+.bg-card-gradient {
+  background: linear-gradient(145deg, rgba(22, 22, 34, 0.95) 0%, rgba(15, 15, 24, 0.98) 100%);
+}
+
+/* Animated gradient border */
+.neon-border {
+  position: relative;
+  background: linear-gradient(145deg, rgba(22, 22, 34, 0.95) 0%, rgba(15, 15, 24, 0.98) 100%);
+  border-radius: 0.75rem;
+  border: 1px solid rgba(176, 38, 255, 0.2);
+}
+
+.neon-border::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 0.85rem;
+  background: linear-gradient(45deg, #ff2d95, #00f5ff, #b026ff, #ff2d95);
+  background-size: 400% 400%;
+  animation: gradient-shift 6s ease infinite;
+  z-index: -1;
+  opacity: 0.6;
+  filter: blur(1px);
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Glowing card on hover */
+.neon-border:hover::before {
+  opacity: 0.9;
+  filter: blur(2px);
+}
+
+.neon-border:hover {
+  border-color: rgba(176, 38, 255, 0.4);
+}
+
+/* Pulse animation for icons */
+.pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { 
+    filter: drop-shadow(0 0 5px currentColor) drop-shadow(0 0 10px currentColor);
+    transform: scale(1);
+  }
+  50% { 
+    filter: drop-shadow(0 0 15px currentColor) drop-shadow(0 0 30px currentColor);
+    transform: scale(1.08);
+  }
+}
+
+/* Music equalizer bars animation */
+.equalizer {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 24px;
+}
+
+.equalizer-bar {
+  width: 4px;
+  background: linear-gradient(to top, #ff2d95, #00f5ff);
+  border-radius: 2px;
+  animation: equalizer 0.8s ease-in-out infinite;
+  box-shadow: 0 0 5px #ff2d95, 0 0 10px #00f5ff;
+}
+
+.equalizer-bar:nth-child(1) { animation-delay: 0s; }
+.equalizer-bar:nth-child(2) { animation-delay: 0.15s; }
+.equalizer-bar:nth-child(3) { animation-delay: 0.3s; }
+.equalizer-bar:nth-child(4) { animation-delay: 0.1s; }
+.equalizer-bar:nth-child(5) { animation-delay: 0.25s; }
+
+@keyframes equalizer {
+  0%, 100% { height: 6px; }
+  50% { height: 24px; }
+}
+
+/* Vinyl record spin */
+.vinyl-spin {
+  animation: vinyl-rotate 4s linear infinite;
+}
+
+@keyframes vinyl-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Input focus glow */
+.input-neon {
+  background-color: rgba(10, 10, 15, 0.8);
+  border: 1px solid rgba(176, 38, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.input-neon:focus {
+  background-color: rgba(15, 15, 24, 0.9);
+  box-shadow: 
+    0 0 0 2px rgba(176, 38, 255, 0.2),
+    0 0 15px rgba(176, 38, 255, 0.4),
+    0 0 30px rgba(176, 38, 255, 0.2),
+    inset 0 0 10px rgba(176, 38, 255, 0.1);
+  border-color: #b026ff;
+}
+
+.input-neon::placeholder {
+  color: rgba(160, 160, 180, 0.5);
+}
+
+/* Button hover effects */
+.btn-neon {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.btn-neon::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.btn-neon:hover::before {
+  transform: translateX(100%);
+}
+
+.btn-neon:hover {
+  box-shadow: 
+    0 0 15px rgba(255, 45, 149, 0.5),
+    0 0 30px rgba(255, 45, 149, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Primary button glow */
+.btn-primary {
+  background: linear-gradient(135deg, #b026ff 0%, #ff2d95 100%);
+  box-shadow: 0 4px 15px rgba(176, 38, 255, 0.4);
+  color: white;
+}
+
+.btn-primary:hover {
+  box-shadow: 
+    0 6px 20px rgba(176, 38, 255, 0.6),
+    0 0 30px rgba(255, 45, 149, 0.4);
+}
+
+/* Secondary button (outline style) */
+.btn-secondary {
+  background: transparent;
+  border: 1px solid rgba(0, 245, 255, 0.5);
+  color: #00f5ff;
+}
+
+.btn-secondary:hover {
+  background: rgba(0, 245, 255, 0.1);
+  border-color: #00f5ff;
+  box-shadow: 
+    0 0 15px rgba(0, 245, 255, 0.4),
+    0 0 30px rgba(0, 245, 255, 0.2);
+}
+
+/* Danger button */
+.btn-danger {
+  background: transparent;
+  border: 1px solid rgba(255, 45, 149, 0.5);
+  color: #ff2d95;
+}
+
+.btn-danger:hover {
+  background: rgba(255, 45, 149, 0.1);
+  border-color: #ff2d95;
+  box-shadow: 
+    0 0 15px rgba(255, 45, 149, 0.4),
+    0 0 30px rgba(255, 45, 149, 0.2);
+}
+
+/* Floating music notes background */
+.music-bg {
+  position: relative;
+  overflow: hidden;
+  max-width: 100vw;
+}
+
+.music-bg::before {
+  content: '♪ ♫ ♬ ♩ ♪ ♫ ♬ ♩ ♪ ♫ ♬ ♩';
+  position: absolute;
+  font-size: 2.5rem;
+  color: rgba(176, 38, 255, 0.06);
+  white-space: nowrap;
+  animation: float-notes 30s linear infinite;
+  top: 15%;
+  left: 0;
+  width: 200%;
+  text-shadow: 0 0 20px rgba(176, 38, 255, 0.3);
+  pointer-events: none;
+}
+
+.music-bg::after {
+  content: '♫ ♬ ♩ ♪ ♫ ♬ ♩ ♪ ♫ ♬ ♩ ♪';
+  position: absolute;
+  font-size: 2rem;
+  color: rgba(0, 245, 255, 0.05);
+  white-space: nowrap;
+  animation: float-notes 35s linear infinite reverse;
+  bottom: 25%;
+  right: 0;
+  width: 200%;
+  text-shadow: 0 0 20px rgba(0, 245, 255, 0.3);
+  pointer-events: none;
+}
+
+@keyframes float-notes {
+  from { transform: translateX(0); }
+  to { transform: translateX(100%); }
+}
+
+/* Scanlines effect (subtle) */
+.scanlines::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.1) 0px,
+    rgba(0, 0, 0, 0.1) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0.3;
+}
+
+/* Glowing link */
+a.neon-link {
+  color: #00f5ff;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+a.neon-link:hover {
+  color: #ff2d95;
+  text-shadow: 0 0 10px #ff2d95, 0 0 20px #ff2d95;
+}
+
+/* Score badge glow */
+.score-badge {
+  background: linear-gradient(135deg, rgba(176, 38, 255, 0.2) 0%, rgba(255, 45, 149, 0.2) 100%);
+  border: 1px solid rgba(176, 38, 255, 0.5);
+  box-shadow: 0 0 10px rgba(176, 38, 255, 0.3);
+}
+
+/* Rank badges */
+.rank-gold {
+  color: #ffd700;
+  text-shadow: 0 0 10px #ffd700, 0 0 20px #ffd700;
+}
+
+.rank-silver {
+  color: #c0c0c0;
+  text-shadow: 0 0 10px #c0c0c0, 0 0 20px #c0c0c0;
+}
+
+.rank-bronze {
+  color: #cd7f32;
+  text-shadow: 0 0 10px #cd7f32, 0 0 20px #cd7f32;
+}
+
+/* Status indicators */
+.status-active {
+  color: #39ff14;
+  text-shadow: 0 0 5px #39ff14, 0 0 10px #39ff14;
+}
+
+.status-pending {
+  color: #ffff00;
+  text-shadow: 0 0 5px #ffff00, 0 0 10px #ffff00;
+}
+
+.status-finished {
+  color: #00f5ff;
+  text-shadow: 0 0 5px #00f5ff, 0 0 10px #00f5ff;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0f;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #b026ff, #ff2d95);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #c040ff, #ff4da6);
+}
+
+/* Selection highlight */
+::selection {
+  background: rgba(176, 38, 255, 0.4);
+  color: #fff;
+}
+
+/* Focus outline for accessibility */
+:focus-visible {
+  outline: 2px solid #b026ff;
+  outline-offset: 2px;
+}
