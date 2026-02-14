@@ -376,17 +376,17 @@ The app is localized in **French** by default. Translation files are in `config/
 
 ## 📋 Changelog
 
-### v1.1.0 *(à venir)*
+### v1.1.0 *(upcoming)*
 
-- ✨ **Tableau de statut des joueurs en phase de devinettes** — Visualisez qui a soumis ses devinettes et qui est encore en attente ([#006](specs/006-player-guess-status/spec.md))
+- ✨ **Player guess status board during guessing phase** — See who has submitted their guesses and who is still pending ([#006](specs/006-player-guess-status/spec.md))
 
-### v1.0.0 *(10 février 2026)* — MVP
+### v1.0.0 *(February 10, 2026)* — MVP
 
-- 🎮 **Gameplay complet** — Phases de collecte, devinettes et résultats ([#001](specs/001-hitguessr-gameplay/spec.md))
-- 🔒 **Une seule partie active par équipe** — Empêche les conflits entre parties simultanées ([#002](specs/002-single-active-game/spec.md))
-- 🗑️ **Annulation de partie** — L'organisateur peut annuler une partie en cours ([#003](specs/003-cancel-active-game/spec.md))
-- 🏆 **Classement d'équipe** — Leaderboard avec cumul des scores sur toutes les parties ([#004](specs/004-team-leaderboard/spec.md))
-- 📱 **Design responsive** — Interface adaptée mobile et desktop ([#005](specs/005-responsive-design/spec.md))
+- 🎮 **Full gameplay** — Collection, guessing, and results phases ([#001](specs/001-hitguessr-gameplay/spec.md))
+- 🔒 **Single active game per team** — Prevents conflicts between simultaneous games ([#002](specs/002-single-active-game/spec.md))
+- 🗑️ **Game cancellation** — Organizer can cancel an ongoing game ([#003](specs/003-cancel-active-game/spec.md))
+- 🏆 **Team leaderboard** — Leaderboard with cumulative scores across all games ([#004](specs/004-team-leaderboard/spec.md))
+- 📱 **Responsive design** — Interface adapted for mobile and desktop ([#005](specs/005-responsive-design/spec.md))
 
 ---
 
