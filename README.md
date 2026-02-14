@@ -8,7 +8,7 @@
 
 **A multiplayer music guessing game where friends try to identify who submitted which song.**
 
-[Features](#-features) • [Quick Start](#-quick-start) • [Gameplay](#-gameplay) • [Tech Stack](#-tech-stack) • [API](#-api-routes) • [Development](#-development)
+[Features](#-features) • [Quick Start](#-quick-start) • [Gameplay](#-gameplay) • [Tech Stack](#-tech-stack) • [API](#-api-routes) • [Changelog](#-changelog) • [Development](#-development)
 
 ---
 
@@ -371,6 +371,22 @@ The app is localized in **French** by default. Translation files are in `config/
 
 - `fr.yml` — General translations
 - `devise.fr.yml` — Authentication messages
+
+---
+
+## 📋 Changelog
+
+### v1.1.0 *(à venir)*
+
+- ✨ **Tableau de statut des joueurs en phase de devinettes** — Visualisez qui a soumis ses devinettes et qui est encore en attente ([#006](specs/006-player-guess-status/spec.md))
+
+### v1.0.0 *(10 février 2026)* — MVP
+
+- 🎮 **Gameplay complet** — Phases de collecte, devinettes et résultats ([#001](specs/001-hitguessr-gameplay/spec.md))
+- 🔒 **Une seule partie active par équipe** — Empêche les conflits entre parties simultanées ([#002](specs/002-single-active-game/spec.md))
+- 🗑️ **Annulation de partie** — L'organisateur peut annuler une partie en cours ([#003](specs/003-cancel-active-game/spec.md))
+- 🏆 **Classement d'équipe** — Leaderboard avec cumul des scores sur toutes les parties ([#004](specs/004-team-leaderboard/spec.md))
+- 📱 **Design responsive** — Interface adaptée mobile et desktop ([#005](specs/005-responsive-design/spec.md))
 
 ---
 
