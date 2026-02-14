@@ -24,7 +24,14 @@ class ProposalsController < ApplicationController
     @proposal.player = current_user
 
     if @proposal.save
-      redirect_to game_path(@game), notice: "Proposition soumise avec succès !"
+      # Check if game automatically progressed to guessing phase
+      @game.reload
+      notice_message = if @game.guessing?
+        "Proposition soumise avec succès ! Tous les joueurs ont soumis, la partie passe automatiquement en phase de devinettes."
+      else
+        "Proposition soumise avec succès !"
+      end
+      redirect_to game_path(@game), notice: notice_message
     else
       render :new, status: :unprocessable_entity
     end

@@ -13,8 +13,13 @@ class Proposal < ApplicationRecord
 
   # Callbacks
   before_validation :normalize_url
+  after_create_commit :try_auto_progress_game
 
   private
+
+  def try_auto_progress_game
+    game.try_auto_progress_to_guessing!
+  end
 
   def normalize_url
     return if url.blank?

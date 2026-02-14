@@ -29,6 +29,37 @@ class Game < ApplicationRecord
     update!(status: :finished, finished_at: Time.current)
   end
 
+  # Auto-progression detection methods
+  def all_members_submitted?
+    proposals.count >= team.members.count && proposals.count >= 2
+  end
+
+  def expected_guesses_count
+    n = proposals.count
+    n * (n - 1)
+  end
+
+  def all_guesses_submitted?
+    guesses.count >= expected_guesses_count
+  end
+
+  # Auto-progression triggers with locking for concurrency safety
+  def try_auto_progress_to_guessing!
+    with_lock do
+      return unless collecting?
+      return unless all_members_submitted?
+      start_guessing!
+    end
+  end
+
+  def try_auto_finish!
+    with_lock do
+      return unless guessing?
+      return unless all_guesses_submitted?
+      finish!
+    end
+  end
+
   # Check if the game can be cancelled (only active games)
   def can_cancel?
     collecting? || guessing?
