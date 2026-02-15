@@ -386,6 +386,7 @@ The app is localized in **French** by default. Translation files are in `config/
 
 - ✨ **Player guess status board during guessing phase** — See who has submitted their guesses and who is still pending ([#006](specs/006-player-guess-status/spec.md))
 - ⚡ **Automatic phase progression** — Game advances automatically when 100% of players have submitted their proposals or guesses ([#007](specs/007-auto-phase-progression/spec.md))
+- 🎬 **YouTube video embed player** — Watch YouTube videos directly in the guessing, proposal, and results screens with automatic detection of non-embeddable videos ([#008](specs/008-youtube-embed-player/spec.md))
 
 ### v1.0.0 *(February 10, 2026)* — MVP
 
