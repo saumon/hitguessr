@@ -64,6 +64,14 @@
             </a>
           </div>
 
+          <% if (embed_html = youtube_embed(proposal.url)) %>
+            <div class="mb-3 sm:mb-4">
+              <div class="aspect-video w-full">
+                <%= embed_html %>
+              </div>
+            </div>
+          <% end %>
+
           <div class="space-y-2">
             <h4 class="text-xs sm:text-sm font-medium text-gray-400">Devinettes:</h4>
             <% proposal.guesses.each do |guess| %>

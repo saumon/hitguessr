@@ -51,7 +51,14 @@ class GuessesController < ApplicationController
       end
     end
 
-    redirect_to game_path(@game), notice: "Devinettes soumises avec succès !"
+    # Check if game automatically finished
+    @game.reload
+    notice_message = if @game.finished?
+      "Devinettes soumises avec succès ! Tous les joueurs ont répondu, la partie se termine automatiquement."
+    else
+      "Devinettes soumises avec succès !"
+    end
+    redirect_to game_path(@game), notice: notice_message
   end
 
   private

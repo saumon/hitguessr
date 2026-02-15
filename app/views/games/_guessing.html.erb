@@ -25,6 +25,25 @@
   <p class="text-xs sm:text-sm text-gray-500 mt-2"><%= progress_pct %>%</p>
 </div>
 
+<%# Player status %>
+<div class="neon-border p-4 sm:p-6 mb-4 sm:mb-6">
+  <h3 class="font-medium text-gray-300 mb-3 sm:mb-4 text-sm sm:text-base">Statut des joueurs:</h3>
+  <div class="space-y-2">
+    <% proposals.map(&:player).each do |player| %>
+      <% has_guessed = players_with_guesses.include?(player) %>
+      <div class="flex items-center gap-2 sm:gap-3 py-2 sm:py-3 border-b border-neon-purple/20 last:border-0">
+        <span class="text-lg sm:text-xl <%= has_guessed ? 'neon-text-cyan' : 'text-gray-600' %> flex-shrink-0">
+          <%= has_guessed ? '✅' : '⏳' %>
+        </span>
+        <span class="text-gray-200 text-sm sm:text-base truncate"><%= player.name %></span>
+        <span class="text-xs sm:text-sm <%= has_guessed ? 'neon-text-cyan' : 'text-gray-500' %> hidden sm:inline">
+          - <%= has_guessed ? 'Devinette soumise' : 'En attente' %>
+        </span>
+      </div>
+    <% end %>
+  </div>
+</div>
+
 <%# My guesses action %>
 <% my_guesses = current_user.guesses.joins(:proposal).where(proposals: { game_id: game.id }) %>
 <% has_submitted_guesses = my_guesses.count == (proposals.count - 1) && my_proposal.present? %>

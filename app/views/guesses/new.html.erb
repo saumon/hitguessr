@@ -26,6 +26,13 @@
               <span>🔗</span>
               <span><%= proposal.url %></span>
             </a>
+            
+            <%# T005: YouTube iframe embed (si lien YouTube valide et intégrable) %>
+            <% if (embed_html = youtube_embed(proposal.url)) %>
+              <div class="aspect-video w-full mt-4" data-testid="youtube-embed">
+                <%= embed_html %>
+              </div>
+            <% end %>
           </div>
 
           <div>

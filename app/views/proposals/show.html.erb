@@ -23,6 +23,14 @@
       </a>
     </div>
 
+    <% if (embed_html = youtube_embed(@proposal.url)) %>
+      <div class="mt-4 sm:mt-6">
+        <div class="aspect-video w-full">
+          <%= embed_html %>
+        </div>
+      </div>
+    <% end %>
+
     <div class="mt-4 sm:mt-6 text-center">
       <p class="text-xs sm:text-sm text-gray-500">
         Votre proposition est enregistrée et invisible aux autres joueurs.<br>

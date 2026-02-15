@@ -226,4 +226,207 @@ class GameTest < ActiveSupport::TestCase
     assert_includes active_games, new_game
     assert_not_includes active_games, @game
   end
+
+  # Auto-progression detection tests (Feature 007)
+  test "all_members_submitted? returns true when all team members have proposals" do
+    # Team has 4 members: organizer, player1, player2, player3
+    @game.proposals.create!(player: @organizer, url: "https://youtube.com/a")
+    @game.proposals.create!(player: @player1, url: "https://youtube.com/b")
+    @game.proposals.create!(player: @player2, url: "https://youtube.com/c")
+    @game.proposals.create!(player: @player3, url: "https://youtube.com/d")
+
+    assert @game.all_members_submitted?
+  end
+
+  test "all_members_submitted? returns false when not all team members have proposals" do
+    @game.proposals.create!(player: @player1, url: "https://youtube.com/a")
+    @game.proposals.create!(player: @player2, url: "https://youtube.com/b")
+
+    assert_not @game.all_members_submitted?
+  end
+
+  test "all_members_submitted? returns false with less than 2 proposals even if all submitted" do
+    # Create a 2-member team
+    small_team = Team.create!(name: "Duo", organizer: @organizer)
+    small_game = small_team.games.create!
+
+    small_game.proposals.create!(player: @organizer, url: "https://youtube.com/a")
+
+    # Only 1 member submitted out of 1 member, but need at least 2
+    assert_not small_game.all_members_submitted?
+  end
+
+  test "all_members_submitted? with member added during collecting phase" do
+    # Disable callback temporarily to test detection method in isolation
+    Proposal.skip_callback(:commit, :after, :try_auto_progress_game)
+
+    begin
+      # Start with 4 proposals from all existing members (organizer + 3 players)
+      @game.proposals.create!(player: @organizer, url: "https://youtube.com/org")
+      @game.proposals.create!(player: @player1, url: "https://youtube.com/a")
+      @game.proposals.create!(player: @player2, url: "https://youtube.com/b")
+      @game.proposals.create!(player: @player3, url: "https://youtube.com/c")
+
+      # All 4 members have submitted
+      assert @game.all_members_submitted?
+
+      # Add a new member to team
+      new_player = User.create!(email: "new@example.com", name: "Nouveau", password: "password123")
+      @team.memberships.create!(user: new_player)
+
+      # Now should be false because new member hasn't submitted
+      assert_not @game.all_members_submitted?
+
+      # New member submits
+      @game.proposals.create!(player: new_player, url: "https://youtube.com/d")
+      assert @game.all_members_submitted?
+    ensure
+      Proposal.set_callback(:commit, :after, :try_auto_progress_game)
+    end
+  end
+
+  test "all_members_submitted? with member removed during collecting phase" do
+    # 2 out of 4 members submitted
+    @game.proposals.create!(player: @player1, url: "https://youtube.com/a")
+    @game.proposals.create!(player: @player2, url: "https://youtube.com/b")
+
+    assert_not @game.all_members_submitted?
+
+    # Remove 2 members who haven't submitted (leaving 2 members with 2 proposals)
+    @team.memberships.find_by(user: @player3).destroy
+    @team.memberships.find_by(user: @organizer).destroy
+
+    # Now 2 proposals for 2 members = all submitted
+    assert @game.all_members_submitted?
+  end
+
+  test "expected_guesses_count returns correct value" do
+    @game.proposals.create!(player: @player1, url: "https://youtube.com/a")
+    @game.proposals.create!(player: @player2, url: "https://youtube.com/b")
+    @game.proposals.create!(player: @player3, url: "https://youtube.com/c")
+
+    # 3 proposals = 3 players * 2 proposals each to guess = 6
+    assert_equal 6, @game.expected_guesses_count
+  end
+
+  test "all_guesses_submitted? returns true when all guesses are in" do
+    proposal1 = @game.proposals.create!(player: @player1, url: "https://youtube.com/a")
+    proposal2 = @game.proposals.create!(player: @player2, url: "https://youtube.com/b")
+    proposal3 = @game.proposals.create!(player: @player3, url: "https://youtube.com/c")
+    @game.start_guessing!
+
+    # Each player guesses the other 2 proposals = 6 guesses total
+    Guess.create!(player: @player1, proposal: proposal2, guessed_author: @player2)
+    Guess.create!(player: @player1, proposal: proposal3, guessed_author: @player3)
+    Guess.create!(player: @player2, proposal: proposal1, guessed_author: @player1)
+    Guess.create!(player: @player2, proposal: proposal3, guessed_author: @player3)
+    Guess.create!(player: @player3, proposal: proposal1, guessed_author: @player1)
+    Guess.create!(player: @player3, proposal: proposal2, guessed_author: @player2)
+
+    assert @game.all_guesses_submitted?
+  end
+
+  test "all_guesses_submitted? returns false when guesses are missing" do
+    @game.proposals.create!(player: @player1, url: "https://youtube.com/a")
+    proposal2 = @game.proposals.create!(player: @player2, url: "https://youtube.com/b")
+    @game.start_guessing!
+
+    # Only 1 guess out of 2 expected
+    Guess.create!(player: @player1, proposal: proposal2, guessed_author: @player2)
+
+    assert_not @game.all_guesses_submitted?
+  end
+
+  # Auto-progression transition tests
+  test "try_auto_progress_to_guessing! transitions when all members submitted" do
+    @game.proposals.create!(player: @organizer, url: "https://youtube.com/a")
+    @game.proposals.create!(player: @player1, url: "https://youtube.com/b")
+    @game.proposals.create!(player: @player2, url: "https://youtube.com/c")
+    @game.proposals.create!(player: @player3, url: "https://youtube.com/d")
+
+    @game.try_auto_progress_to_guessing!
+
+    assert @game.guessing?
+    assert_not_nil @game.started_at
+  end
+
+  test "try_auto_progress_to_guessing! does not transition if not all submitted" do
+    @game.proposals.create!(player: @player1, url: "https://youtube.com/a")
+    @game.proposals.create!(player: @player2, url: "https://youtube.com/b")
+
+    @game.try_auto_progress_to_guessing!
+
+    assert @game.collecting?
+  end
+
+  test "try_auto_progress_to_guessing! does not transition if less than 2 proposals" do
+    # Create a 1-member team scenario (edge case)
+    small_team = Team.create!(name: "Solo", organizer: @organizer)
+    small_game = small_team.games.create!
+    small_game.proposals.create!(player: @organizer, url: "https://youtube.com/a")
+
+    small_game.try_auto_progress_to_guessing!
+
+    assert small_game.collecting?
+  end
+
+  test "try_auto_finish! transitions when all guesses submitted" do
+    proposal1 = @game.proposals.create!(player: @player1, url: "https://youtube.com/a")
+    proposal2 = @game.proposals.create!(player: @player2, url: "https://youtube.com/b")
+    @game.start_guessing!
+
+    # 2 players, each guesses 1 proposal = 2 guesses
+    Guess.create!(player: @player1, proposal: proposal2, guessed_author: @player2)
+    Guess.create!(player: @player2, proposal: proposal1, guessed_author: @player1)
+
+    @game.try_auto_finish!
+
+    assert @game.finished?
+    assert_not_nil @game.finished_at
+  end
+
+  test "try_auto_finish! does not transition if guesses missing" do
+    @game.proposals.create!(player: @player1, url: "https://youtube.com/a")
+    proposal2 = @game.proposals.create!(player: @player2, url: "https://youtube.com/b")
+    @game.start_guessing!
+
+    # Only 1 guess out of 2
+    Guess.create!(player: @player1, proposal: proposal2, guessed_author: @player2)
+
+    @game.try_auto_finish!
+
+    assert @game.guessing?
+  end
+
+  test "try_auto_finish! does not transition if not in guessing phase" do
+    @game.proposals.create!(player: @player1, url: "https://youtube.com/a")
+    @game.proposals.create!(player: @player2, url: "https://youtube.com/b")
+
+    # Still in collecting phase
+    @game.try_auto_finish!
+
+    assert @game.collecting?
+  end
+
+  # Non-regression tests (FR-006)
+  test "start_guessing! manual transition still works after auto-progression feature" do
+    @game.proposals.create!(player: @player1, url: "https://youtube.com/a")
+    @game.proposals.create!(player: @player2, url: "https://youtube.com/b")
+
+    # Manual transition with only 2 proposals (not all 4 members)
+    @game.start_guessing!
+
+    assert @game.guessing?
+  end
+
+  test "finish! manual transition still works after auto-progression feature" do
+    @game.proposals.create!(player: @player1, url: "https://youtube.com/a")
+    @game.proposals.create!(player: @player2, url: "https://youtube.com/b")
+    @game.start_guessing!
+
+    # Manual finish without all guesses submitted
+    @game.finish!
+
+    assert @game.finished?
+  end
 end

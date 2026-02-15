@@ -28,6 +28,18 @@ class GamesController < ApplicationController
     @my_proposal = @proposals.find_by(player: current_user)
     @players_with_proposals = @proposals.map(&:player)
     @members = @team.members
+
+    # Calcul des joueurs ayant soumis toutes leurs devinettes (phase guessing)
+    if @game.guessing?
+      expected_guesses = @proposals.count - 1
+      guess_counts = Guess.joins(:proposal)
+                          .where(proposals: { game_id: @game.id })
+                          .group(:player_id)
+                          .count
+      @players_with_guesses = @players_with_proposals.select do |player|
+        (guess_counts[player.id] || 0) == expected_guesses
+      end
+    end
   end
 
   def start_guessing

@@ -12,7 +12,7 @@
   <% when "collecting" %>
     <%= render "games/collecting", game: @game, team: @team, proposals: @proposals, my_proposal: @my_proposal, members: @members, players_with_proposals: @players_with_proposals %>
   <% when "guessing" %>
-    <%= render "games/guessing", game: @game, team: @team, proposals: @proposals, my_proposal: @my_proposal %>
+    <%= render "games/guessing", game: @game, team: @team, proposals: @proposals, my_proposal: @my_proposal, players_with_guesses: @players_with_guesses %>
   <% when "finished" %>
     <%= render "games/finished", game: @game, team: @team %>
   <% end %>
