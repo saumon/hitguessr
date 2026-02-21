@@ -10,9 +10,11 @@ class ProposalTest < ActiveSupport::TestCase
     User.delete_all
 
     @user = build_user("player", "Joueur")
+    @user_two = build_user("player-two", "Joueur 2")
     @organizer = build_user("organizer", "Organisateur")
     @team = Team.create!(name: "Les Mélomanes", organizer: @organizer)
     @team.memberships.create!(user: @user)
+    @team.memberships.create!(user: @user_two)
     @game = @team.games.create!
   end
 

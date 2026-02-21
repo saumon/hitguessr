@@ -11,3 +11,15 @@ team_two:
 team_three:
   name: "Équipe Gamma"
   organizer: organizer_two
+
+team_one_member:
+  name: "Équipe Solo"
+  organizer: organizer
+
+team_two_members:
+  name: "Équipe Duo"
+  organizer: organizer
+
+team_three_members:
+  name: "Équipe Trio"
+  organizer: organizer

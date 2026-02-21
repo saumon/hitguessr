@@ -19,3 +19,27 @@ organizer_two_membership_team_three:
 member_membership_team_three:
   team: team_three
   user: member
+
+team_one_member_organizer:
+  team: team_one_member
+  user: organizer
+
+team_two_members_organizer:
+  team: team_two_members
+  user: organizer
+
+team_two_members_member:
+  team: team_two_members
+  user: member
+
+team_three_members_organizer:
+  team: team_three_members
+  user: organizer
+
+team_three_members_member:
+  team: team_three_members
+  user: member
+
+team_three_members_organizer_two:
+  team: team_three_members
+  user: organizer_two

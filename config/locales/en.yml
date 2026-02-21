@@ -29,6 +29,11 @@
 
 en:
   games:
+    create:
+      success: "Game started successfully."
+      minimum_members_required: "At least %{count} team members are required to start a game."
+      minimum_members_hint: "At least %{count} members required"
+      active_game_in_progress: "A game is already in progress"
     destroy:
       success: "Game cancelled successfully."
       error: "An error occurred while cancelling the game."

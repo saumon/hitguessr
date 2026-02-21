@@ -59,7 +59,7 @@ class TeamTest < ActiveSupport::TestCase
 
   test "should have many games" do
     team = Team.create!(name: "Les Mélomanes", organizer: @user)
-    game = team.games.create!
+    game = create_game_for(team)
 
     assert_includes team.games, game
   end
@@ -76,7 +76,7 @@ class TeamTest < ActiveSupport::TestCase
 
   test "should destroy games when destroyed" do
     team = Team.create!(name: "Les Mélomanes", organizer: @user)
-    team.games.create!
+    create_game_for(team)
 
     assert_difference "Game.count", -1 do
       team.destroy
@@ -86,7 +86,7 @@ class TeamTest < ActiveSupport::TestCase
   # Active game helper tests (Feature 002)
   test "active_game should return the active game when one exists" do
     team = Team.create!(name: "Les Mélomanes", organizer: @user)
-    game = team.games.create!
+    game = create_game_for(team)
     assert game.collecting?
 
     assert_equal game, team.active_game
@@ -105,7 +105,7 @@ class TeamTest < ActiveSupport::TestCase
     team.memberships.create!(user: player1)
     team.memberships.create!(user: player2)
 
-    game = team.games.create!
+    game = create_game_for(team)
     game.proposals.create!(player: player1, url: "https://youtube.com/a")
     game.proposals.create!(player: player2, url: "https://youtube.com/b")
     game.start_guessing!
@@ -116,7 +116,7 @@ class TeamTest < ActiveSupport::TestCase
 
   test "has_active_game? should return true when a collecting game exists" do
     team = Team.create!(name: "Les Mélomanes", organizer: @user)
-    game = team.games.create!
+    game = create_game_for(team)
     assert game.collecting?
 
     assert team.has_active_game?
@@ -129,7 +129,7 @@ class TeamTest < ActiveSupport::TestCase
     team.memberships.create!(user: player1)
     team.memberships.create!(user: player2)
 
-    game = team.games.create!
+    game = create_game_for(team)
     game.proposals.create!(player: player1, url: "https://youtube.com/a")
     game.proposals.create!(player: player2, url: "https://youtube.com/b")
     game.start_guessing!
@@ -150,7 +150,7 @@ class TeamTest < ActiveSupport::TestCase
     team.memberships.create!(user: player1)
     team.memberships.create!(user: player2)
 
-    game = team.games.create!
+    game = create_game_for(team)
     game.proposals.create!(player: player1, url: "https://youtube.com/a")
     game.proposals.create!(player: player2, url: "https://youtube.com/b")
     game.start_guessing!
@@ -168,7 +168,7 @@ class TeamTest < ActiveSupport::TestCase
 
   test "leaderboard should return empty array when only active games exist" do
     team = Team.create!(name: "Les Mélomanes", organizer: @user)
-    team.games.create! # collecting game
+    create_game_for(team) # collecting game
 
     assert_equal [], team.leaderboard
   end
@@ -183,7 +183,7 @@ class TeamTest < ActiveSupport::TestCase
     team.memberships.create!(user: player3)
 
     # Game 1: 3 players, each guesses other's proposals
-    game1 = team.games.create!
+    game1 = create_game_for(team)
     prop1_g1 = game1.proposals.create!(player: player1, url: "https://youtube.com/a")
     prop2_g1 = game1.proposals.create!(player: player2, url: "https://youtube.com/b")
     prop3_g1 = game1.proposals.create!(player: player3, url: "https://youtube.com/c")
@@ -201,7 +201,7 @@ class TeamTest < ActiveSupport::TestCase
     # Game1 scores: player1=2, player2=1, player3=0
 
     # Game 2: player2 dominates
-    game2 = team.games.create!
+    game2 = create_game_for(team)
     prop1_g2 = game2.proposals.create!(player: player1, url: "https://youtube.com/d")
     prop2_g2 = game2.proposals.create!(player: player2, url: "https://youtube.com/e")
     prop3_g2 = game2.proposals.create!(player: player3, url: "https://youtube.com/f")
@@ -236,7 +236,7 @@ class TeamTest < ActiveSupport::TestCase
     team.memberships.create!(user: player2)
     team.memberships.create!(user: player3)
 
-    game = team.games.create!
+    game = create_game_for(team)
     prop1 = game.proposals.create!(player: player1, url: "https://youtube.com/a")
     prop2 = game.proposals.create!(player: player2, url: "https://youtube.com/b")
     prop3 = game.proposals.create!(player: player3, url: "https://youtube.com/c")
@@ -271,7 +271,7 @@ class TeamTest < ActiveSupport::TestCase
     team.memberships.create!(user: player2)
     team.memberships.create!(user: player3)
 
-    game = team.games.create!
+    game = create_game_for(team)
     prop1 = game.proposals.create!(player: player1, url: "https://youtube.com/a")
     prop2 = game.proposals.create!(player: player2, url: "https://youtube.com/b")
     prop3 = game.proposals.create!(player: player3, url: "https://youtube.com/c")
@@ -302,7 +302,7 @@ class TeamTest < ActiveSupport::TestCase
     team.memberships.create!(user: player2)
     team.memberships.create!(user: player3)
 
-    game = team.games.create!
+    game = create_game_for(team)
     prop1 = game.proposals.create!(player: player1, url: "https://youtube.com/a")
     prop2 = game.proposals.create!(player: player2, url: "https://youtube.com/b")
     prop3 = game.proposals.create!(player: player3, url: "https://youtube.com/c")
@@ -337,7 +337,7 @@ class TeamTest < ActiveSupport::TestCase
     team.memberships.create!(user: player2)
     team.memberships.create!(user: player3) # player3 is member but never guesses
 
-    game = team.games.create!
+    game = create_game_for(team)
     prop1 = game.proposals.create!(player: player1, url: "https://youtube.com/a")
     prop2 = game.proposals.create!(player: player2, url: "https://youtube.com/b")
     prop3 = game.proposals.create!(player: player3, url: "https://youtube.com/c")
@@ -369,7 +369,7 @@ class TeamTest < ActiveSupport::TestCase
     team.memberships.create!(user: player3)
 
     # Finished game
-    game1 = team.games.create!
+    game1 = create_game_for(team)
     prop1 = game1.proposals.create!(player: player1, url: "https://youtube.com/a")
     prop2 = game1.proposals.create!(player: player2, url: "https://youtube.com/b")
     prop3 = game1.proposals.create!(player: player3, url: "https://youtube.com/c")
@@ -395,5 +395,17 @@ class TeamTest < ActiveSupport::TestCase
 
   def build_user(prefix, name)
     User.create!(email: "#{prefix}-#{SecureRandom.hex(6)}@example.com", name: name, password: "password123")
+  end
+
+  def ensure_minimum_members(team)
+    missing = [ Game::MINIMUM_TEAM_MEMBERS - team.members.count, 0 ].max
+    missing.times do
+      team.memberships.create!(user: build_user("team-member", "Membre Test"))
+    end
+  end
+
+  def create_game_for(team)
+    ensure_minimum_members(team)
+    team.games.create!
   end
 end
