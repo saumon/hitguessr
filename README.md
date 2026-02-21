@@ -19,6 +19,7 @@
 - 🎧 **Team-based gameplay** — Create teams, invite friends, and play together
 - 🎵 **Music proposals** — Submit YouTube or any music URL anonymously
 - 🤔 **Guessing phase** — Try to match each song to its submitter
+- 👥 **Minimum team size to start** — Organizers can start a game only when the team has at least 3 members
 - 🚪 **Self-leave team** — A member can quit their team with confirmation (organizer cannot leave their own team)
 - 🏆 **Leaderboard** — Scores and rankings with tie handling
 - 👤 **User authentication** — Secure sign-up/login with Devise
@@ -111,6 +112,7 @@ A demo team "**Les Mélomanes**" is pre-created with a finished game showing the
 3. **Anonymous proposals** — Players cannot see others' submissions during collection
 4. **Complete guesses** — All proposals must be matched to a player to submit guesses
 5. **No self-guessing** — Players cannot guess their own proposal (excluded automatically)
+6. **Minimum 3 members to start** — A new game can be launched only if the team has at least 3 active members
 
 ### Scoring
 
@@ -215,13 +217,13 @@ A demo team "**Les Mélomanes**" is pre-created with a finished game showing the
 
 ### Games
 
-| Method | Path                        | Description                  |
-| ------ | --------------------------- | ---------------------------- |
-| GET    | `/teams/:team_id/games`     | List team's games            |
-| POST   | `/teams/:team_id/games`     | Start new game               |
-| GET    | `/games/:id`                | Show game state              |
-| PATCH  | `/games/:id/start_guessing` | Transition to guessing phase |
-| PATCH  | `/games/:id/finish`         | End the game                 |
+| Method | Path                        | Description                                       |
+| ------ | --------------------------- | ------------------------------------------------- |
+| GET    | `/teams/:team_id/games`     | List team's games                                 |
+| POST   | `/teams/:team_id/games`     | Start new game (requires at least 3 team members) |
+| GET    | `/games/:id`                | Show game state                                   |
+| PATCH  | `/games/:id/start_guessing` | Transition to guessing phase                      |
+| PATCH  | `/games/:id/finish`         | End the game                                      |
 
 ### Proposals
 
@@ -391,6 +393,7 @@ The app is localized in **French** by default. Translation files are in `config/
 - 🚪 **Self-leave team** — A member can leave a team from the team header with a `Quitter` confirmation button, while organizers are prevented from leaving their own team and leave is blocked during active games ([#009](specs/009-self-leave-team/spec.md))
 - ✍️ **Conjugation/pluralization fixes (FR)** — Corrected French plural forms in team stats display (e.g. `membre` → `membres`)
 - ✍️ **Emoji update** — Changed gameplay emoji from 🎮 to 🎧 for consistency
+- 👥 **Minimum team size for game launch** — A game can now be started only when the team has at least 3 active members; attempts below threshold are blocked with explicit feedback ([#010](specs/010-team-minimum-members/spec.md))
 
 ### v1.1.0 *(February 15, 2026)*
 

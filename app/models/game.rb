@@ -1,4 +1,6 @@
 class Game < ApplicationRecord
+  MINIMUM_TEAM_MEMBERS = 3
+
   # Enum for game status
   enum :status, { collecting: 0, guessing: 1, finished: 2 }, default: :collecting
 
@@ -14,6 +16,7 @@ class Game < ApplicationRecord
   # Validations
   validates :status, presence: true
   validate :only_one_active_game_per_team, on: :create
+  validate :minimum_team_members_required, on: :create
 
   # State transitions
   def start_guessing!
@@ -104,5 +107,12 @@ class Game < ApplicationRecord
     if team&.has_active_game?
       errors.add(:base, "Une partie est déjà en cours pour cette équipe. Terminez-la avant d'en lancer une nouvelle.")
     end
+  end
+
+  def minimum_team_members_required
+    return if team.blank?
+    return if team.eligible_to_start_game?(MINIMUM_TEAM_MEMBERS)
+
+    errors.add(:base, I18n.t("games.create.minimum_members_required", count: MINIMUM_TEAM_MEMBERS))
   end
 end

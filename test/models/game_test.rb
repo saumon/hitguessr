@@ -253,13 +253,15 @@ class GameTest < ActiveSupport::TestCase
   end
 
   test "all_members_submitted? returns false with less than 2 proposals even if all submitted" do
-    # Create a 2-member team
-    small_team = Team.create!(name: "Duo", organizer: @organizer)
+    # Create a 3-member team with only 1 submitted proposal
+    small_team = Team.create!(name: "Trio", organizer: @organizer)
+    small_team.memberships.create!(user: @player1)
+    small_team.memberships.create!(user: @player2)
     small_game = small_team.games.create!
 
     small_game.proposals.create!(player: @organizer, url: "https://youtube.com/a")
 
-    # Only 1 member submitted out of 1 member, but need at least 2
+    # Less than 2 proposals and not all members submitted
     assert_not small_game.all_members_submitted?
   end
 
@@ -367,14 +369,36 @@ class GameTest < ActiveSupport::TestCase
   end
 
   test "try_auto_progress_to_guessing! does not transition if less than 2 proposals" do
-    # Create a 1-member team scenario (edge case)
-    small_team = Team.create!(name: "Solo", organizer: @organizer)
+    # Create a 3-member team scenario with only one proposal
+    small_team = Team.create!(name: "Trio Auto", organizer: @organizer)
+    small_team.memberships.create!(user: @player1)
+    small_team.memberships.create!(user: @player2)
     small_game = small_team.games.create!
     small_game.proposals.create!(player: @organizer, url: "https://youtube.com/a")
 
     small_game.try_auto_progress_to_guessing!
 
     assert small_game.collecting?
+  end
+
+  test "should not allow creating a game when team has fewer than three members" do
+    small_team = Team.create!(name: "Duo", organizer: @organizer)
+    small_team.memberships.create!(user: @player1)
+
+    game = small_team.games.build
+
+    assert_not game.valid?
+    assert_includes game.errors[:base], I18n.t("games.create.minimum_members_required", count: Game::MINIMUM_TEAM_MEMBERS)
+  end
+
+  test "should allow creating a game when team has exactly three members and no active game" do
+    team = Team.create!(name: "Trio Exact", organizer: @organizer)
+    team.memberships.create!(user: @player1)
+    team.memberships.create!(user: @player2)
+
+    game = team.games.build
+
+    assert game.valid?
   end
 
   test "try_auto_finish! transitions when all guesses submitted" do

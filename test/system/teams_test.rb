@@ -2,14 +2,21 @@ require "application_system_test_case"
 
 class TeamsTest < ApplicationSystemTestCase
   def setup
+    suffix = SecureRandom.hex(6)
+
     @organizer = User.create!(
-      email: "organizer@example.com",
+      email: "organizer-#{suffix}@example.com",
       name: "Organisateur",
       password: "password123"
     )
     @member = User.create!(
-      email: "member@example.com",
+      email: "member-#{suffix}@example.com",
       name: "Membre",
+      password: "password123"
+    )
+    @member_two = User.create!(
+      email: "member-two-#{suffix}@example.com",
+      name: "Membre Deux",
       password: "password123"
     )
   end
@@ -33,6 +40,7 @@ class TeamsTest < ApplicationSystemTestCase
     team = Team.create!(name: "Les Mélomanes", organizer: @organizer)
 
     visit team_path(team)
+    find("details.members-details summary").click
 
     fill_in "Email du membre à ajouter", with: @member.email
     click_button "+ Ajouter"
@@ -47,12 +55,10 @@ class TeamsTest < ApplicationSystemTestCase
     team.memberships.create!(user: @member)
 
     visit team_path(team)
+    find("details.members-details summary").click
 
-    # Find the remove button for the member (not the organizer)
-    within(:xpath, "//div[contains(text(), '#{@member.name}')]/..") do
-      accept_confirm do
-        click_button "Retirer"
-      end
+    accept_confirm do
+      click_button "Retirer"
     end
 
     assert_text "#{@member.name} a été retiré"
@@ -62,6 +68,7 @@ class TeamsTest < ApplicationSystemTestCase
     sign_in_as @organizer
     team = Team.create!(name: "Les Mélomanes", organizer: @organizer)
     team.memberships.create!(user: @member)
+    team.memberships.create!(user: @member_two)
 
     visit team_path(team)
     click_link "🎧 Lancer une partie"
@@ -70,6 +77,27 @@ class TeamsTest < ApplicationSystemTestCase
 
     assert_text "Partie lancée"
     assert_text "PHASE: Collecte des propositions"
+  end
+
+  test "organizer sees launch disabled for team with fewer than three members" do
+    sign_in_as @organizer
+    team = Team.create!(name: "Les Duo", organizer: @organizer)
+    team.memberships.create!(user: @member)
+
+    visit team_path(team)
+
+    assert_no_link "🎧 Lancer une partie"
+    assert_selector "span", text: "Au moins 3 membres requis", visible: false
+  end
+
+  test "new game page shows explicit refusal message for ineligible team" do
+    sign_in_as @organizer
+    team = Team.create!(name: "Les Solo", organizer: @organizer)
+
+    visit new_team_game_path(team)
+
+    assert_text "Au moins 3 membres sont requis pour lancer une partie."
+    assert_button "Lancer la partie", disabled: true
   end
 
   test "user sees their teams on index page" do

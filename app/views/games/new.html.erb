@@ -27,8 +27,24 @@
       </ul>
     </div>
 
-    <%= form_with model: [@team, @game] do |f| %>
-      <%= f.submit "Lancer la partie", class: "btn-neon btn-primary w-full font-semibold py-3 px-4 rounded-lg cursor-pointer" %>
+    <% if @team.has_active_game? %>
+      <div class="mb-4 p-3 bg-dark-800/80 border border-neon-purple/30 rounded-lg text-sm text-gray-300">
+        <%= t("games.create.active_game_in_progress") %>
+      </div>
+      <button type="button" class="btn-neon btn-primary w-full font-semibold py-3 px-4 rounded-lg opacity-50 cursor-not-allowed" disabled aria-disabled="true">
+        Lancer la partie
+      </button>
+    <% elsif !@team.eligible_to_start_game? %>
+      <div class="mb-4 p-3 bg-dark-800/80 border border-neon-purple/30 rounded-lg text-sm text-gray-300">
+        <%= t("games.create.minimum_members_required", count: Game::MINIMUM_TEAM_MEMBERS) %>
+      </div>
+      <button type="button" class="btn-neon btn-primary w-full font-semibold py-3 px-4 rounded-lg opacity-50 cursor-not-allowed" disabled aria-disabled="true">
+        Lancer la partie
+      </button>
+    <% else %>
+      <%= form_with model: [@team, @game] do |f| %>
+        <%= f.submit "Lancer la partie", class: "btn-neon btn-primary w-full font-semibold py-3 px-4 rounded-lg cursor-pointer" %>
+      <% end %>
     <% end %>
   </div>
 </div>

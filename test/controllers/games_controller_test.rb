@@ -14,6 +14,11 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
       email: "member_test@example.com",
       password: "password123"
     )
+    @member_two = User.create!(
+      name: "Membre Deux",
+      email: "member_two_test@example.com",
+      password: "password123"
+    )
     @non_member = User.create!(
       name: "Non Membre",
       email: "non_member_test@example.com",
@@ -27,11 +32,16 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
 
     @team = Team.create!(name: "Équipe Alpha", organizer: @organizer)
     @team.memberships.create!(user: @member)
+    @team.memberships.create!(user: @member_two)
 
     @team_two = Team.create!(name: "Équipe Beta", organizer: @organizer_two)
+    @team_two.memberships.create!(user: @member)
+    @team_two.memberships.create!(user: @member_two)
 
     # Create a third team for the finished game (since only one active game per team)
     @team_three = Team.create!(name: "Équipe Gamma", organizer: @organizer_two)
+    @team_three.memberships.create!(user: @member)
+    @team_three.memberships.create!(user: @member_two)
 
     @collecting_game = @team.games.create!(status: :collecting)
 
@@ -180,5 +190,101 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to teams_path
     assert_equal "Partie introuvable.", flash[:alert]
+  end
+
+  # ===========================================
+  # User Story 1/2/3: Lancement de partie avec seuil minimum
+  # ===========================================
+
+  test "organizer can create game with exactly three members" do
+    sign_in @organizer
+
+    team = Team.create!(name: "Équipe Trio", organizer: @organizer)
+    team.memberships.create!(user: @member)
+    team.memberships.create!(user: @member_two)
+
+    assert_difference("Game.count", 1) do
+      post team_games_path(team)
+    end
+
+    created_game = Game.order(:id).last
+    assert_redirected_to game_path(created_game)
+    assert_equal I18n.t("games.create.success"), flash[:notice]
+  end
+
+  test "organizer can create game with more than three members" do
+    sign_in @organizer
+
+    team = Team.create!(name: "Équipe Quartette", organizer: @organizer)
+    team.memberships.create!(user: @member)
+    team.memberships.create!(user: @member_two)
+    team.memberships.create!(user: @non_member)
+
+    assert_difference("Game.count", 1) do
+      post team_games_path(team)
+    end
+
+    assert_equal I18n.t("games.create.success"), flash[:notice]
+  end
+
+  test "organizer cannot create game with two members" do
+    sign_in @organizer
+
+    team = Team.create!(name: "Équipe Duo", organizer: @organizer)
+    team.memberships.create!(user: @member)
+
+    assert_no_difference("Game.count") do
+      post team_games_path(team)
+    end
+
+    assert_response :unprocessable_entity
+    assert_includes response.body, I18n.t("games.create.minimum_members_required", count: Game::MINIMUM_TEAM_MEMBERS)
+  end
+
+  test "organizer cannot create game with one member" do
+    sign_in @organizer
+
+    team = Team.create!(name: "Équipe Solo", organizer: @organizer)
+
+    assert_no_difference("Game.count") do
+      post team_games_path(team)
+    end
+
+    assert_response :unprocessable_entity
+    assert_includes response.body, I18n.t("games.create.minimum_members_required", count: Game::MINIMUM_TEAM_MEMBERS)
+  end
+
+  test "existing single active game rule still blocks creation with three or more members" do
+    sign_in @organizer
+
+    team = Team.create!(name: "Équipe Active", organizer: @organizer)
+    team.memberships.create!(user: @member)
+    team.memberships.create!(user: @member_two)
+    team.games.create!(status: :collecting)
+
+    assert_no_difference("Game.count") do
+      post team_games_path(team)
+    end
+
+    assert_response :unprocessable_entity
+    assert_includes response.body, "Une partie est déjà en cours pour cette équipe"
+  end
+
+  test "create action exposes explicit success and refusal feedback messages" do
+    sign_in @organizer
+
+    eligible_team = Team.create!(name: "Équipe Message OK", organizer: @organizer)
+    eligible_team.memberships.create!(user: @member)
+    eligible_team.memberships.create!(user: @member_two)
+
+    post team_games_path(eligible_team)
+    assert_equal I18n.t("games.create.success"), flash[:notice]
+
+    ineligible_team = Team.create!(name: "Équipe Message KO", organizer: @organizer)
+    ineligible_team.memberships.create!(user: @member)
+
+    post team_games_path(ineligible_team)
+    assert_response :unprocessable_entity
+    assert_includes response.body, I18n.t("games.create.minimum_members_required", count: Game::MINIMUM_TEAM_MEMBERS)
   end
 end
