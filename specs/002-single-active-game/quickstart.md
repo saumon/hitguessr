@@ -66,7 +66,7 @@ Remplacer le lien "Lancer une partie" par une version conditionnelle :
   <% if @team.has_active_game? %>
     <span class="group relative inline-block">
       <span class="btn-neon btn-primary px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 opacity-50 cursor-not-allowed">
-        🎮 Lancer une partie
+        🎧 Lancer une partie
       </span>
       <span class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-gray-900 text-gray-200 text-xs rounded whitespace-nowrap invisible group-hover:visible border border-neon-purple/30">
         Une partie est déjà en cours
@@ -74,7 +74,7 @@ Remplacer le lien "Lancer une partie" par une version conditionnelle :
     </span>
   <% else %>
     <%= link_to new_team_game_path(@team), class: "btn-neon btn-primary px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2" do %>
-      🎮 Lancer une partie
+      🎧 Lancer une partie
     <% end %>
   <% end %>
 <% end %>

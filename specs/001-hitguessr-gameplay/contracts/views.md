@@ -76,7 +76,7 @@ Ce document définit les vues principales et leur contenu pour chaque phase du j
 │ [+ Ajouter un membre]                                       │
 │                                                             │
 ├─────────────────────────────────────────────────────────────┤
-│ Parties récentes:                     [🎮 Lancer une partie]│
+│ Parties récentes:                     [🎧 Lancer une partie]│
 │ ┌───────────────────────────────────────────────────────┐   │
 │ │ Partie #3 - 28/01/2026 - Terminée      [Voir résultats]│   │
 │ │ Partie #2 - 15/01/2026 - Terminée      [Voir résultats]│   │
