@@ -1,5 +1,7 @@
 # 🎵 HitGuessr
 
+![HitGuessr Logo](docs/assets/images/logo-h.png)
+
 ![Ruby](https://img.shields.io/badge/Ruby-3.4.6-red?logo=ruby)
 ![Rails](https://img.shields.io/badge/Rails-8.1-red?logo=rubyonrails)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.x-38B2AC?logo=tailwindcss)
