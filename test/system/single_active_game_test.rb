@@ -20,7 +20,7 @@ class SingleActiveGameTest < ApplicationSystemTestCase
     visit team_path(@team)
 
     # Button should be disabled (has opacity-50 and cursor-not-allowed classes)
-    assert_selector "span.opacity-50.cursor-not-allowed", text: "🎮 Lancer une partie"
+    assert_selector "span.opacity-50.cursor-not-allowed", text: "🎧 Lancer une partie"
 
     # Tooltip should be present
     assert_selector "span", text: "Une partie est déjà en cours", visible: :all
@@ -51,8 +51,8 @@ class SingleActiveGameTest < ApplicationSystemTestCase
     visit team_path(@team)
 
     # Button should be enabled (a link, not a span)
-    assert_selector "a", text: "🎮 Lancer une partie"
-    assert_no_selector "span.opacity-50", text: "🎮 Lancer une partie"
+    assert_selector "a", text: "🎧 Lancer une partie"
+    assert_no_selector "span.opacity-50", text: "🎧 Lancer une partie"
   end
 
   # US3: Création réussie après fin de partie
@@ -67,7 +67,7 @@ class SingleActiveGameTest < ApplicationSystemTestCase
     visit team_path(@team)
 
     # Click the button to create a new game
-    click_link "🎮 Lancer une partie"
+    click_link "🎧 Lancer une partie"
 
     # Should be on new game page or game created
     assert_current_path new_team_game_path(@team)
@@ -79,6 +79,6 @@ class SingleActiveGameTest < ApplicationSystemTestCase
     visit team_path(@team)
 
     # Button should be enabled
-    assert_selector "a", text: "🎮 Lancer une partie"
+    assert_selector "a", text: "🎧 Lancer une partie"
   end
 end

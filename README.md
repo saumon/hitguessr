@@ -14,7 +14,7 @@
 
 ## ✨ Features
 
-- 🎮 **Team-based gameplay** — Create teams, invite friends, and play together
+- 🎧 **Team-based gameplay** — Create teams, invite friends, and play together
 - 🎵 **Music proposals** — Submit YouTube or any music URL anonymously
 - 🤔 **Guessing phase** — Try to match each song to its submitter
 - 🚪 **Self-leave team** — A member can quit their team with confirmation (organizer cannot leave their own team)
@@ -68,7 +68,7 @@ A demo team "**Les Mélomanes**" is pre-created with a finished game showing the
 
 ---
 
-## 🎮 Gameplay
+## 🎧 Gameplay
 
 ### Game Flow
 
@@ -388,6 +388,7 @@ The app is localized in **French** by default. Translation files are in `config/
 
 - 🚪 **Self-leave team** — A member can leave a team from the team header with a `Quitter` confirmation button, while organizers are prevented from leaving their own team and leave is blocked during active games ([#009](specs/009-self-leave-team/spec.md))
 - ✍️ **Conjugation/pluralization fixes (FR)** — Corrected French plural forms in team stats display (e.g. `membre` → `membres`)
+- ✍️ **Emoji update** — Changed gameplay emoji from 🎮 to 🎧 for consistency
 
 ### v1.1.0 *(February 15, 2026)*
 
@@ -398,7 +399,7 @@ The app is localized in **French** by default. Translation files are in `config/
 
 ### v1.0.0 *(February 10, 2026)* — MVP
 
-- 🎮 **Full gameplay** — Collection, guessing, and results phases ([#001](specs/001-hitguessr-gameplay/spec.md))
+- 🎧 **Full gameplay** — Collection, guessing, and results phases ([#001](specs/001-hitguessr-gameplay/spec.md))
 - 🔒 **Single active game per team** — Prevents conflicts between simultaneous games ([#002](specs/002-single-active-game/spec.md))
 - 🗑️ **Game cancellation** — Organizer can cancel an ongoing game ([#003](specs/003-cancel-active-game/spec.md))
 - 🏆 **Team leaderboard** — Leaderboard with cumulative scores across all games ([#004](specs/004-team-leaderboard/spec.md))

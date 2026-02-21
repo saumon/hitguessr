@@ -64,7 +64,7 @@ class TeamsTest < ApplicationSystemTestCase
     team.memberships.create!(user: @member)
 
     visit team_path(team)
-    click_link "🎮 Lancer une partie"
+    click_link "🎧 Lancer une partie"
 
     click_button "Lancer la partie"
 
