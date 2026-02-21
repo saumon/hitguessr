@@ -11,3 +11,11 @@ member_membership:
 organizer_two_membership:
   team: team_two
   user: organizer_two
+
+organizer_two_membership_team_three:
+  team: team_three
+  user: organizer_two
+
+member_membership_team_three:
+  team: team_three
+  user: member

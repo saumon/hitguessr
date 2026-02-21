@@ -1,4 +1,11 @@
 fr:
+  memberships:
+    leave:
+      success: "Vous avez quitté l'équipe."
+      organizer_forbidden: "Un organisateur ne peut pas quitter sa propre équipe."
+      active_game_forbidden: "Impossible de quitter l'équipe pendant une partie en cours."
+      already_left: "Aucune sortie nécessaire: vous n'êtes déjà plus membre de cette équipe."
+      unauthorized: "Équipe introuvable ou accès non autorisé."
   games:
     destroy:
       success: "Partie annulée avec succès."
@@ -45,6 +52,8 @@ fr:
         proposal: "Proposition"
         guessed_author: "Auteur supposé"
     errors:
+      messages:
+        record_invalid: "Validation échouée: %{errors}"
       models:
         user:
           attributes:

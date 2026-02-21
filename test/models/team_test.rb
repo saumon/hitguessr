@@ -2,11 +2,14 @@ require "test_helper"
 
 class TeamTest < ActiveSupport::TestCase
   def setup
-    @user = User.create!(
-      email: "organizer@example.com",
-      name: "Organisateur",
-      password: "password123"
-    )
+    Guess.delete_all
+    Proposal.delete_all
+    Game.delete_all
+    Membership.delete_all
+    Team.delete_all
+    User.delete_all
+
+    @user = build_user("organizer", "Organisateur")
   end
 
   test "should be valid with valid attributes" do
@@ -386,5 +389,11 @@ class TeamTest < ActiveSupport::TestCase
     assert_equal 2, leaderboard[0][:score]
     assert_equal player2, leaderboard[1][:player]
     assert_equal 1, leaderboard[1][:score]
+  end
+
+  private
+
+  def build_user(prefix, name)
+    User.create!(email: "#{prefix}-#{SecureRandom.hex(6)}@example.com", name: name, password: "password123")
   end
 end
