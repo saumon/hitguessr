@@ -2,10 +2,17 @@ require "test_helper"
 
 class GuessTest < ActiveSupport::TestCase
   def setup
-    @organizer = User.create!(email: "organizer@example.com", name: "Organisateur", password: "password123")
-    @player1 = User.create!(email: "player1@example.com", name: "Joueur 1", password: "password123")
-    @player2 = User.create!(email: "player2@example.com", name: "Joueur 2", password: "password123")
-    @player3 = User.create!(email: "player3@example.com", name: "Joueur 3", password: "password123")
+    Guess.delete_all
+    Proposal.delete_all
+    Game.delete_all
+    Membership.delete_all
+    Team.delete_all
+    User.delete_all
+
+    @organizer = build_user("organizer", "Organisateur")
+    @player1 = build_user("player1", "Joueur 1")
+    @player2 = build_user("player2", "Joueur 2")
+    @player3 = build_user("player3", "Joueur 3")
 
     @team = Team.create!(name: "Les Mélomanes", organizer: @organizer)
     @team.memberships.create!(user: @player1)
@@ -30,7 +37,7 @@ class GuessTest < ActiveSupport::TestCase
   end
 
   test "should require guessed_author to be a player with proposal" do
-    outsider = User.create!(email: "outsider@example.com", name: "Outsider", password: "password123")
+    outsider = build_user("outsider", "Outsider")
     @team.memberships.create!(user: outsider)  # Member but no proposal
 
     guess = Guess.new(
@@ -88,5 +95,11 @@ class GuessTest < ActiveSupport::TestCase
   test "correct? should return false when guess does not match author" do
     guess = Guess.create!(player: @player2, proposal: @proposal1, guessed_author: @player3)
     assert_not_equal @proposal1.player_id, guess.guessed_author_id
+  end
+
+  private
+
+  def build_user(prefix, name)
+    User.create!(email: "#{prefix}-#{SecureRandom.hex(6)}@example.com", name: name, password: "password123")
   end
 end

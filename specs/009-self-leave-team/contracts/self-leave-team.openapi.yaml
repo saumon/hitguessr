@@ -1,0 +1,69 @@
+openapi: 3.0.3
+info:
+  title: HitGuessr - Self Leave Team API
+  version: 1.0.0
+  description: |
+    Contrat HTTP pour la sortie auto-service d'une équipe.
+    Action réservée à l'utilisateur courant et limitée à l'équipe ciblée.
+servers:
+  - url: http://localhost:3000
+paths:
+  /teams/{team_id}/leave:
+    delete:
+      summary: Quitter une équipe (auto-service)
+      description: |
+        Supprime l'appartenance de l'utilisateur authentifié (`current_user`) à l'équipe ciblée,
+        sauf s'il est organisateur de cette équipe ou si une partie y est active.
+      tags:
+        - memberships
+      parameters:
+        - name: team_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Identifiant de l'équipe ciblée
+      responses:
+        '303':
+          description: Redirection HTML après traitement
+          headers:
+            Location:
+              schema:
+                type: string
+              description: URL de redirection (`/teams` en succès)
+          content:
+            text/html:
+              schema:
+                type: string
+              examples:
+                successRedirect:
+                  summary: Succès
+                  value: Redirect with flash notice to /teams
+                refusalRedirect:
+                  summary: Refus
+                  value: Redirect with flash alert to team page or /teams
+        '401':
+          description: Non authentifié
+        '404':
+          description: Équipe introuvable ou non accessible
+      security:
+        - cookieAuth: []
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: _hitguessr_session
+x-business-rules:
+  - "BR-001: Le sujet de l'action est toujours current_user (aucun membership_id client)."
+  - "BR-002: Refus si current_user.id == team.organizer_id."
+  - "BR-003: Refus si team.has_active_game? (collecting ou guessing)."
+  - "BR-004: En succès, suppression de Membership(current_user, team) puis redirection vers /teams."
+  - "BR-005: Si Membership absente, opération sans effet avec message clair."
+x-ui-contract:
+  leaveButtonLabel: "Quitter"
+  leaveButtonStyleReference: "Même style et position que le bouton Supprimer en en-tête de page équipe"
+  leaveConfirmText: "Êtes-vous sûr de vouloir quitter cette équipe ?"
+x-documentation-contract:
+  - "README global mis à jour pour décrire la feature."
+  - "Changelog mis à jour avec l'entrée de version de la feature."

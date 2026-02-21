@@ -10,6 +10,10 @@
         <%= link_to "Éditer", edit_team_path(@team), class: "btn-neon btn-secondary px-4 py-2 rounded-lg text-sm min-h-11 flex items-center justify-center flex-1 sm:flex-initial" %>
         <%= button_to "Supprimer", team_path(@team), method: :delete, data: { turbo_confirm: "Êtes-vous sûr de vouloir supprimer cette équipe ?" }, class: "btn-neon btn-danger px-4 py-2 rounded-lg text-sm cursor-pointer min-h-11 flex items-center justify-center flex-1 sm:flex-initial" %>
       </div>
+    <% else %>
+      <div class="flex gap-2 w-full sm:w-auto">
+        <%= button_to "Quitter", team_leave_path(@team), method: :delete, data: { turbo_confirm: "Êtes-vous sûr de vouloir quitter cette équipe ?" }, class: "btn-neon btn-danger px-4 py-2 rounded-lg text-sm cursor-pointer min-h-11 flex items-center justify-center flex-1 sm:flex-initial" %>
+      </div>
     <% end %>
   </div>
 

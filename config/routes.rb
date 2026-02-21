@@ -3,6 +3,7 @@ Rails.application.routes.draw do
 
   # Teams with nested memberships and games
   resources :teams do
+    delete :leave, to: "memberships#leave"
     resources :memberships, only: [ :create, :destroy ]
     resources :games, only: [ :index, :new, :create ]
   end

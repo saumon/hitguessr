@@ -2,16 +2,15 @@ require "test_helper"
 
 class ProposalTest < ActiveSupport::TestCase
   def setup
-    @user = User.create!(
-      email: "player@example.com",
-      name: "Joueur",
-      password: "password123"
-    )
-    @organizer = User.create!(
-      email: "organizer@example.com",
-      name: "Organisateur",
-      password: "password123"
-    )
+    Guess.delete_all
+    Proposal.delete_all
+    Game.delete_all
+    Membership.delete_all
+    Team.delete_all
+    User.delete_all
+
+    @user = build_user("player", "Joueur")
+    @organizer = build_user("organizer", "Organisateur")
     @team = Team.create!(name: "Les Mélomanes", organizer: @organizer)
     @team.memberships.create!(user: @user)
     @game = @team.games.create!
@@ -83,7 +82,7 @@ class ProposalTest < ActiveSupport::TestCase
       url: "https://youtube.com/watch?v=abc"
     )
 
-    other_player = User.create!(email: "other@example.com", name: "Autre", password: "password123")
+    other_player = build_user("other-a", "Autre")
     @team.memberships.create!(user: other_player)
 
     duplicate = Proposal.new(
@@ -102,7 +101,7 @@ class ProposalTest < ActiveSupport::TestCase
       url: "https://youtube.com/watch?v=abc"
     )
 
-    other_player = User.create!(email: "other@example.com", name: "Autre", password: "password123")
+    other_player = build_user("other-b", "Autre")
     @team.memberships.create!(user: other_player)
 
     # Same URL with trailing slash (normalized to same)
@@ -118,7 +117,7 @@ class ProposalTest < ActiveSupport::TestCase
     Proposal.create!(game: @game, player: @user, url: "https://youtube.com/watch?v=abc")
 
     # Finish the first game to allow creating a new one
-    other_player = User.create!(email: "other2@example.com", name: "Autre2", password: "password123")
+    other_player = build_user("other-c", "Autre2")
     @team.memberships.create!(user: other_player)
     @game.proposals.create!(player: other_player, url: "https://youtube.com/watch?v=xyz")
     @game.start_guessing!
@@ -143,16 +142,22 @@ class ProposalTest < ActiveSupport::TestCase
 
   test "should only allow proposals during collecting phase" do
     @game.proposals.create!(player: @user, url: "https://youtube.com/a")
-    other_player = User.create!(email: "other@example.com", name: "Autre", password: "password123")
+    other_player = build_user("other-d", "Autre")
     @team.memberships.create!(user: other_player)
     @game.proposals.create!(player: other_player, url: "https://youtube.com/b")
     @game.start_guessing!
 
-    third_player = User.create!(email: "third@example.com", name: "Troisième", password: "password123")
+    third_player = build_user("third", "Troisième")
     @team.memberships.create!(user: third_player)
 
     late_proposal = Proposal.new(game: @game, player: third_player, url: "https://youtube.com/c")
     assert_not late_proposal.valid?
     assert late_proposal.errors[:game].any? { |e| e.include?("n'accepte plus") }
+  end
+
+  private
+
+  def build_user(prefix, name)
+    User.create!(email: "#{prefix}-#{SecureRandom.hex(6)}@example.com", name: name, password: "password123")
   end
 end

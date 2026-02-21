@@ -2,10 +2,17 @@ require "test_helper"
 
 class GameTest < ActiveSupport::TestCase
   def setup
-    @organizer = User.create!(email: "organizer@example.com", name: "Organisateur", password: "password123")
-    @player1 = User.create!(email: "player1@example.com", name: "Joueur 1", password: "password123")
-    @player2 = User.create!(email: "player2@example.com", name: "Joueur 2", password: "password123")
-    @player3 = User.create!(email: "player3@example.com", name: "Joueur 3", password: "password123")
+    Guess.delete_all
+    Proposal.delete_all
+    Game.delete_all
+    Membership.delete_all
+    Team.delete_all
+    User.delete_all
+
+    @organizer = build_user("organizer", "Organisateur")
+    @player1 = build_user("player1", "Joueur 1")
+    @player2 = build_user("player2", "Joueur 2")
+    @player3 = build_user("player3", "Joueur 3")
 
     @team = Team.create!(name: "Les Mélomanes", organizer: @organizer)
     @team.memberships.create!(user: @player1)
@@ -271,7 +278,7 @@ class GameTest < ActiveSupport::TestCase
       assert @game.all_members_submitted?
 
       # Add a new member to team
-      new_player = User.create!(email: "new@example.com", name: "Nouveau", password: "password123")
+      new_player = build_user("new-player", "Nouveau")
       @team.memberships.create!(user: new_player)
 
       # Now should be false because new member hasn't submitted
@@ -428,5 +435,11 @@ class GameTest < ActiveSupport::TestCase
     @game.finish!
 
     assert @game.finished?
+  end
+
+  private
+
+  def build_user(prefix, name)
+    User.create!(email: "#{prefix}-#{SecureRandom.hex(6)}@example.com", name: name, password: "password123")
   end
 end
