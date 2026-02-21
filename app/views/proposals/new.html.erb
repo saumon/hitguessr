@@ -13,7 +13,7 @@
     <%= form_with model: [@game, @proposal], class: "space-y-4" do |f| %>
       <% if @proposal.errors.any? %>
         <div class="bg-red-500/10 border border-red-500/30 text-red-400 px-3 sm:px-4 py-3 rounded-lg">
-          <h2 class="font-medium text-sm sm:text-base"><%= pluralize(@proposal.errors.count, "erreur") %> empêche<%= @proposal.errors.count > 1 ? "nt" : "" %> la sauvegarde:</h2>
+          <h2 class="font-medium text-sm sm:text-base"><%= pluralize(@proposal.errors.count, "erreur", "erreurs") %> empêche<%= @proposal.errors.count > 1 ? "nt" : "" %> la sauvegarde:</h2>
           <ul class="list-disc list-inside mt-2 text-xs sm:text-sm">
             <% @proposal.errors.each do |error| %>
               <li><%= error.full_message %></li>

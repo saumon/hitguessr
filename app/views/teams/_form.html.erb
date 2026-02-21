@@ -1,7 +1,7 @@
 <%= form_with model: team, class: "space-y-4" do |f| %>
   <% if team.errors.any? %>
     <div class="bg-dark-700/90 border border-neon-pink/50 text-neon-pink px-4 py-3 rounded-lg">
-      <h2 class="font-medium"><%= pluralize(team.errors.count, "erreur") %> empêche<%= team.errors.count > 1 ? "nt" : "" %> la sauvegarde:</h2>
+      <h2 class="font-medium"><%= pluralize(team.errors.count, "erreur", "erreurs") %> empêche<%= team.errors.count > 1 ? "nt" : "" %> la sauvegarde:</h2>
       <ul class="list-disc list-inside mt-2 text-sm text-gray-300">
         <% team.errors.each do |error| %>
           <li><%= error.full_message %></li>
