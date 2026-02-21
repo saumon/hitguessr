@@ -387,6 +387,7 @@ The app is localized in **French** by default. Translation files are in `config/
 ### v1.2.0 *(February 21, 2026)*
 
 - 🚪 **Self-leave team** — A member can leave a team from the team header with a `Quitter` confirmation button, while organizers are prevented from leaving their own team and leave is blocked during active games ([#009](specs/009-self-leave-team/spec.md))
+- ✍️ **Conjugation/pluralization fixes (FR)** — Corrected French plural forms in team stats display (e.g. `membre` → `membres`)
 
 ### v1.1.0 *(February 15, 2026)*
 

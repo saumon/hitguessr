@@ -26,7 +26,7 @@
                 Organisateur: <span class="neon-text-cyan"><%= team.organizer == current_user ? "Moi" : team.organizer.name %></span>
               </p>
               <p class="text-xs sm:text-sm text-gray-500 mt-1">
-                <%= pluralize(team.members.count, "membre") %> • <%= pluralize(team.games.count, "partie") %> jouée<%= team.games.count > 1 ? "s" : "" %>
+                <%= pluralize(team.members.count, "membre", "membres") %> • <%= pluralize(team.games.count, "partie jouée", "parties jouées") %>
               </p>
             </div>
             <div class="flex gap-3 w-full sm:w-auto">
