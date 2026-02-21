@@ -49,7 +49,7 @@ Renders `games/new` template with error message displayed.
 
 ```html
 <a href="/teams/:id/games/new" class="btn-neon btn-primary ...">
-  🎮 Lancer une partie
+  🎧 Lancer une partie
 </a>
 ```
 
@@ -60,7 +60,7 @@ Renders `games/new` template with error message displayed.
 ```html
 <span class="group relative">
   <span class="btn-neon btn-primary ... opacity-50 cursor-not-allowed">
-    🎮 Lancer une partie
+    🎧 Lancer une partie
   </span>
   <span class="tooltip group-hover:visible">
     Une partie est déjà en cours

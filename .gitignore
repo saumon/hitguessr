@@ -47,6 +47,7 @@ storage/
 # OS files
 .DS_Store
 Thumbs.db
+*.tmp
 
 # Bundler
 vendor/bundle

@@ -17,6 +17,7 @@
 # Ignore all logfiles and tempfiles.
 /log/*
 /tmp/*
+*.log*
 !/log/.keep
 !/tmp/.keep
 
@@ -32,6 +33,7 @@
 
 # Ignore assets.
 /node_modules/
+/coverage/
 /app/assets/builds/*
 !/app/assets/builds/.keep
 /public/assets

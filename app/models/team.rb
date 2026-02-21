@@ -20,6 +20,14 @@ class Team < ApplicationRecord
     games.active.exists?
   end
 
+  def active_confirmed_members_count
+    memberships.count
+  end
+
+  def eligible_to_start_game?(minimum_members = Game::MINIMUM_TEAM_MEMBERS)
+    active_confirmed_members_count >= minimum_members
+  end
+
   # Leaderboard: cumulative scores across all finished games
   # Returns array of { player:, score:, rank: } sorted by score descending
   # Players with equal scores share the same rank (ex aequo)

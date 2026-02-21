@@ -10,6 +10,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     fill_in "Email", with: user.email
     fill_in "Mot de passe", with: "password123"
     click_button "Se connecter"
+    assert_text "Vous êtes connecté(e)."
   end
 
   # Responsive viewport helpers

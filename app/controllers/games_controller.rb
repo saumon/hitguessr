@@ -13,11 +13,17 @@ class GamesController < ApplicationController
   end
 
   def create
-    @game = @team.games.build
+    created = false
 
-    if @game.save
-      redirect_to @game, notice: "Partie lancée ! Les joueurs peuvent maintenant soumettre leurs propositions."
+    @team.with_lock do
+      @game = @team.games.build
+      created = @game.save
+    end
+
+    if created
+      redirect_to @game, notice: I18n.t("games.create.success")
     else
+      flash.now[:alert] = @game.errors.full_messages.to_sentence if @game.errors.any?
       render :new, status: :unprocessable_entity
     end
   end
