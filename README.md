@@ -261,6 +261,21 @@ bin/rails server
 bin/rails tailwindcss:watch
 ```
 
+### Building Tailwind CSS
+
+Use these commands when you want to compile Tailwind styles manually.
+
+```bash
+# One-time build
+bin/rails tailwindcss:build
+
+# Continuous build (watch mode)
+bin/rails tailwindcss:watch
+
+# Production build (minified)
+RAILS_ENV=production bin/rails tailwindcss:build
+```
+
 ### Database Commands
 
 ```bash
@@ -387,6 +402,10 @@ The app is localized in **French** by default. Translation files are in `config/
 ---
 
 ## 📋 Changelog
+
+### v1.2.1 *(February 22, 2026)*
+
+- ⚙️ **Chore** — dependency updates
 
 ### v1.2.0 *(February 21, 2026)*
 
