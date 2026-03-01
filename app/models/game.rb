@@ -23,7 +23,15 @@ class Game < ApplicationRecord
     raise InvalidTransitionError, "La partie doit être en phase de collecte" unless collecting?
     raise InvalidTransitionError, "Au moins 2 joueurs doivent avoir soumis une proposition" if proposals.count < 2
 
+    assign_guess_order!
     update!(status: :guessing, started_at: Time.current)
+  end
+
+  # Lecture ordonnée des propositions pour la phase de devinette.
+  # L'ordre est figé lors de l'appel à start_guessing! et stable entre reloads.
+  # Fallback id ASC pour garantir un ordre déterministe en cas d'égalité.
+  def ordered_proposals_for_guessing
+    proposals.order(:guess_order_position, :id)
   end
 
   def finish!
@@ -102,6 +110,18 @@ class Game < ApplicationRecord
   class InvalidTransitionError < StandardError; end
 
   private
+
+  # Assigne un ordre de devinette aléatoire (positions 1..N) aux propositions,
+  # uniquement si elles ne sont pas encore ordonnées (idempotence).
+  # Garantit que le même ordre est utilisé pour tous les joueurs de la manche.
+  def assign_guess_order!
+    unordered = proposals.where(guess_order_position: nil).to_a
+    return if unordered.empty?
+
+    unordered.shuffle.each_with_index do |proposal, index|
+      proposal.update_column(:guess_order_position, index + 1)
+    end
+  end
 
   def only_one_active_game_per_team
     if team&.has_active_game?
