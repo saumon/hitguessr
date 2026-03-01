@@ -408,6 +408,7 @@ The app is localized in **French** by default. Translation files are in `config/
 ### v1.2.2 *(March 1, 2026)*
 
 - 🔀 **Randomized guess order per round** — During guessing, proposals are displayed in a shuffled order that is frozen per game round, identical for all players, and stable across reloads ([#011](specs/011-randomize-guess-order/spec.md))
+- ⚙️ **Chore** — dependency updates
 
 ### v1.2.1 *(February 22, 2026)*
 
