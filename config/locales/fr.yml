@@ -1,4 +1,7 @@
 fr:
+  authorization:
+    not_team_member: "Vous devez être membre de cette équipe pour effectuer cette action."
+    organizer_only: "Seul l'organisateur peut effectuer cette action."
   memberships:
     leave:
       success: "Vous avez quitté l'équipe."
@@ -18,7 +21,15 @@ fr:
       cannot_cancel_finished: "Impossible d'annuler une partie terminée."
       confirm: "Voulez-vous vraiment annuler cette partie ? Cette action est irréversible."
     start_guessing:
+      success: "Phase de devinettes lancée !"
       order_frozen: "L'ordre des propositions est désormais figé pour la durée de la manche."
+    finish:
+      success: "Partie terminée ! Découvrez les résultats."
+    transition:
+      conflict: "Cette action n'est plus disponible : l'état de la partie a déjà changé."
+    authorization:
+      not_member: "Vous devez être membre de cette équipe pour effectuer cette action."
+      organizer_only: "Seul l'organisateur peut effectuer cette action."
   guesses:
     new:
       order_note: "L'ordre des propositions est figé pour tous les joueurs."

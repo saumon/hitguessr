@@ -547,6 +547,92 @@ class GameTest < ActiveSupport::TestCase
     assert_equal [ p2.id, p3.id, p1.id ], ordered_ids, "Doit être trié par guess_order_position ASC"
   end
 
+  # ==============================================
+  # Feature 012 – T010: Transition validity & concurrency conflict signaling
+  # ==============================================
+
+  # Transition invalide : start_guessing sur une partie déjà en guessing (état déjà changé)
+  test "start_guessing! on an already-guessing game raises InvalidTransitionError (concurrent conflict)" do
+    @game.proposals.create!(player: @player1, url: "https://youtube.com/a")
+    @game.proposals.create!(player: @player2, url: "https://youtube.com/b")
+    @game.start_guessing!
+
+    # Simuler une seconde requête arrivant après la transition
+    game_reload = Game.find(@game.id)
+    error = assert_raises(Game::InvalidTransitionError) do
+      game_reload.start_guessing!
+    end
+
+    assert_match(/phase de collecte/, error.message)
+  end
+
+  # Transition invalide : finish sur une partie déjà terminée
+  test "finish! on an already-finished game raises InvalidTransitionError" do
+    @game.proposals.create!(player: @player1, url: "https://youtube.com/a")
+    @game.proposals.create!(player: @player2, url: "https://youtube.com/b")
+    @game.start_guessing!
+    @game.finish!
+
+    game_reload = Game.find(@game.id)
+    error = assert_raises(Game::InvalidTransitionError) do
+      game_reload.finish!
+    end
+
+    assert_match(/phase de devinettes/, error.message)
+  end
+
+  # Transition invalide : finish depuis collecting (mauvais état)
+  test "finish! from collecting state raises InvalidTransitionError" do
+    assert @game.collecting?
+
+    error = assert_raises(Game::InvalidTransitionError) do
+      @game.finish!
+    end
+
+    assert_match(/phase de devinettes/, error.message)
+    assert @game.reload.collecting?
+  end
+
+  # with_lock sérialise les transitions : le second appel concurrent reçoit InvalidTransitionError
+  test "with_lock serializes concurrent start_guessing! – second call raises InvalidTransitionError" do
+    @game.proposals.create!(player: @player1, url: "https://youtube.com/a")
+    @game.proposals.create!(player: @player2, url: "https://youtube.com/b")
+
+    # Simuler deux références au même enregistrement (comme deux requêtes HTTP concurrentes)
+    game_a = Game.find(@game.id)
+    game_b = Game.find(@game.id)
+
+    # Premier appel: réussit
+    game_a.with_lock { game_a.start_guessing! }
+    assert game_a.guessing?
+
+    # Second appel: doit échouer car l'état a déjà changé
+    assert_raises(Game::InvalidTransitionError) do
+      game_b.with_lock { game_b.start_guessing! }
+    end
+
+    assert Game.find(@game.id).guessing?
+  end
+
+  # Idempotence de with_lock : un seul finish appliqué même avec deux références
+  test "with_lock serializes concurrent finish! – second call raises InvalidTransitionError" do
+    @game.proposals.create!(player: @player1, url: "https://youtube.com/a")
+    @game.proposals.create!(player: @player2, url: "https://youtube.com/b")
+    @game.start_guessing!
+
+    game_a = Game.find(@game.id)
+    game_b = Game.find(@game.id)
+
+    game_a.with_lock { game_a.finish! }
+    assert game_a.finished?
+
+    assert_raises(Game::InvalidTransitionError) do
+      game_b.with_lock { game_b.finish! }
+    end
+
+    assert Game.find(@game.id).finished?
+  end
+
   private
 
   def build_user(prefix, name)

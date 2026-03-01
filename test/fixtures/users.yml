@@ -10,6 +10,11 @@ member:
   email: "member@example.com"
   encrypted_password: <%= Devise::Encryptor.digest(User, 'password123') %>
 
+member_two:
+  name: "Membre Deux"
+  email: "member_two@example.com"
+  encrypted_password: <%= Devise::Encryptor.digest(User, 'password123') %>
+
 organizer_two:
   name: "Organisateur Deux"
   email: "organizer_two@example.com"

@@ -75,8 +75,6 @@ class MembershipsController < ApplicationController
   end
 
   def authorize_organizer!
-    unless @team.organizer == current_user
-      redirect_to @team, alert: "Seul l'organisateur peut gérer les membres."
-    end
+    authorize_team_organizer_on!(@team)
   end
 end

@@ -1,0 +1,207 @@
+openapi: 3.0.3
+info:
+  title: HitGuessr - Team Member Autonomy
+  version: 1.2.3
+  description: |
+    Contract for team-member autonomy on game progression actions.
+    Progression actions are allowed for any team member (including organizer),
+    while cancellation and membership management remain organizer-only.
+servers:
+  - url: http://localhost:3000
+paths:
+  /teams/{team_id}/games:
+    post:
+      summary: Start a new game for a team
+      tags: [games]
+      parameters:
+        - name: team_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '302':
+          description: HTML redirect after create attempt (success or refusal flash)
+          headers:
+            Location:
+              schema:
+                type: string
+        '401':
+          description: Unauthenticated user
+        '403':
+          description: Authenticated but not allowed (non-member)
+        '404':
+          description: Team not found or inaccessible
+        '422':
+          description: Validation failure (active game exists, minimum members not met)
+      security:
+        - cookieAuth: []
+
+  /games/{id}/start_guessing:
+    patch:
+      summary: Transition game from collecting to guessing
+      tags: [games]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '302':
+          description: HTML redirect after transition attempt with explicit user feedback (success, invalid state, or concurrent state change)
+          headers:
+            Location:
+              schema:
+                type: string
+        '401':
+          description: Unauthenticated user
+        '403':
+          description: Not member of the game team
+        '404':
+          description: Game not found
+        '422':
+          description: Invalid state transition (e.g., not collecting, insufficient proposals)
+      security:
+        - cookieAuth: []
+
+  /games/{id}/finish:
+    patch:
+      summary: Transition game from guessing to finished
+      tags: [games]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '302':
+          description: HTML redirect after transition attempt with explicit user feedback (success, invalid state, or concurrent state change)
+          headers:
+            Location:
+              schema:
+                type: string
+        '401':
+          description: Unauthenticated user
+        '403':
+          description: Not member of the game team
+        '404':
+          description: Game not found
+        '422':
+          description: Invalid state transition (e.g., not guessing)
+      security:
+        - cookieAuth: []
+
+  /games/{id}:
+    delete:
+      summary: Cancel a game
+      tags: [games]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '302':
+          description: HTML redirect after cancel attempt
+          headers:
+            Location:
+              schema:
+                type: string
+        '401':
+          description: Unauthenticated user
+        '403':
+          description: Organizer-only action
+        '404':
+          description: Game not found
+        '422':
+          description: Game cannot be canceled due to state constraints
+      security:
+        - cookieAuth: []
+
+  /teams/{team_id}/memberships:
+    post:
+      summary: Add a team member by email
+      tags: [memberships]
+      parameters:
+        - name: team_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+              required: [email]
+      responses:
+        '302':
+          description: HTML redirect after add attempt
+        '401':
+          description: Unauthenticated user
+        '403':
+          description: Organizer-only action
+        '404':
+          description: Team not found or inaccessible
+        '422':
+          description: Invalid input or domain constraint failure
+      security:
+        - cookieAuth: []
+
+  /teams/{team_id}/memberships/{id}:
+    delete:
+      summary: Remove a team member
+      tags: [memberships]
+      parameters:
+        - name: team_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '302':
+          description: HTML redirect after remove attempt
+        '401':
+          description: Unauthenticated user
+        '403':
+          description: Organizer-only action
+        '404':
+          description: Team or membership not found
+        '422':
+          description: Domain constraint failure (e.g., organizer cannot be removed)
+      security:
+        - cookieAuth: []
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: _hitguessr_session
+
+x-business-rules:
+  - "BR-001: Any active team member, including organizer, may create/start_guessing/finish."
+  - "BR-002: Game cancel and membership add/remove are organizer-only."
+  - "BR-003: Authorization is verified server-side for every action, including direct URL access."
+  - "BR-004: Unauthorized direct access redirects to team/game page with explicit error message."
+  - "BR-005: Non-authorized actions are hidden in UI for the current role."
+  - "BR-006: Concurrent duplicate transition attempts apply once; later attempts are rejected via redirect with explicit conflict message."
+
+x-success-criteria-mapping:
+  - "SC-001: 100% of non-organizer members can execute create/start_guessing/finish in valid states."
+  - "SC-002: 100% of non-organizer attempts to cancel/manage members are refused."
+  - "SC-004: 95% of authorized progression actions produce visible state change in <2s."
+  - "SC-005: No double transition applied across 200 concurrency transition tests."
