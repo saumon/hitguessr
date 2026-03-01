@@ -461,6 +461,92 @@ class GameTest < ActiveSupport::TestCase
     assert @game.finished?
   end
 
+  # =============================================================
+  # Feature 011: Randomisation de l'ordre des propositions
+  # =============================================================
+
+  # T010 — [US1] Assignation aléatoire des positions au start_guessing!
+  test "start_guessing! assigns guess_order_position to all proposals" do
+    @game.proposals.create!(player: @player1, url: "https://youtube.com/a")
+    @game.proposals.create!(player: @player2, url: "https://youtube.com/b")
+    @game.proposals.create!(player: @player3, url: "https://youtube.com/c")
+
+    # Vérifier que les positions sont nulles avant la transition
+    @game.proposals.each do |p|
+      assert_nil p.guess_order_position
+    end
+
+    @game.start_guessing!
+
+    positions = @game.proposals.reload.pluck(:guess_order_position).sort
+    assert_equal [ 1, 2, 3 ], positions, "Tous les positions doivent être 1..N"
+  end
+
+  test "start_guessing! assigns unique positions 1..N to proposals" do
+    @game.proposals.create!(player: @player1, url: "https://youtube.com/a")
+    @game.proposals.create!(player: @player2, url: "https://youtube.com/b")
+    @game.proposals.create!(player: @player3, url: "https://youtube.com/c")
+
+    @game.start_guessing!
+
+    positions = @game.proposals.reload.pluck(:guess_order_position)
+    assert_equal positions.length, positions.uniq.length, "Les positions doivent être uniques"
+    assert positions.all? { |p| p >= 1 && p <= 3 }, "Les positions doivent être dans 1..N"
+  end
+
+  # T010 — [US2] Idempotence de l'assignation d'ordre
+  test "start_guessing! is idempotent: does not reassign positions if already set" do
+    p1 = @game.proposals.create!(player: @player1, url: "https://youtube.com/a")
+    p2 = @game.proposals.create!(player: @player2, url: "https://youtube.com/b")
+
+    # Assigner manuellement des positions pré-connues (simulation de résidu)
+    p1.update_column(:guess_order_position, 1)
+    p2.update_column(:guess_order_position, 2)
+
+    @game.start_guessing!
+
+    assert_equal 1, p1.reload.guess_order_position
+    assert_equal 2, p2.reload.guess_order_position
+  end
+
+  # T010 — [US3] Indépendance des ordres entre deux parties
+  test "two different games have independent guess order positions" do
+    # Team 2 pour la 2ème partie
+    team2 = Team.create!(name: "Team 2", organizer: @player3)
+    team2.memberships.create!(user: @player1)
+    team2.memberships.create!(user: @player2)
+    game2 = team2.games.create!
+
+    @game.proposals.create!(player: @player1, url: "https://youtube.com/a")
+    @game.proposals.create!(player: @player2, url: "https://youtube.com/b")
+    game2.proposals.create!(player: @player1, url: "https://youtube.com/c")
+    game2.proposals.create!(player: @player2, url: "https://youtube.com/d")
+
+    @game.start_guessing!
+    game2.start_guessing!
+
+    positions_game1 = Proposal.where(game: @game).pluck(:guess_order_position).sort
+    positions_game2 = Proposal.where(game: game2).pluck(:guess_order_position).sort
+
+    assert_equal [ 1, 2 ], positions_game1
+    assert_equal [ 1, 2 ], positions_game2
+  end
+
+  # T010 — ordered_proposals_for_guessing helper
+  test "ordered_proposals_for_guessing returns proposals sorted by position" do
+    p1 = @game.proposals.create!(player: @player1, url: "https://youtube.com/a")
+    p2 = @game.proposals.create!(player: @player2, url: "https://youtube.com/b")
+    p3 = @game.proposals.create!(player: @player3, url: "https://youtube.com/c")
+
+    # Assigner manuellement des positions pour tester l'ordre
+    p1.update_column(:guess_order_position, 3)
+    p2.update_column(:guess_order_position, 1)
+    p3.update_column(:guess_order_position, 2)
+
+    ordered_ids = @game.ordered_proposals_for_guessing.pluck(:id)
+    assert_equal [ p2.id, p3.id, p1.id ], ordered_ids, "Doit être trié par guess_order_position ASC"
+  end
+
   private
 
   def build_user(prefix, name)

@@ -1,0 +1,125 @@
+openapi: 3.0.3
+info:
+  title: HitGuessr - Guess Order Randomization
+  version: 1.2.2
+  description: |
+    Contract for randomizing and freezing proposal display order during the guessing phase.
+    Order is generated once per game round when transitioning to guessing and persisted.
+servers:
+  - url: http://localhost:3000
+paths:
+  /games/{id}/start_guessing:
+    patch:
+      summary: Transition game to guessing and freeze randomized proposal order
+      tags: [games]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '302':
+          description: HTML redirect after transition attempt
+          headers:
+            Location:
+              schema:
+                type: string
+              description: Redirect to game page with success or refusal flash message
+        '401':
+          description: Unauthenticated user
+        '403':
+          description: Authenticated user is not allowed to transition this game
+        '404':
+          description: Game not found
+        '422':
+          description: Transition validation failed (e.g., insufficient proposals)
+      security:
+        - cookieAuth: []
+
+  /games/{game_id}/guesses/new:
+    get:
+      summary: Render guessing form with frozen proposal order
+      tags: [guesses]
+      parameters:
+        - name: game_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Guessing page rendered
+          content:
+            text/html:
+              schema:
+                type: string
+              examples:
+                stableOrder:
+                  summary: Proposals are listed by persisted position
+                  value: "Proposition #1, #2, #3 ... in frozen randomized order"
+        '302':
+          description: Redirect if not eligible to guess (wrong phase/no proposal/already guessed)
+        '401':
+          description: Unauthenticated user
+        '403':
+          description: User not member of the team
+        '404':
+          description: Game not found
+      security:
+        - cookieAuth: []
+
+  /games/{game_id}/proposals:
+    post:
+      summary: Submit proposal during collecting phase only
+      tags: [proposals]
+      parameters:
+        - name: game_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                proposal[url]:
+                  type: string
+                  format: uri
+      responses:
+        '302':
+          description: Redirect after create attempt
+          headers:
+            Location:
+              schema:
+                type: string
+              description: Success to game page; refusal to game page/new proposal page
+        '401':
+          description: Unauthenticated user
+        '403':
+          description: User not member of the team
+        '404':
+          description: Game not found
+        '422':
+          description: Validation error on proposal
+      security:
+        - cookieAuth: []
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: _hitguessr_session
+x-business-rules:
+  - "BR-001: Randomized proposal order is generated once when game enters guessing."
+  - "BR-002: Frozen order is persisted per game and reused for all players and reloads."
+  - "BR-003: Proposal submission is refused when game is not in collecting phase."
+  - "BR-004: Order is independent between different game rounds."
+  - "BR-005: Display order must not expose proposal submission chronology."
+x-success-criteria-mapping:
+  - "SC-001: Last displayed proposal is not systematically last submitted."
+  - "SC-002: All players see the same order for a game round."
+  - "SC-003: Reload keeps identical order in 100% checks for active guessing round."
