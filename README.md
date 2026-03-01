@@ -19,6 +19,7 @@
 - 🎧 **Team-based gameplay** — Create teams, invite friends, and play together
 - 🎵 **Music proposals** — Submit YouTube or any music URL anonymously
 - 🤔 **Guessing phase** — Try to match each song to its submitter
+- 🔀 **Randomized guess order** — Proposals are shuffled per round and stay stable for all players during guessing
 - 👥 **Minimum team size to start** — Organizers can start a game only when the team has at least 3 members
 - 🚪 **Self-leave team** — A member can quit their team with confirmation (organizer cannot leave their own team)
 - 🏆 **Leaderboard** — Scores and rankings with tie handling
@@ -110,9 +111,10 @@ A demo team "**Les Mélomanes**" is pre-created with a finished game showing the
 1. **One proposal per player** — Each player submits exactly one music URL per game
 2. **No duplicates** — The same URL cannot be submitted twice in the same game
 3. **Anonymous proposals** — Players cannot see others' submissions during collection
-4. **Complete guesses** — All proposals must be matched to a player to submit guesses
-5. **No self-guessing** — Players cannot guess their own proposal (excluded automatically)
-6. **Minimum 3 members to start** — A new game can be launched only if the team has at least 3 active members
+4. **Randomized & frozen guess order** — At guessing start, proposal order is shuffled once per game and shared identically for all players
+5. **Complete guesses** — All proposals must be matched to a player to submit guesses
+6. **No self-guessing** — Players cannot guess their own proposal (excluded automatically)
+7. **Minimum 3 members to start** — A new game can be launched only if the team has at least 3 active members
 
 ### Scoring
 
@@ -402,6 +404,10 @@ The app is localized in **French** by default. Translation files are in `config/
 ---
 
 ## 📋 Changelog
+
+### v1.2.2 *(March 1, 2026)*
+
+- 🔀 **Randomized guess order per round** — During guessing, proposals are displayed in a shuffled order that is frozen per game round, identical for all players, and stable across reloads ([#011](specs/011-randomize-guess-order/spec.md))
 
 ### v1.2.1 *(February 22, 2026)*
 

@@ -17,6 +17,16 @@ fr:
       error: "Une erreur s'est produite lors de l'annulation de la partie."
       cannot_cancel_finished: "Impossible d'annuler une partie terminée."
       confirm: "Voulez-vous vraiment annuler cette partie ? Cette action est irréversible."
+    start_guessing:
+      order_frozen: "L'ordre des propositions est désormais figé pour la durée de la manche."
+  guesses:
+    new:
+      order_note: "L'ordre des propositions est figé pour tous les joueurs."
+    already_submitted: "Vous avez déjà soumis vos devinettes."
+    phase_not_guessing: "La partie n'est pas en phase de devinettes."
+  proposals:
+    collecting_phase_over: "La phase de collecte est terminée. Impossible de soumettre une nouvelle proposition."
+    order_fixed: "L'ordre des propositions est figé depuis le début de la phase de devinettes."
   teams:
     leaderboard:
       title: "Classement général"

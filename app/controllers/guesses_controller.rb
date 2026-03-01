@@ -12,7 +12,11 @@ class GuessesController < ApplicationController
       return
     end
 
-    @proposals = @game.proposals.where.not(player: current_user).includes(:player)
+    # Charger les propositions dans l'ordre figé (guess_order_position ASC, id ASC)
+    # L'ordre est stable entre les recharges et identique pour tous les joueurs d'une même manche.
+    @proposals = @game.ordered_proposals_for_guessing
+                      .where.not(player: current_user)
+                      .includes(:player)
     @players = @game.proposals.includes(:player).map(&:player)
   end
 

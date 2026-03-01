@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_31_115812) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_01_171540) do
   create_table "games", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "finished_at"
@@ -47,9 +47,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_31_115812) do
   create_table "proposals", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "game_id", null: false
+    t.integer "guess_order_position"
     t.integer "player_id", null: false
     t.datetime "updated_at", null: false
     t.string "url", null: false
+    t.index ["game_id", "guess_order_position"], name: "index_proposals_on_game_id_and_guess_order_position"
     t.index ["game_id", "player_id"], name: "index_proposals_on_game_id_and_player_id", unique: true
     t.index ["game_id", "url"], name: "index_proposals_on_game_id_and_url", unique: true
     t.index ["game_id"], name: "index_proposals_on_game_id"

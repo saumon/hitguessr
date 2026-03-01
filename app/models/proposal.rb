@@ -10,6 +10,8 @@ class Proposal < ApplicationRecord
   validates :url, uniqueness: { scope: :game_id, message: "a déjà été proposée dans cette partie" }
   validates :player_id, uniqueness: { scope: :game_id, message: "a déjà soumis une proposition pour cette partie" }
   validate :game_must_be_collecting, on: :create
+  validates :guess_order_position, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
+  validates :guess_order_position, uniqueness: { scope: :game_id, message: "est déjà utilisée dans cette partie" }, allow_nil: true
 
   # Callbacks
   before_validation :normalize_url

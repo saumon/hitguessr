@@ -19,6 +19,7 @@ Auto-generated from all feature plans. Last updated: 2026-01-31
 - Ruby 3.4.6, Rails 8.1.x + Rails, Devise, Turbo, Stimulus, Tailwind CSS (tailwindcss-rails), SQLite3 (009-self-leave-team)
 - SQLite (dev/test), ActiveRecord (009-self-leave-team)
 - Ruby 3.4.6, Rails 8.1.x + Rails, ActiveRecord, Devise, Turbo, Stimulus, Tailwind CSS, SQLite3 (010-team-minimum-members)
+- SQLite (dev/test), ActiveRecord (migration pour persistance d’ordre de devinette) (011-randomize-guess-order)
 
 - Ruby 3.4.6 + Devise (authentification), TailwindCSS v4.1 (styling) (001-hitguessr-gameplay)
 
@@ -38,9 +39,9 @@ tests/
 Ruby 3.4.6: Follow standard conventions
 
 ## Recent Changes
+- 011-randomize-guess-order: Added Ruby 3.4.6, Rails 8.1.x + Rails, ActiveRecord, Devise, Turbo, Stimulus, Tailwind CSS, SQLite3
 - 010-team-minimum-members: Added Ruby 3.4.6, Rails 8.1.x + Rails, ActiveRecord, Devise, Turbo, Stimulus, Tailwind CSS, SQLite3
 - 009-self-leave-team: Added Ruby 3.4.6, Rails 8.1.x + Rails, Devise, Turbo, Stimulus, Tailwind CSS (tailwindcss-rails), SQLite3
-- 008-youtube-embed-player: Added Ruby 3.4.x, Rails 8.1.2 + Hotwire (Turbo + Stimulus), Tailwind CSS, importmap-rails, media_embed (nouvelle)
 
 
 <!-- MANUAL ADDITIONS START -->
