@@ -17,13 +17,6 @@
     <% end %>
   </div>
 
-  <%# Team Info %>
-  <div class="neon-border p-6 mb-6">
-    <p class="text-gray-400">
-      <span class="font-medium text-gray-300">Organisateur:</span> <span class="neon-text-cyan"><%= @team.organizer.name %></span>
-    </p>
-  </div>
-
   <%# Members Section (collapsible, closed by default) %>
   <details class="neon-border mb-6 members-details">
     <summary class="p-6 cursor-pointer list-none flex justify-between items-center hover:bg-neon-purple/5 transition-all duration-300">
@@ -37,7 +30,7 @@
       .members-details[open] .indicator-closed { display: none; }
       .members-details[open] .indicator-open { display: inline; }
     </style>
-    
+
     <div class="px-6 pb-6">
       <div class="space-y-2">
         <% @members.each do |member| %>

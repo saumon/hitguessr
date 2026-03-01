@@ -405,6 +405,10 @@ The app is localized in **French** by default. Translation files are in `config/
 
 ## 📋 Changelog
 
+### v1.2.3 *(March 1, 2026)*
+
+- 🧹 **Team page cleanup** — Removed the redundant “Organisateur” info block from the team details page header section for a cleaner UI
+
 ### v1.2.2 *(March 1, 2026)*
 
 - 🔀 **Randomized guess order per round** — During guessing, proposals are displayed in a shuffled order that is frozen per game round, identical for all players, and stable across reloads ([#011](specs/011-randomize-guess-order/spec.md))
