@@ -17,4 +17,17 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.permit(:sign_up, keys: [ :name ])
     devise_parameter_sanitizer.permit(:account_update, keys: [ :name ])
   end
+
+  # Shared authorization helpers (feature 012-team-member-autonomy)
+  # Reject if current user is not a member of the given team.
+  def authorize_team_member_on!(team)
+    return if team.members.include?(current_user)
+    redirect_to teams_path, alert: I18n.t("authorization.not_team_member")
+  end
+
+  # Reject if current user is not the organizer of the given team.
+  def authorize_team_organizer_on!(team)
+    return if team.organizer == current_user
+    redirect_to team, alert: I18n.t("authorization.organizer_only")
+  end
 end

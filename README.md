@@ -16,6 +16,7 @@
 
 ## ✨ Features
 
+- 🤝 **Team member autonomy** — Any team member (including the organizer) can launch, start guessing, and finish a game; cancel game and membership management remain organizer-only
 - 🎧 **Team-based gameplay** — Create teams, invite friends, and play together
 - 🎵 **Music proposals** — Submit YouTube or any music URL anonymously
 - 🤔 **Guessing phase** — Try to match each song to its submitter
@@ -93,10 +94,18 @@ A demo team "**Les Mélomanes**" is pre-created with a finished game showing the
 
 ### Roles
 
-| Role          | Permissions                                                              |
-| ------------- | ------------------------------------------------------------------------ |
-| **Organizer** | Create team, add/remove members, start games, control phase transitions  |
-| **Player**    | Submit music proposals, make guesses, view results                       |
+| Role | Action | Autorisé |
+| ------------- | ----------------------------------------------- | -------- |
+| **All members** (organizer incl.) | Launch a game (≥ 3 members) | ✅ |
+| **All members** (organizer incl.) | Start guessing phase | ✅ |
+| **All members** (organizer incl.) | Finish game | ✅ |
+| **Organizer only** | Cancel an active game | ✅ |
+| **Organizer only** | Add a member to the team | ✅ |
+| **Organizer only** | Remove a member from the team | ✅ |
+| **Any player** | Submit a music proposal | ✅ |
+| **Any player** | Make guesses during guessing phase | ✅ |
+| **Any member** | Leave the team (no active game) | ✅ |
+| **Organizer** | Leave their own team | ❌ |
 
 > Note: The organizer is also a player and participates in the game.
 
@@ -405,8 +414,9 @@ The app is localized in **French** by default. Translation files are in `config/
 
 ## 📋 Changelog
 
-### v1.2.3 *(March 1, 2026)*
+### v1.2.3 *(March 2, 2026)*
 
+- 🤝 **Team member autonomy** — Any team member (including the organizer) can now launch, start the guessing phase, and finish a game. Only organizers retain exclusive rights to cancel a game or manage team membership. Concurrent state-change conflicts are caught and surfaced as an explicit feedback message ([#012](specs/012-team-member-autonomy/spec.md))
 - 🧹 **Team page cleanup** — Removed the redundant “Organisateur” info block from the team details page header section for a cleaner UI
 
 ### v1.2.2 *(March 1, 2026)*

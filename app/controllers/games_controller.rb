@@ -2,7 +2,10 @@ class GamesController < ApplicationController
   before_action :set_team, only: [ :index, :new, :create ]
   before_action :set_game, only: [ :show, :start_guessing, :finish, :destroy ]
   before_action :authorize_team_member!, only: [ :show ]
-  before_action :authorize_organizer_for_game!, only: [ :new, :create, :start_guessing, :finish, :destroy ]
+  # Feature 012: progression actions open to all team members (US1)
+  before_action :authorize_game_team_member!, only: [ :start_guessing, :finish ]
+  # Cancellation remains organizer-only (US2)
+  before_action :authorize_organizer_for_game!, only: [ :destroy ]
 
   def index
     @games = @team.games.order(created_at: :desc)
@@ -54,17 +57,17 @@ class GamesController < ApplicationController
       return
     end
 
-    @game.start_guessing!
-    redirect_to @game, notice: "Phase de devinettes lancée !"
-  rescue Game::InvalidTransitionError => e
-    redirect_to @game, alert: e.message
+    @game.with_lock { @game.start_guessing! }
+    redirect_to @game, notice: I18n.t("games.start_guessing.success")
+  rescue Game::InvalidTransitionError
+    redirect_to @game, alert: I18n.t("games.transition.conflict")
   end
 
   def finish
-    @game.finish!
-    redirect_to game_results_path(@game), notice: "Partie terminée ! Découvrez les résultats."
-  rescue Game::InvalidTransitionError => e
-    redirect_to @game, alert: e.message
+    @game.with_lock { @game.finish! }
+    redirect_to game_results_path(@game), notice: I18n.t("games.finish.success")
+  rescue Game::InvalidTransitionError
+    redirect_to @game, alert: I18n.t("games.transition.conflict")
   end
 
   def destroy
@@ -98,16 +101,20 @@ class GamesController < ApplicationController
     redirect_to teams_path, alert: "Partie introuvable."
   end
 
+  # Verify current user is a member of the game's team (used for show)
   def authorize_team_member!
-    unless @game.team.members.include?(current_user)
-      redirect_to teams_path, alert: "Vous n'êtes pas membre de cette équipe."
-    end
+    authorize_team_member_on!(@game.team)
   end
 
+  # Verify current user is a member of the game's team (used for progression actions)
+  # Delegates to shared ApplicationController helper (feature 012)
+  def authorize_game_team_member!
+    authorize_team_member_on!(@game.team)
+  end
+
+  # Verify current user is the organizer of the game's team (cancellation only)
   def authorize_organizer_for_game!
     team = @team || @game&.team
-    unless team&.organizer == current_user
-      redirect_to (team ? team : teams_path), alert: "Seul l'organisateur peut effectuer cette action."
-    end
+    authorize_team_organizer_on!(team) if team
   end
 end

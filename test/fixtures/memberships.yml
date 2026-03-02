@@ -43,3 +43,8 @@ team_three_members_member:
 team_three_members_organizer_two:
   team: team_three_members
   user: organizer_two
+
+# Feature 012: team with organizer + member + member_two (eligible for game launch)
+team_autonomy_organizer:
+  team: team_three_members
+  user: member_two
