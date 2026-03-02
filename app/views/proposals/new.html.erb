@@ -1,16 +1,25 @@
+<% editing = @existing_proposal.present? %>
 <div class="max-w-md mx-auto">
   <div class="mb-4 sm:mb-6">
     <%= link_to "← Retour à la partie", game_path(@game), class: "text-gray-400 hover:neon-text-cyan transition-all duration-300 text-sm sm:text-base min-h-11 inline-flex items-center" %>
   </div>
 
   <div class="neon-border p-4 sm:p-6">
-    <h1 class="text-xl sm:text-2xl font-display font-bold neon-text-pink mb-3 sm:mb-4">🎵 Soumettre ma musique</h1>
-    
+    <h1 class="text-xl sm:text-2xl font-display font-bold neon-text-pink mb-3 sm:mb-4">
+      <%= editing ? "✏️ Modifier ma musique" : "🎵 Soumettre ma musique" %>
+    </h1>
+
     <p class="text-gray-300 mb-4 sm:mb-6 text-sm sm:text-base">
-      Partagez le lien vers une musique que vous aimez. Les autres joueurs devront deviner que c'est vous qui l'avez proposée !
+      <% if editing %>
+        Vous pouvez modifier votre proposition tant que la phase de collecte est ouverte. La nouvelle valeur remplacera l'ancienne.
+      <% else %>
+        Partagez le lien vers une musique que vous aimez. Les autres joueurs devront deviner que c'est vous qui l'avez proposée !
+      <% end %>
     </p>
 
-    <%= form_with model: [@game, @proposal], class: "space-y-4" do |f| %>
+    <%# @proposal is always a new (unsaved) record pre-filled with the existing URL if any.
+        form_with model: always generates POST to game_proposals_path (upsert endpoint). %>
+    <%= form_with model: [@game, @proposal], class: "space-y-4", data: { controller: "youtube-preview" } do |f| %>
       <% if @proposal.errors.any? %>
         <div class="bg-red-500/10 border border-red-500/30 text-red-400 px-3 sm:px-4 py-3 rounded-lg">
           <h2 class="font-medium text-sm sm:text-base"><%= pluralize(@proposal.errors.count, "erreur", "erreurs") %> empêche<%= @proposal.errors.count > 1 ? "nt" : "" %> la sauvegarde:</h2>
@@ -24,7 +33,7 @@
 
       <div>
         <%= f.label :url, "Lien vers la musique", class: "block text-sm font-medium text-gray-300 mb-2" %>
-        <%= f.url_field :url, class: "input-neon w-full min-h-11 px-3 sm:px-4 py-2 rounded-lg", placeholder: "https://www.youtube.com/watch?v=...", required: true %>
+        <%= f.url_field :url, class: "input-neon w-full min-h-11 px-3 sm:px-4 py-2 rounded-lg", placeholder: "https://www.youtube.com/watch?v=...", required: true, data: { youtube_preview_target: "input", action: "input->youtube-preview#handleInput" } %>
         <p class="text-xs text-gray-500 mt-2">YouTube, Spotify, Deezer, SoundCloud... tout lien musical valide</p>
       </div>
 
@@ -34,8 +43,25 @@
         </p>
       </div>
 
+      <div class="border border-neon-purple/30 rounded-lg p-3 bg-dark-700/50" data-youtube-preview-target="preview" hidden>
+        <p class="text-xs text-gray-400 mb-2">Aperçu :</p>
+        <div class="aspect-video w-full">
+          <iframe
+            data-youtube-preview-target="iframe"
+            class="w-full h-full rounded-lg"
+            src=""
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+            loading="lazy"
+          ></iframe>
+        </div>
+      </div>
+
       <div>
-        <%= f.submit "Soumettre ma proposition", class: "btn-neon btn-primary w-full font-medium py-3 px-4 rounded-lg cursor-pointer min-h-11 text-sm sm:text-base" %>
+        <%= f.submit editing ? "Modifier ma proposition" : "Soumettre ma proposition", class: "btn-neon btn-primary w-full font-medium py-3 px-4 rounded-lg cursor-pointer min-h-11 text-sm sm:text-base" %>
       </div>
     <% end %>
   </div>

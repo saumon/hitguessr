@@ -287,4 +287,174 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
     assert_includes response.body, I18n.t("games.create.minimum_members_required", count: Game::MINIMUM_TEAM_MEMBERS)
   end
+
+  # ===========================================
+  # Feature 012 – US1: Membre peut progresser la partie
+  # ===========================================
+
+  # T009: non-organizer member can trigger start_guessing
+  test "team member (non-organizer) can trigger start_guessing" do
+    sign_in @member
+
+    patch start_guessing_game_path(@collecting_game)
+
+    assert_redirected_to game_path(@collecting_game)
+    assert_equal I18n.t("games.start_guessing.success"), flash[:notice]
+    assert @collecting_game.reload.guessing?
+  end
+
+  # T009: non-organizer member can trigger finish
+  test "team member (non-organizer) can trigger finish" do
+    sign_in @member
+
+    patch finish_game_path(@guessing_game)
+
+    assert_redirected_to game_results_path(@guessing_game)
+    assert_equal I18n.t("games.finish.success"), flash[:notice]
+    assert @guessing_game.reload.finished?
+  end
+
+  # T009: organizer can still trigger start_guessing (regression guard)
+  test "organizer can still trigger start_guessing" do
+    sign_in @organizer
+
+    patch start_guessing_game_path(@collecting_game)
+
+    assert_redirected_to game_path(@collecting_game)
+    assert_equal I18n.t("games.start_guessing.success"), flash[:notice]
+    assert @collecting_game.reload.guessing?
+  end
+
+  # T009: organizer can still trigger finish (regression guard)
+  test "organizer can still trigger finish" do
+    sign_in @organizer_two
+
+    patch finish_game_path(@guessing_game)
+
+    assert_redirected_to game_results_path(@guessing_game)
+    assert_equal I18n.t("games.finish.success"), flash[:notice]
+    assert @guessing_game.reload.finished?
+  end
+
+  # T009: non-member is rejected from start_guessing with explicit feedback
+  test "non-member cannot trigger start_guessing and receives explicit feedback" do
+    sign_in @non_member
+
+    patch start_guessing_game_path(@collecting_game)
+
+    assert_redirected_to teams_path
+    assert_equal I18n.t("authorization.not_team_member"), flash[:alert]
+    assert @collecting_game.reload.collecting?
+  end
+
+  # T009: non-member is rejected from finish with explicit feedback
+  test "non-member cannot trigger finish and receives explicit feedback" do
+    sign_in @non_member
+
+    patch finish_game_path(@guessing_game)
+
+    assert_redirected_to teams_path
+    assert_equal I18n.t("authorization.not_team_member"), flash[:alert]
+    assert @guessing_game.reload.guessing?
+  end
+
+  # T009: member can create a game (non-organizer)
+  test "team member (non-organizer) can create a game for an eligible team" do
+    eligible_team = Team.create!(name: "Équipe Membre Test", organizer: @organizer)
+    eligible_team.memberships.create!(user: @member)
+    eligible_team.memberships.create!(user: @member_two)
+
+    sign_in @member
+
+    assert_difference("Game.count", 1) do
+      post team_games_path(eligible_team)
+    end
+
+    created_game = Game.order(:id).last
+    assert_redirected_to game_path(created_game)
+    assert_equal I18n.t("games.create.success"), flash[:notice]
+  end
+
+  # T013: invalid transition produces explicit conflict message (state guard)
+  test "start_guessing on a guessing game produces explicit conflict message" do
+    sign_in @member
+
+    # Create a collecting game on team_three (no active game), add proposals,
+    # then force to guessing via update_columns to simulate a concurrent state change.
+    already_guessing = @team_three.games.create!(status: :collecting)
+    already_guessing.proposals.create!(player: @organizer_two, url: "https://example.com/cg1")
+    already_guessing.proposals.create!(player: @member, url: "https://example.com/cg2")
+    already_guessing.update_columns(status: 1, started_at: Time.current)  # bypass validations
+
+    patch start_guessing_game_path(already_guessing)
+
+    assert_redirected_to game_path(already_guessing)
+    assert_equal I18n.t("games.transition.conflict"), flash[:alert]
+    assert already_guessing.reload.guessing?
+  end
+
+  test "finish on a collecting game produces explicit conflict message" do
+    sign_in @member
+
+    # collecting_game is in collecting state – invalid transition for finish
+    patch finish_game_path(@collecting_game)
+
+    assert_redirected_to game_path(@collecting_game)
+    assert_equal I18n.t("games.transition.conflict"), flash[:alert]
+  end
+
+  # T015: unauthenticated user is rejected from start_guessing
+  test "unauthenticated user cannot trigger start_guessing" do
+    patch start_guessing_game_path(@collecting_game)
+
+    assert_redirected_to new_user_session_path
+    assert @collecting_game.reload.collecting?
+  end
+
+  test "unauthenticated user cannot trigger finish" do
+    patch finish_game_path(@guessing_game)
+
+    assert_redirected_to new_user_session_path
+    assert @guessing_game.reload.guessing?
+  end
+
+  # ===========================================
+  # Feature 012 – US2: Actions organisateur-only préservées
+  # ===========================================
+
+  # T019: non-organizer member CANNOT destroy a game (regression guard)
+  test "non-organizer member cannot destroy a game (regression feature 012)" do
+    sign_in @member
+
+    assert_no_difference("Game.count") do
+      delete game_path(@collecting_game)
+    end
+
+    assert_redirected_to team_path(@team)
+    assert_equal I18n.t("authorization.organizer_only"), flash[:alert]
+  end
+
+  # T019: organizer CAN destroy a game (regression guard)
+  test "organizer can still destroy a collecting game (regression feature 012)" do
+    sign_in @organizer
+
+    assert_difference("Game.count", -1) do
+      delete game_path(@collecting_game)
+    end
+
+    assert_redirected_to team_games_path(@team)
+    assert_equal I18n.t("games.destroy.success"), flash[:notice]
+  end
+
+  # T019: organizer_two of a different team CANNOT destroy an unrelated game
+  test "organizer of another team cannot destroy someone else game" do
+    sign_in @organizer_two
+
+    assert_no_difference("Game.count") do
+      delete game_path(@collecting_game)
+    end
+
+    assert_redirected_to team_path(@team)
+    assert_equal I18n.t("authorization.organizer_only"), flash[:alert]
+  end
 end

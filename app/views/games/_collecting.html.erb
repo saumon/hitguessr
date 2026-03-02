@@ -50,7 +50,7 @@
       <span class="font-medium text-sm sm:text-base">Ma proposition: Soumise</span>
     </div>
     <p class="text-xs sm:text-sm text-gray-400 mt-2 sm:mt-3">
-      <%= link_to "Voir ma proposition", game_proposal_path(game, my_proposal), class: "neon-text-pink hover:neon-text-cyan transition-all duration-300" %>
+      <%= link_to "Modifier ma proposition", new_game_proposal_path(game), class: "neon-text-pink hover:neon-text-cyan transition-all duration-300" %>
     </p>
   <% else %>
     <%= link_to new_game_proposal_path(game), class: "btn-neon btn-primary inline-flex items-center gap-2 font-medium py-3 px-5 sm:px-6 rounded-lg text-sm sm:text-base min-h-11 w-full sm:w-auto justify-center" do %>
@@ -59,22 +59,30 @@
   <% end %>
 </div>
 
-<%# Organizer actions %>
-<% if team.organizer == current_user %>
+<%# Feature 012 (US1): Passer aux devinettes accessible à tous les membres %>
+<% if team.members.include?(current_user) %>
   <div class="border-t border-neon-purple/20 pt-4 sm:pt-6">
-    <p class="text-xs sm:text-sm text-gray-500 mb-2 sm:mb-3">(Organisateur uniquement)</p>
     <div class="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3">
       <% if proposals.count >= 2 %>
         <%= button_to "⚠️ Passer aux devinettes", start_guessing_game_path(game), method: :patch, data: { turbo_confirm: "Passer aux devinettes ? Les joueurs sans proposition seront exclus." }, class: "btn-neon bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-400 border border-yellow-500/50 font-medium py-2 px-4 rounded-lg cursor-pointer transition-all duration-300 text-sm min-h-11 w-full sm:w-auto" %>
       <% else %>
-        <button disabled class="bg-dark-700 text-gray-500 font-medium py-2 px-4 rounded-lg cursor-not-allowed border border-dark-500 text-sm min-h-11 w-full sm:w-auto">
+        <button disabled class="bg-dark-700 text-gray-500 font-medium py-2 px-4 rounded-lg cursor-not-allowed border border-dark-500 text-sm min-h-11 w-full sm:w-auto" aria-disabled="true">
           ⚠️ Passer aux devinettes
         </button>
       <% end %>
-      <%= button_to "🗑️ Annuler la partie", game_path(game), method: :delete, data: { turbo_confirm: t("games.destroy.confirm") }, class: "btn-neon bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/50 font-medium py-2 px-4 rounded-lg cursor-pointer transition-all duration-300 text-sm min-h-11 w-full sm:w-auto" %>
     </div>
     <% if proposals.count < 2 %>
       <p class="text-xs neon-text-pink mt-2">Au moins 2 joueurs doivent avoir soumis une proposition pour passer aux devinettes</p>
     <% end %>
+  </div>
+<% end %>
+
+<%# Feature 012 (US2): Annuler la partie réservé à l'organisateur %>
+<% if team.organizer == current_user %>
+  <div class="border-t border-neon-purple/20 pt-4 sm:pt-6">
+    <p class="text-xs sm:text-sm text-gray-500 mb-2 sm:mb-3">(Organisateur uniquement)</p>
+    <div class="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3">
+      <%= button_to "🗑️ Annuler la partie", game_path(game), method: :delete, data: { turbo_confirm: t("games.destroy.confirm") }, class: "btn-neon bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/50 font-medium py-2 px-4 rounded-lg cursor-pointer transition-all duration-300 text-sm min-h-11 w-full sm:w-auto" %>
+    </div>
   </div>
 <% end %>

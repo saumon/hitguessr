@@ -16,10 +16,28 @@
       </p>
     </div>
 
-    <%= form_with url: game_guesses_path(@game), method: :post, class: "space-y-6" do |f| %>
+    <%# data-controller et data-action submit pour la détection de doublons (feature 013) %>
+    <%# Stimulus intercepte avant Turbo car il est sur l'élément form (plus proche de l'origine events) %>
+    <%= form_with url: game_guesses_path(@game), method: :post,
+                  class: "space-y-6",
+                  data: {
+                    controller: "guess-duplicates"
+                  } do |f| %>
       <% @proposals.each_with_index do |proposal, index| %>
-        <div class="border border-neon-purple/30 rounded-lg p-4 bg-dark-700/50">
-          <h3 class="font-medium text-gray-200 mb-3">Proposition #<%= index + 1 %></h3>
+        <%# data-guess-duplicates-target="row" et data-proposal-id pour la détection par ligne %>
+        <div class="border border-neon-purple/30 rounded-lg p-4 bg-dark-700/50"
+             data-guess-duplicates-target="row"
+             data-proposal-id="<%= proposal.id %>">
+
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-medium text-gray-200">Proposition #<%= index + 1 %></h3>
+            <%# Indicateur inline de doublon — masqué par défaut, révélé par Stimulus %>
+            <span class="hidden text-xs font-semibold text-yellow-400 bg-yellow-400/10 border border-yellow-400/30 rounded px-2 py-0.5"
+                  data-guess-duplicates-target="indicator"
+                  data-testid="duplicate-indicator-<%= proposal.id %>">
+              ⚠️ Doublon
+            </span>
+          </div>
           
           <div class="bg-dark-800/50 rounded-lg p-3 mb-4 border border-neon-cyan/20">
             <a href="<%= proposal.url %>" target="_blank" rel="noopener noreferrer" class="neon-text-cyan hover:neon-text-pink transition-all duration-300 break-all flex items-center gap-2">
@@ -27,7 +45,7 @@
               <span><%= proposal.url %></span>
             </a>
             
-            <%# T005: YouTube iframe embed (si lien YouTube valide et intégrable) %>
+            <%# YouTube iframe embed (si lien YouTube valide et intégrable) %>
             <% if (embed_html = youtube_embed(proposal.url)) %>
               <div class="aspect-video w-full mt-4" data-testid="youtube-embed">
                 <%= embed_html %>
@@ -40,7 +58,11 @@
             <div class="space-y-2">
               <% @players.reject { |p| p == current_user }.each do |player| %>
                 <label class="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-neon-purple/10 transition-all duration-300">
-                  <%= radio_button_tag "guesses[#{proposal.id}]", player.id, false, required: true, class: "w-4 h-4 text-neon-pink border-neon-purple/50 focus:ring-neon-pink bg-dark-700" %>
+                  <%# data-action déclenche handleChange à chaque changement de sélection radio %>
+                  <%= radio_button_tag "guesses[#{proposal.id}]", player.id, false,
+                        required: true,
+                        class: "w-4 h-4 text-neon-pink border-neon-purple/50 focus:ring-neon-pink bg-dark-700",
+                        data: { action: "change->guess-duplicates#handleChange input->guess-duplicates#handleChange" } %>
                   <span class="text-gray-200"><%= player.name %></span>
                 </label>
               <% end %>
@@ -50,7 +72,51 @@
       <% end %>
 
       <div class="pt-4 border-t border-neon-purple/20">
-        <%= f.submit "Soumettre mes devinettes", class: "btn-neon btn-primary w-full font-medium py-3 px-4 rounded-lg cursor-pointer" %>
+        <%# Bouton type=button (non-submit) pour éviter la race condition Turbo/Stimulus %>
+        <%# L'action click->interceptSubmit contrôle entièrement la soumission via requestSubmit() %>
+        <%= button_tag "Soumettre mes devinettes",
+              type: "button",
+              class: "btn-neon btn-primary w-full font-medium py-3 px-4 rounded-lg cursor-pointer",
+              data: {
+                testid: "submit-guesses",
+                action: "click->guess-duplicates#interceptSubmit"
+              } %>
+      </div>
+
+      <%# Modal de confirmation de doublons — masquée par défaut, ouverte par Stimulus à la soumission %>
+      <div class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50"
+           data-guess-duplicates-target="modal"
+           data-testid="duplicate-modal"
+           role="dialog"
+           aria-modal="true"
+           aria-labelledby="duplicate-modal-title">
+        <div class="bg-dark-800 border border-yellow-400/40 rounded-xl p-6 max-w-md w-full mx-4 shadow-2xl">
+          <h2 id="duplicate-modal-title" class="text-lg font-bold text-yellow-400 mb-2">
+            ⚠️ Doublons détectés
+          </h2>
+          <p class="text-gray-300 text-sm mb-4">
+            Vous avez attribué le même auteur à plusieurs propositions. Voulez-vous quand même soumettre ?
+          </p>
+          <ul class="mb-6 space-y-1 text-sm list-disc list-inside"
+              data-guess-duplicates-target="modalList"
+              data-testid="duplicate-modal-list"></ul>
+          <div class="flex gap-3 justify-end">
+            <%# Annuler — ferme la modal sans soumettre %>
+            <button type="button"
+                    class="px-4 py-2 rounded-lg text-sm font-medium text-gray-300 border border-gray-600 hover:border-gray-400 transition-all duration-200"
+                    data-action="click->guess-duplicates#cancelSubmit"
+                    data-testid="duplicate-modal-cancel">
+              Annuler
+            </button>
+            <%# Confirmer — soumet le formulaire malgré les doublons %>
+            <button type="button"
+                    class="btn-neon btn-primary px-4 py-2 rounded-lg text-sm font-medium"
+                    data-action="click->guess-duplicates#confirmSubmit"
+                    data-testid="duplicate-modal-confirm">
+              Confirmer quand même
+            </button>
+          </div>
+        </div>
       </div>
     <% end %>
   </div>

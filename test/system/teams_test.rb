@@ -140,4 +140,179 @@ class TeamsTest < ApplicationSystemTestCase
     assert_text "Équipe supprimée"
     assert_no_text "Les Mélomanes"
   end
+
+  # ==============================================
+  # Feature 012 – US1: Membre peut progresser la partie
+  # ==============================================
+
+  test "team member (non-organizer) sees the launch button and can create a game" do
+    team = Team.create!(name: "Les Testeurs", organizer: @organizer)
+    team.memberships.create!(user: @member)
+    team.memberships.create!(user: @member_two)
+
+    sign_in_as @member
+
+    visit team_path(team)
+
+    assert_link "🎧 Lancer une partie"
+    click_link "🎧 Lancer une partie"
+    click_button "Lancer la partie"
+
+    assert_text I18n.t("games.create.success")
+    assert_text "PHASE: Collecte des propositions"
+  end
+
+  test "team member (non-organizer) can trigger start_guessing" do
+    team = Team.create!(name: "Les Devineurs", organizer: @organizer)
+    team.memberships.create!(user: @member)
+    team.memberships.create!(user: @member_two)
+    game = team.games.create!(status: :collecting)
+    game.proposals.create!(player: @organizer, url: "https://youtube.com/1")
+    game.proposals.create!(player: @member,    url: "https://youtube.com/2")
+
+    sign_in_as @member
+
+    visit game_path(game)
+
+    assert_button "⚠️ Passer aux devinettes"
+
+    accept_confirm do
+      click_button "⚠️ Passer aux devinettes"
+    end
+
+    assert_text I18n.t("games.start_guessing.success")
+    assert game.reload.guessing?
+  end
+
+  test "team member (non-organizer) can trigger finish" do
+    team = Team.create!(name: "Les Finisseurs", organizer: @organizer)
+    team.memberships.create!(user: @member)
+    team.memberships.create!(user: @member_two)
+    game = team.games.create!(status: :guessing, started_at: Time.current)
+    game.proposals.create!(player: @organizer, url: "https://youtube.com/1")
+    game.proposals.create!(player: @member,    url: "https://youtube.com/2")
+
+    sign_in_as @member
+
+    visit game_path(game)
+
+    assert_button "⚠️ Terminer la partie"
+
+    accept_confirm do
+      click_button "⚠️ Terminer la partie"
+    end
+
+    assert_text I18n.t("games.finish.success")
+    assert game.reload.finished?
+  end
+
+  # ==============================================
+  # Feature 012 – US2: Actions organisateur-only restent protégées
+  # ==============================================
+
+  test "team member (non-organizer) does not see cancel game button" do
+    team = Team.create!(name: "Les Protégés", organizer: @organizer)
+    team.memberships.create!(user: @member)
+    team.memberships.create!(user: @member_two)
+    game = team.games.create!(status: :collecting)
+    game.proposals.create!(player: @organizer, url: "https://youtube.com/1")
+
+    sign_in_as @member
+
+    visit game_path(game)
+
+    assert_no_button "🗑️ Annuler la partie"
+  end
+
+  test "organizer sees cancel game button in collecting phase" do
+    team = Team.create!(name: "Les Organisateurs", organizer: @organizer)
+    team.memberships.create!(user: @member)
+    team.memberships.create!(user: @member_two)
+    game = team.games.create!(status: :collecting)
+
+    sign_in_as @organizer
+
+    visit game_path(game)
+
+    assert_button "🗑️ Annuler la partie"
+  end
+
+  test "team member does not see add/remove member controls" do
+    team = Team.create!(name: "Les Gouvernés", organizer: @organizer)
+    team.memberships.create!(user: @member)
+    team.memberships.create!(user: @member_two)
+
+    sign_in_as @member
+
+    visit team_path(team)
+    find("details.members-details summary").click
+
+    assert_no_field "Email du membre à ajouter"
+    assert_no_button "Retirer"
+  end
+
+  test "organizer sees add member form and remove buttons" do
+    team = Team.create!(name: "Les Maîtres", organizer: @organizer)
+    team.memberships.create!(user: @member)
+
+    sign_in_as @organizer
+
+    visit team_path(team)
+    find("details.members-details summary").click
+
+    assert_field "Email du membre à ajouter"
+    assert_button "Retirer"
+  end
+
+  # ==============================================
+  # Feature 012 – US3: Visibilité des permissions
+  # ==============================================
+
+  test "non-organizer member sees start_guessing button but not cancel" do
+    team = Team.create!(name: "Clarté Rôles", organizer: @organizer)
+    team.memberships.create!(user: @member)
+    team.memberships.create!(user: @member_two)
+    game = team.games.create!(status: :collecting)
+    game.proposals.create!(player: @organizer, url: "https://youtube.com/1")
+    game.proposals.create!(player: @member,    url: "https://youtube.com/2")
+
+    sign_in_as @member
+
+    visit game_path(game)
+
+    assert_button "⚠️ Passer aux devinettes"
+    assert_no_button "🗑️ Annuler la partie"
+  end
+
+  test "organizer sees both start_guessing and cancel buttons" do
+    team = Team.create!(name: "Clarté Organisateur", organizer: @organizer)
+    team.memberships.create!(user: @member)
+    team.memberships.create!(user: @member_two)
+    game = team.games.create!(status: :collecting)
+    game.proposals.create!(player: @organizer, url: "https://youtube.com/1")
+    game.proposals.create!(player: @member,    url: "https://youtube.com/2")
+
+    sign_in_as @organizer
+
+    visit game_path(game)
+
+    assert_button "⚠️ Passer aux devinettes"
+    assert_button "🗑️ Annuler la partie"
+  end
+
+  test "non-organizer member sees finish button but not cancel in guessing phase" do
+    team = Team.create!(name: "Clarté Fin", organizer: @organizer)
+    team.memberships.create!(user: @member)
+    team.memberships.create!(user: @member_two)
+    game = team.games.create!(status: :guessing, started_at: Time.current)
+    game.proposals.create!(player: @organizer, url: "https://youtube.com/1")
+    game.proposals.create!(player: @member,    url: "https://youtube.com/2")
+
+    sign_in_as @member
+
+    visit game_path(game)
+
+    assert_button "⚠️ Terminer la partie"
+    assert_no_button "🗑️ Annuler la partie"
+  end
 end
