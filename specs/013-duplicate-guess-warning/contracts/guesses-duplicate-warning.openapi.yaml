@@ -1,0 +1,61 @@
+openapi: 3.0.3
+info:
+  title: HitGuessr Guesses Flow Contract
+  version: 1.2.3
+  description: |
+    Contract for guessing flow with client-side duplicate warning.
+    Duplicate detection and warning modal are UI behaviors executed before POST.
+servers:
+  - url: /
+paths:
+  /games/{game_id}/guesses/new:
+    get:
+      summary: Render guessing form
+      description: |
+        Returns HTML form listing proposals to guess.
+        Client-side script computes duplicate selections in real time.
+      parameters:
+        - in: path
+          name: game_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Guessing form HTML
+          content:
+            text/html:
+              schema:
+                type: string
+        '302':
+          description: Redirect when unauthorized or not in guessing phase
+  /games/{game_id}/guesses:
+    post:
+      summary: Submit all guesses for a game
+      description: |
+        Standard submission endpoint.
+        If duplicates exist in the UI selections, user must confirm in a blocking modal before this request is sent.
+      parameters:
+        - in: path
+          name: game_id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                guesses:
+                  type: object
+                  additionalProperties:
+                    type: integer
+                  description: Mapping proposal_id -> guessed_author_id
+              required:
+                - guesses
+      responses:
+        '302':
+          description: Redirect to game page on success, or back to form on validation error
+components: {}
