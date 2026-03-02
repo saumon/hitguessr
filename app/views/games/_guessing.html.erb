@@ -44,6 +44,22 @@
   </div>
 </div>
 
+<%# My proposal locked state (T021 — feature 014: no edit link in guessing phase) %>
+<div class="neon-border p-4 sm:p-6 mb-4 sm:mb-6">
+  <% if my_proposal %>
+    <div class="flex items-center gap-2 sm:gap-3 text-gray-400">
+      <span class="text-xl sm:text-2xl flex-shrink-0">🔒</span>
+      <span class="font-medium text-sm sm:text-base">Ma proposition: <span class="neon-text-cyan">Verrouillée</span></span>
+    </div>
+    <p class="text-xs sm:text-sm text-gray-500 mt-2">La modification est désactivée pendant la phase de devinettes.</p>
+  <% else %>
+    <div class="flex items-center gap-2 sm:gap-3 text-gray-400">
+      <span class="text-xl sm:text-2xl flex-shrink-0">⚠️</span>
+      <span class="text-sm sm:text-base">Vous n'avez pas de proposition pour cette partie.</span>
+    </div>
+  <% end %>
+</div>
+
 <%# My guesses action %>
 <% my_guesses = current_user.guesses.joins(:proposal).where(proposals: { game_id: game.id }) %>
 <% has_submitted_guesses = my_guesses.count == (proposals.count - 1) && my_proposal.present? %>

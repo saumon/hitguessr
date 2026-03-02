@@ -32,10 +32,11 @@ class ProposalsTest < ApplicationSystemTestCase
     sign_in_as @player1
 
     visit game_path(@game)
-    click_link "Voir ma proposition"
+    # Feature 014: link is now "Modifier ma proposition" (edit flow)
+    click_link "Modifier ma proposition"
 
-    assert_text "Ma proposition"
-    assert_text "youtube.com/watch?v=abc"
+    assert_text "Modifier ma musique"
+    assert_field "Lien vers la musique", with: "https://www.youtube.com/watch?v=abc"
   end
 
   test "proposal is invisible to other players" do
@@ -54,14 +55,17 @@ class ProposalsTest < ApplicationSystemTestCase
     assert_no_text "youtube.com/watch?v=abc"
   end
 
-  test "player cannot submit proposal twice" do
+  test "player can update their proposal during collecting phase" do
+    # Feature 014: visiting new_game_proposal_path when a proposal exists shows the edit form
     @game.proposals.create!(player: @player1, url: "https://www.youtube.com/watch?v=abc")
 
     sign_in_as @player1
 
     visit new_game_proposal_path(@game)
 
-    assert_text "Vous avez déjà soumis une proposition"
+    # Should show edit form, not redirect with error
+    assert_text "Modifier ma musique"
+    assert_no_text "Vous avez déjà soumis une proposition"
   end
 
   test "player cannot submit proposal after collecting phase" do
@@ -97,5 +101,78 @@ class ProposalsTest < ApplicationSystemTestCase
     visit game_path(@game)
 
     assert_text "1/3 propositions reçues"
+  end
+
+  # =============================================================
+  # T008 [US1] — Modifier une proposition existante en collecte
+  # =============================================================
+
+  test "player can edit their existing proposal during collecting phase" do
+    sign_in_as @player1
+
+    # Première soumission
+    visit new_game_proposal_path(@game)
+    fill_in "Lien vers la musique", with: "https://www.youtube.com/watch?v=original"
+    click_button "Soumettre ma proposition"
+    assert_text "Proposition soumise avec succès"
+
+    # Accès au formulaire d'édition via "Modifier ma proposition"
+    click_link "Modifier ma proposition"
+    assert_text "Modifier ma musique"
+    assert_field "Lien vers la musique", with: "https://www.youtube.com/watch?v=original"
+
+    # Mise à jour
+    fill_in "Lien vers la musique", with: "https://www.youtube.com/watch?v=updated"
+    click_button "Modifier ma proposition"
+
+    assert_text "Proposition modifiée avec succès"
+    assert_text "Ma proposition: Soumise"
+  end
+
+  test "editing proposal form is pre-filled with existing URL" do
+    @game.proposals.create!(player: @player1, url: "https://www.youtube.com/watch?v=prefill")
+
+    sign_in_as @player1
+
+    visit new_game_proposal_path(@game)
+
+    assert_text "Modifier ma musique"
+    assert_field "Lien vers la musique", with: "https://www.youtube.com/watch?v=prefill"
+  end
+
+  # =============================================================
+  # T018 [US2] — Aucune action d'édition disponible en phase guessing
+  # =============================================================
+
+  test "no edit action available in guessing phase" do
+    @game.proposals.create!(player: @player1, url: "https://www.youtube.com/watch?v=abc")
+    @game.proposals.create!(player: @player2, url: "https://www.youtube.com/watch?v=xyz")
+    @game.start_guessing!
+
+    sign_in_as @player1
+
+    visit game_path(@game)
+
+    # No edit link visible
+    assert_no_text "Modifier ma proposition"
+    # Locked state visible
+    assert_text "Verrouillée"
+  end
+
+  # =============================================================
+  # T024 [US3] — Soumettre la même URL en collecte reste accepté
+  # =============================================================
+
+  test "submitting the same URL again in collecting phase is accepted" do
+    existing_url = "https://www.youtube.com/watch?v=same"
+    @game.proposals.create!(player: @player1, url: existing_url)
+
+    sign_in_as @player1
+
+    visit new_game_proposal_path(@game)
+    fill_in "Lien vers la musique", with: existing_url
+    click_button "Modifier ma proposition"
+
+    assert_text "Proposition modifiée avec succès"
   end
 end

@@ -50,7 +50,7 @@
       <span class="font-medium text-sm sm:text-base">Ma proposition: Soumise</span>
     </div>
     <p class="text-xs sm:text-sm text-gray-400 mt-2 sm:mt-3">
-      <%= link_to "Voir ma proposition", game_proposal_path(game, my_proposal), class: "neon-text-pink hover:neon-text-cyan transition-all duration-300" %>
+      <%= link_to "Modifier ma proposition", new_game_proposal_path(game), class: "neon-text-pink hover:neon-text-cyan transition-all duration-300" %>
     </p>
   <% else %>
     <%= link_to new_game_proposal_path(game), class: "btn-neon btn-primary inline-flex items-center gap-2 font-medium py-3 px-5 sm:px-6 rounded-lg text-sm sm:text-base min-h-11 w-full sm:w-auto justify-center" do %>

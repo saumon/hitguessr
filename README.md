@@ -19,6 +19,7 @@
 - 🤝 **Team member autonomy** — Any team member (including the organizer) can launch, start guessing, and finish a game; cancel game and membership management remain organizer-only
 - 🎧 **Team-based gameplay** — Create teams, invite friends, and play together
 - 🎵 **Music proposals** — Submit YouTube or any music URL anonymously
+- ✏️ **Proposal edit window** — A player can edit their own proposal while the game is in collecting phase; once guessing starts, proposal changes are locked
 - 🤔 **Guessing phase** — Try to match each song to its submitter
 - ⚠️ **Duplicate guess warning** — Real-time inline indicators highlight duplicate selections during guessing; a blocking confirmation modal details conflicts before submission, while still allowing intentional duplicates
 - 🔀 **Randomized guess order** — Proposals are shuffled per round and stay stable for all players during guessing
@@ -119,12 +120,13 @@ A demo team "**Les Mélomanes**" is pre-created with a finished game showing the
 ### Rules
 
 1. **One proposal per player** — Each player submits exactly one music URL per game
-2. **No duplicates** — The same URL cannot be submitted twice in the same game
-3. **Anonymous proposals** — Players cannot see others' submissions during collection
-4. **Randomized & frozen guess order** — At guessing start, proposal order is shuffled once per game and shared identically for all players
-5. **Complete guesses** — All proposals must be matched to a player to submit guesses
-6. **No self-guessing** — Players cannot guess their own proposal (excluded automatically)
-7. **Minimum 3 members to start** — A new game can be launched only if the team has at least 3 active members
+2. **Proposal editable only in collecting** — A player can update their own proposal until guessing starts; after transition, edits are blocked
+3. **No duplicates** — The same URL cannot be submitted twice in the same game
+4. **Anonymous proposals** — Players cannot see others' submissions during collection
+5. **Randomized & frozen guess order** — At guessing start, proposal order is shuffled once per game and shared identically for all players
+6. **Complete guesses** — All proposals must be matched to a player to submit guesses
+7. **No self-guessing** — Players cannot guess their own proposal (excluded automatically)
+8. **Minimum 3 members to start** — A new game can be launched only if the team has at least 3 active members
 
 ### Scoring
 
@@ -417,6 +419,7 @@ The app is localized in **French** by default. Translation files are in `config/
 
 ### v1.2.3 *(March 2, 2026)*
 
+- ✏️ **Proposal edit window** — A player can modify their own proposal during collecting phase; the same flow creates the proposal if missing, and all updates are blocked once guessing starts with no history retained ([#014](specs/014-proposal-edit-window/spec.md))
 - ⚠️ **Duplicate guess warning** — Real-time inline indicators appear next to each duplicated proposal during guessing; a blocking modal lists all conflicts (author + proposal numbers) on submission, while still allowing intentional duplicates after confirmation ([#013](specs/013-duplicate-guess-warning/spec.md))
 - 🤝 **Team member autonomy** — Any team member (including the organizer) can now launch, start the guessing phase, and finish a game. Only organizers retain exclusive rights to cancel a game or manage team membership. Concurrent state-change conflicts are caught and surfaced as an explicit feedback message ([#012](specs/012-team-member-autonomy/spec.md))
 - 🧹 **Team page cleanup** — Removed the redundant “Organisateur” info block from the team details page header section for a cleaner UI

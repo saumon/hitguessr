@@ -1,38 +1,49 @@
 class ProposalsController < ApplicationController
   before_action :set_game
   before_action :authorize_team_member!
-  before_action :authorize_collecting_phase!, only: [ :new, :create ]
+  # Phase guard for GET only — create checks at submission time for race-condition safety (US3)
+  before_action :authorize_collecting_phase!, only: [ :new ]
   before_action :set_proposal, only: [ :show ]
   before_action :authorize_owner!, only: [ :show ]
 
   def new
-    if @game.proposals.exists?(player: current_user)
-      redirect_to game_path(@game), alert: "Vous avez déjà soumis une proposition pour cette partie."
-      return
-    end
-
-    @proposal = @game.proposals.build
+    # Show form even if player already has a proposal (editing flow)
+    @existing_proposal = @game.proposals.find_by(player: current_user)
+    # Pre-fill form with current URL if editing
+    @proposal = @game.proposals.build(url: @existing_proposal&.url)
   end
 
   def create
-    if @game.proposals.exists?(player: current_user)
-      redirect_to game_path(@game), alert: "Vous avez déjà soumis une proposition pour cette partie."
+    # Reload game to evaluate phase at the exact moment of submission (US3 — race condition guard, T026)
+    @game.reload
+
+    unless @game.collecting?
+      redirect_to game_path(@game), alert: "La phase de collecte est terminée, votre proposition est verrouillée."
       return
     end
 
-    @proposal = @game.proposals.build(proposal_params)
-    @proposal.player = current_user
+    # Upsert: find existing proposal (if any) and update it, or build a new one (T014)
+    existing_proposal = @game.proposals.find_by(player: current_user)
+    is_new_record = existing_proposal.nil?
+    target = existing_proposal || @game.proposals.build(player: current_user)
+    target.assign_attributes(proposal_params)
 
-    if @proposal.save
-      # Check if game automatically progressed to guessing phase
+    if target.save
+      # Check if game automatically progressed to guessing phase after save
       @game.reload
       notice_message = if @game.guessing?
         "Proposition soumise avec succès ! Tous les joueurs ont soumis, la partie passe automatiquement en phase de devinettes."
-      else
+      elsif is_new_record
         "Proposition soumise avec succès !"
+      else
+        "Proposition modifiée avec succès !"
       end
       redirect_to game_path(@game), notice: notice_message
     else
+      # Always render with a new (unsaved) proposal so form_with generates POST to create endpoint
+      @existing_proposal = existing_proposal
+      @proposal = @game.proposals.build(url: target.url)
+      target.errors.each { |error| @proposal.errors.add(error.attribute, error.message) }
       render :new, status: :unprocessable_entity
     end
   end
