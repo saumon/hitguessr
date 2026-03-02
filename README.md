@@ -20,6 +20,7 @@
 - 🎧 **Team-based gameplay** — Create teams, invite friends, and play together
 - 🎵 **Music proposals** — Submit YouTube or any music URL anonymously
 - 🤔 **Guessing phase** — Try to match each song to its submitter
+- ⚠️ **Duplicate guess warning** — Real-time inline indicators highlight duplicate selections during guessing; a blocking confirmation modal details conflicts before submission, while still allowing intentional duplicates
 - 🔀 **Randomized guess order** — Proposals are shuffled per round and stay stable for all players during guessing
 - 👥 **Minimum team size to start** — Organizers can start a game only when the team has at least 3 members
 - 🚪 **Self-leave team** — A member can quit their team with confirmation (organizer cannot leave their own team)
@@ -416,6 +417,7 @@ The app is localized in **French** by default. Translation files are in `config/
 
 ### v1.2.3 *(March 2, 2026)*
 
+- ⚠️ **Duplicate guess warning** — Real-time inline indicators appear next to each duplicated proposal during guessing; a blocking modal lists all conflicts (author + proposal numbers) on submission, while still allowing intentional duplicates after confirmation ([#013](specs/013-duplicate-guess-warning/spec.md))
 - 🤝 **Team member autonomy** — Any team member (including the organizer) can now launch, start the guessing phase, and finish a game. Only organizers retain exclusive rights to cancel a game or manage team membership. Concurrent state-change conflicts are caught and surfaced as an explicit feedback message ([#012](specs/012-team-member-autonomy/spec.md))
 - 🧹 **Team page cleanup** — Removed the redundant “Organisateur” info block from the team details page header section for a cleaner UI
 
