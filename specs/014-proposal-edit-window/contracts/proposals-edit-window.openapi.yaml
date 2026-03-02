@@ -1,0 +1,67 @@
+openapi: 3.0.3
+info:
+  title: HitGuessr Proposals Edit Window Contract
+  version: 1.2.3
+  description: |
+    Contract for proposal submission/editing behavior.
+    The same submission flow supports create (if absent) or update (if existing)
+    while the game is in collecting phase. Any submission after guessing starts is rejected.
+servers:
+  - url: /
+paths:
+  /games/{game_id}/proposals/new:
+    get:
+      summary: Render proposal form
+      description: |
+        Displays form for current player's proposal while game is collecting.
+        If game is already guessing/finished, request is redirected with lock message.
+      parameters:
+        - in: path
+          name: game_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Proposal form HTML
+          content:
+            text/html:
+              schema:
+                type: string
+        '302':
+          description: Redirect when unauthorized or phase is not collecting
+  /games/{game_id}/proposals:
+    post:
+      summary: Submit proposal (create or update in collecting)
+      description: |
+        Unified submission endpoint.
+        - If no proposal exists for current player in this game and phase is collecting: create.
+        - If proposal exists and phase is collecting: update current value.
+        - If phase is guessing/finished at submission time: reject and keep previous value unchanged.
+      parameters:
+        - in: path
+          name: game_id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                proposal:
+                  type: object
+                  properties:
+                    url:
+                      type: string
+                      format: uri
+                  required:
+                    - url
+              required:
+                - proposal
+      responses:
+        '302':
+          description: Redirect to game page after success, or back to form on validation/authorization/phase rejection
+components: {}
