@@ -4,12 +4,28 @@ class TeamsController < ApplicationController
 
   def index
     @teams = current_user.teams.includes(:organizer, :members)
+    @pending_invitations = current_user.received_invitations
+                                       .pending_only
+                                       .includes(team: [ :organizer, :members ], invited_by: [])
   end
 
   def show
-    @members = @team.members
+    @members = @team.members.includes(:memberships)
     @games = @team.games.order(created_at: :desc)
     @leaderboard = @team.leaderboard
+
+    is_member_or_organizer = @team.members.include?(current_user) || @team.organizer == current_user
+
+    # US3 – invitations en attente visibles aux membres actifs + organisateur (FR-016)
+    # Pour un invité non-membre, seule sa propre invitation est visible
+    @pending_invitations = if is_member_or_organizer
+                             @team.team_invitations.pending_only.includes(:invited_user, :invited_by)
+    else
+                             @team.team_invitations.pending_only.for_user(current_user).includes(:invited_user, :invited_by)
+    end
+
+    # US1 – invitations reçues par l'utilisateur courant (pour Accepter/Refuser)
+    @my_pending_invitations = @team.team_invitations.pending_only.for_user(current_user)
   end
 
   def new
@@ -46,9 +62,17 @@ class TeamsController < ApplicationController
   private
 
   def set_team
-    @team = current_user.teams.find(params[:id])
-  rescue ActiveRecord::RecordNotFound
-    redirect_to teams_path, alert: "Équipe introuvable ou accès non autorisé."
+    @team = current_user.teams.find_by(id: params[:id])
+
+    # Permettre aussi l'accès aux utilisateurs avec une invitation en attente
+    if @team.nil?
+      @team = Team
+                .joins(:team_invitations)
+                .where(team_invitations: { invited_user_id: current_user.id, status: TeamInvitation.statuses[:pending] })
+                .find_by(id: params[:id])
+    end
+
+    redirect_to teams_path, alert: "Équipe introuvable ou accès non autorisé." if @team.nil?
   end
 
   def team_params

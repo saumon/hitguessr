@@ -1,7 +1,7 @@
 require "test_helper"
 
 class MembershipsControllerTest < ActionDispatch::IntegrationTest
-  fixtures :users, :teams, :memberships, :games
+  fixtures :users, :teams, :memberships, :games, :team_invitations
 
   setup do
     @organizer = users(:organizer)
@@ -96,13 +96,13 @@ class MembershipsControllerTest < ActionDispatch::IntegrationTest
   # Feature 012 – US2: Gestion membres (organisateur-only)
   # ===========================================
 
-  # T020: non-organizer member cannot add a new member
-  test "non-organizer member cannot add a member to the team" do
+  # T018: Ajout membre passe maintenant par le flux invitation (plus d'adhésion directe)
+  test "non-organizer member cannot invite a new member to the team" do
     new_user = User.create!(name: "Nouvel Utilisateur", email: "new_#{SecureRandom.hex(4)}@example.com", password: "password123")
     sign_in @member
 
-    assert_no_difference("Membership.count") do
-      post team_memberships_path(@team_one), params: { email: new_user.email }
+    assert_no_difference("TeamInvitation.count") do
+      post team_invitations_path(@team_one), params: { email: new_user.email }
     end
 
     assert_redirected_to team_path(@team_one)
@@ -110,17 +110,21 @@ class MembershipsControllerTest < ActionDispatch::IntegrationTest
     assert_not @team_one.members.reload.include?(new_user)
   end
 
-  # T020: organizer CAN add a new member (regression guard)
-  test "organizer can add a member to the team" do
+  # T018: L'organisateur crée une invitation (pas une adhésion directe)
+  test "organizer invites a member creating an invitation not a direct membership" do
     new_user = User.create!(name: "Nouveau Membre", email: "new_member_#{SecureRandom.hex(4)}@example.com", password: "password123")
     sign_in @organizer
 
-    assert_difference("Membership.count", 1) do
-      post team_memberships_path(@team_one), params: { email: new_user.email }
+    assert_no_difference("Membership.count") do
+      assert_difference("TeamInvitation.count", 1) do
+        post team_invitations_path(@team_one), params: { email: new_user.email }
+      end
     end
 
     assert_redirected_to team_path(@team_one)
-    assert @team_one.members.reload.include?(new_user)
+    assert_equal I18n.t("invitations.create.success"), flash[:notice]
+    assert_not @team_one.members.reload.include?(new_user)
+    assert TeamInvitation.pending_only.exists?(team: @team_one, invited_user: new_user)
   end
 
   # T020: non-organizer member cannot remove another member

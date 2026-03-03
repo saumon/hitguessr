@@ -2,7 +2,7 @@
 
 **Feature Branch**: `001-hitguessr-gameplay`  
 **Created**: 2026-01-31  
-**Status**: Draft  
+**Status**: Shipped  
 **Input**: User description: "Je veux construire un site web nommé \"HitGuessr\" dont voici le principe : celui-ci permet à des joueurs d'une équipe de proposer des liens de musique (YouTube ou autre). Chaque joueur propose sa musique sans le dire aux autres. A l'issue de la phase de récolte des propositions, tous les joueurs doivent deviner qui a proposé quelle musique. Lorsque toutes les propositions sont faites, le jeu est terminé et un classement est ainsi établi. Le but du jeu est donc de trouver au plus juste qui a proposé quelle musique. Celui qui a un maximum de bonnes réponses a un meilleur score. Une équipe est créée par un organisateur. L'organisateur choisit qui sont les membres de l'équipe. Seul l'organisateur peut lancer une campagne de jeu et la terminer. L'organisateur est considéré lui aussi comme un joueur pour le jeu en cours. Il peut donc aussi proposer une musique sans voir ce que les autres ont proposé. Lorsque tous les joueurs ont proposé leur titre de musique, le jeu en cours passe dans la phase où chaque joueur doit deviner qui a dit quoi. A l'issue de cette phase de proposition, la partie est terminée et le score est donc affiché."
 
 ## Clarifications

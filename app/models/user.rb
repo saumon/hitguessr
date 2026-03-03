@@ -10,6 +10,8 @@ class User < ApplicationRecord
   has_many :teams, through: :memberships
   has_many :proposals, foreign_key: :player_id, dependent: :destroy, inverse_of: :player
   has_many :guesses, foreign_key: :player_id, dependent: :destroy, inverse_of: :player
+  has_many :received_invitations, class_name: "TeamInvitation", foreign_key: :invited_user_id, dependent: :destroy
+  has_many :sent_invitations,     class_name: "TeamInvitation", foreign_key: :invited_by_id,   dependent: :destroy
 
   # Validations
   validates :name, presence: true

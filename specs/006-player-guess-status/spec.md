@@ -2,7 +2,7 @@
 
 **Feature Branch**: `006-player-guess-status`  
 **Created**: 2026-02-14  
-**Status**: Draft  
+**Status**: Shipped  
 **Input**: User description: "Lors de la phase devinette, ajouter un tableau de statut des joueurs sélectionnés avec leur statut de réponse (en attente, devinette soumise)"
 
 ## User Scenarios & Testing *(mandatory)*

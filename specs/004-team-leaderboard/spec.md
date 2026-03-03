@@ -2,7 +2,7 @@
 
 **Feature Branch**: `004-team-leaderboard`  
 **Created**: 2026-02-01  
-**Status**: Draft  
+**Status**: Shipped  
 **Input**: User description: "Au niveau de l'écran de l'affichage de l'équipe, on doit avoir un classement général. Ce classement représente la somme pour chaque personne de tous les points obtenus dans toutes les parties au sein de l'équipe. Comme pour l'écran d'affichage des résultats d'une partie, le classement général au niveau de l'équipe doit lui aussi trier les membres par point décroissant et afficher des médailles en fonction du classement. Les points du classement général ne doivent pas être persistés. Ceux-ci sont uniquement la somme de ceux obtenus pour chaque personne, pour chaque partie de l'équipe."
 
 ## User Scenarios & Testing *(mandatory)*

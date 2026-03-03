@@ -20,7 +20,9 @@
   <%# Members Section (collapsible, closed by default) %>
   <details class="neon-border mb-6 members-details">
     <summary class="p-6 cursor-pointer list-none flex justify-between items-center hover:bg-neon-purple/5 transition-all duration-300">
-      <h2 class="font-display text-lg font-semibold neon-text-cyan">Membres (<%= @members.count %>)</h2>
+      <h2 class="font-display text-lg font-semibold neon-text-cyan">
+        Membres (<%= @members.count %>)<% if @pending_invitations.any? %> <span class="text-sm font-normal text-yellow-400 ml-1">+ <%= @pending_invitations.count %> en attente</span><% end %>
+      </h2>
       <span class="text-neon-cyan">
         <span class="indicator-closed">▶</span>
         <span class="indicator-open hidden">▼</span>
@@ -32,6 +34,7 @@
     </style>
 
     <div class="px-6 pb-6">
+      <%# Membres actifs %>
       <div class="space-y-2">
         <% @members.each do |member| %>
           <div class="flex justify-between items-center py-3 border-b border-neon-purple/20 last:border-0">
@@ -49,12 +52,41 @@
         <% end %>
       </div>
 
+      <%# Membres en attente (US3) — visible aux membres actifs + organisateur %>
+      <% if @pending_invitations.any? %>
+        <div class="mt-4 pt-4 border-t border-yellow-500/20">
+          <h3 class="text-sm font-medium text-yellow-300 mb-2 drop-shadow-[0_0_8px_rgba(253,224,71,0.85)]">En attente de réponse</h3>
+          <div class="space-y-2">
+            <% @pending_invitations.each do |invitation| %>
+              <div class="flex justify-between items-center py-3 border-b border-yellow-500/10 last:border-0" data-invitation-id="<%= invitation.id %>">
+                <div class="flex items-center gap-3">
+                  <span class="text-yellow-400">⏳</span>
+                  <span class="text-gray-400"><%= invitation.invited_user.name %></span>
+                  <span class="text-xs bg-yellow-500/10 text-yellow-400 px-2 py-1 rounded border border-yellow-500/30">en attente</span>
+                </div>
+                <%# US1 — Actions Accept/Refuser uniquement pour l'invité lui-même %>
+                <% if invitation.invited_user == current_user %>
+                  <div class="flex gap-2">
+                    <%= button_to "Accepter", accept_team_invitation_path(@team, invitation), method: :patch,
+                        data: { turbo_confirm: "Rejoindre l'équipe #{@team.name} ?" },
+                        class: "btn-neon btn-primary px-3 py-1 rounded text-xs cursor-pointer min-h-9" %>
+                    <%= button_to "Refuser", refuse_team_invitation_path(@team, invitation), method: :patch,
+                        data: { turbo_confirm: "Refuser l'invitation à rejoindre #{@team.name} ?" },
+                        class: "btn-neon btn-danger px-3 py-1 rounded text-xs cursor-pointer min-h-9" %>
+                  </div>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
       <% if @team.organizer == current_user %>
         <div class="mt-4 pt-4 border-t border-neon-purple/20">
-          <h3 class="text-sm font-medium text-gray-300 mb-2">Ajouter un membre</h3>
-          <%= form_with url: team_memberships_path(@team), method: :post, class: "flex flex-col sm:flex-row gap-2 mb-4" do |f| %>
-            <%= f.email_field :email, placeholder: "Email du membre à ajouter", class: "input-neon flex-1 px-4 py-2 rounded-lg text-gray-100 text-sm focus:outline-none transition-all duration-300 min-h-11", required: true %>
-            <%= f.submit "+ Ajouter", class: "btn-neon btn-primary px-4 py-2 rounded-lg text-sm cursor-pointer min-h-11" %>
+          <h3 class="text-sm font-medium text-gray-300 mb-2">Inviter un membre</h3>
+          <%= form_with url: team_invitations_path(@team), method: :post, class: "flex flex-col sm:flex-row gap-2 mb-4" do |f| %>
+            <%= f.email_field :email, placeholder: "Email du membre à inviter", class: "input-neon flex-1 px-4 py-2 rounded-lg text-gray-100 text-sm focus:outline-none transition-all duration-300 min-h-11", required: true %>
+            <%= f.submit "+ Inviter", class: "btn-neon btn-primary px-4 py-2 rounded-lg text-sm cursor-pointer min-h-11" %>
           <% end %>
         </div>
       <% end %>

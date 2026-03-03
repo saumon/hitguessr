@@ -1,10 +1,16 @@
 Rails.application.routes.draw do
   devise_for :users
 
-  # Teams with nested memberships and games
+  # Teams with nested memberships, invitations and games
   resources :teams do
     delete :leave, to: "memberships#leave"
-    resources :memberships, only: [ :create, :destroy ]
+    resources :memberships, only: [ :destroy ]
+    resources :invitations, only: [ :create ] do
+      member do
+        patch :accept
+        patch :refuse
+      end
+    end
     resources :games, only: [ :index, :new, :create ]
   end
 
