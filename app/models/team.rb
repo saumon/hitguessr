@@ -4,6 +4,7 @@ class Team < ApplicationRecord
   has_many :memberships, dependent: :destroy
   has_many :members, through: :memberships, source: :user
   has_many :games, dependent: :destroy
+  has_many :team_invitations, dependent: :destroy
 
   # Validations
   validates :name, presence: true, length: { minimum: 2, maximum: 100 }

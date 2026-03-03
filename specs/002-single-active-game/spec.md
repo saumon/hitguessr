@@ -2,7 +2,7 @@
 
 **Feature Branch**: `002-single-active-game`  
 **Created**: 2026-01-31  
-**Status**: Draft  
+**Status**: Shipped  
 **Input**: User description: "L'organisateur ne peut lancer qu'une partie à la fois"
 
 ## Clarifications

@@ -2,7 +2,7 @@
 
 **Feature Branch**: `[013-duplicate-guess-warning]`  
 **Created**: 2026-03-02  
-**Status**: Draft  
+**Status**: Shipped  
 **Input**: User description: "Lors de la phase de devinette, on doit pouvoir proposer la même personne pour plusieurs vidéos, mais lors de la soumission, je veux avoir un warning me l'indiquant. Pour une proposition donnée, si un nom a déjà été sélectionné dans une autre proposition, on doit avoir un indicateur permettant de signaler que ce nom a déjà été proposé. Cet indicateur doit donc évoluer en temps réel en fonction des propositions."
 
 ## Clarifications

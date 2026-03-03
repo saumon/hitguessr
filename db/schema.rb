@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_01_171540) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_03_110503) do
   create_table "games", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "finished_at"
@@ -58,6 +58,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_01_171540) do
     t.index ["player_id"], name: "index_proposals_on_player_id"
   end
 
+  create_table "team_invitations", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "invited_by_id", null: false
+    t.integer "invited_user_id", null: false
+    t.datetime "responded_at"
+    t.integer "status", default: 0, null: false
+    t.integer "team_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["invited_by_id"], name: "index_team_invitations_on_invited_by_id"
+    t.index ["invited_user_id"], name: "index_team_invitations_on_invited_user_id"
+    t.index ["status"], name: "idx_team_invitations_status"
+    t.index ["team_id", "invited_user_id"], name: "idx_team_invitations_team_user"
+    t.index ["team_id", "invited_user_id"], name: "idx_unique_team_invitations_pending", unique: true, where: "status = 0"
+    t.index ["team_id"], name: "index_team_invitations_on_team_id"
+  end
+
   create_table "teams", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "name", null: false
@@ -87,5 +103,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_01_171540) do
   add_foreign_key "memberships", "users"
   add_foreign_key "proposals", "games"
   add_foreign_key "proposals", "users", column: "player_id"
+  add_foreign_key "team_invitations", "teams"
+  add_foreign_key "team_invitations", "users", column: "invited_by_id"
+  add_foreign_key "team_invitations", "users", column: "invited_user_id"
   add_foreign_key "teams", "users", column: "organizer_id"
 end

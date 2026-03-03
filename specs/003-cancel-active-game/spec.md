@@ -2,7 +2,7 @@
 
 **Feature Branch**: `003-cancel-active-game`  
 **Created**: 2026-02-01  
-**Status**: Draft  
+**Status**: Shipped  
 **Input**: User description: "Une partie en cours doit pouvoir être annulée par l'oranisateur (opération d'admisitration). Seul l'organisateur doit pouvoir annuler une partie dont il est le propriétaire. Un message de confirmation doit être affiché à l'organisateur avant l'annulation de la partie. Lorsque l'annulation de la partie est validée par l'organisateur, celle-ci est définitivement détruite de la base de données."
 
 ## Clarifications

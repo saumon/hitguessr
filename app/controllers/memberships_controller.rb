@@ -1,28 +1,7 @@
 class MembershipsController < ApplicationController
-  before_action :set_team, only: [ :create, :destroy ]
-  before_action :authorize_organizer!, only: [ :create, :destroy ]
+  before_action :set_team, only: [ :destroy ]
+  before_action :authorize_organizer!, only: [ :destroy ]
   before_action :set_team_for_leave, only: [ :leave ]
-
-  def create
-    user = User.find_by(email: params[:email]&.strip&.downcase)
-
-    if user.nil?
-      redirect_to @team, alert: "Aucun utilisateur trouvé avec cet email."
-      return
-    end
-
-    if @team.members.include?(user)
-      redirect_to @team, alert: "#{user.name} est déjà membre de cette équipe."
-      return
-    end
-
-    membership = @team.memberships.build(user: user)
-    if membership.save
-      redirect_to @team, notice: "#{user.name} a été ajouté à l'équipe."
-    else
-      redirect_to @team, alert: "Impossible d'ajouter ce membre."
-    end
-  end
 
   def destroy
     membership = @team.memberships.find(params[:id])

@@ -2,7 +2,7 @@
 
 **Feature Branch**: `[014-proposal-edit-window]`  
 **Created**: 2026-03-02  
-**Status**: Draft  
+**Status**: Shipped  
 **Input**: User description: "En tant que joueur, je veux pouvoir modifier ma proposition tant que la partie est en phase de collecte des propositions. En phase guessing, il n'est plus possible de changer sa proposition."
 
 ## Clarifications

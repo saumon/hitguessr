@@ -2,7 +2,7 @@
 
 **Feature Branch**: `008-youtube-embed-player`  
 **Created**: 14 février 2026  
-**Status**: Draft  
+**Status**: Shipped  
 **Input**: User description: "Implémenter une nouvelle feature où lors de la phase de devinette et dans le cas où le lien est un lien YouTube, le joueur est capable de visualiser la vidéo YouTube directement sur le site, via une iframe embedded. Dans le cas où le lien est bien un lien YouTube, l'iframe doit apparaître sous le lien, et l'utilisateur peut décider lui-même de lancer la vidéo. Par défaut, la vidéo n'est pas démarrée. Sous l'iFrame, l'utilisateur peut sélectionner celui qui a fait la proposition."
 
 ## User Scenarios & Testing *(mandatory)*

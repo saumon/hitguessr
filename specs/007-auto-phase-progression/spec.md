@@ -2,7 +2,7 @@
 
 **Feature Branch**: `007-auto-phase-progression`  
 **Created**: 14 février 2026  
-**Status**: Draft  
+**Status**: Shipped  
 **Input**: User description: "Si 100% des joueurs inscrits dans l'équipe ont soumis leurs propositions, il n'est pas nécessaire d'attendre que l'organisateur de la partie passe à l'étape suivante (phase de devinette). Idem, lors de la phase de devinette, si 100% des joueurs ont soumis leur réponse, alors la partie peut se terminer automatiquement."
 
 ## User Scenarios & Testing *(mandatory)*

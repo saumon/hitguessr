@@ -1,0 +1,128 @@
+openapi: 3.1.0
+info:
+  title: HitGuessr Team Invitations Contract
+  version: 1.3.0
+  description: >-
+    Contrat HTTP pour la gestion des invitations d'équipe (création, acceptation,
+    refus) sur des endpoints Rails orientés HTML (redirect + flash).
+servers:
+  - url: http://localhost:3000
+paths:
+  /teams/{team_id}/invitations:
+    post:
+      summary: Créer une invitation d'équipe
+      description: >-
+        Organisateur uniquement. Crée une invitation `pending` pour l'utilisateur
+        identifié par email, sauf s'il est déjà membre actif ou déjà invité en attente.
+      tags: [Invitations]
+      parameters:
+        - $ref: '#/components/parameters/TeamId'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        '302':
+          description: Redirection vers la page d'équipe avec message flash
+        '401':
+          description: Authentification requise
+        '403':
+          description: Utilisateur non organisateur
+        '404':
+          description: Équipe introuvable ou non accessible
+  /teams/{team_id}/invitations/{id}/accept:
+    patch:
+      summary: Accepter une invitation
+      description: >-
+        Membre invité uniquement. Transition atomique `pending -> accepted` puis
+        création du membership actif associé.
+      tags: [Invitations]
+      parameters:
+        - $ref: '#/components/parameters/TeamId'
+        - $ref: '#/components/parameters/InvitationId'
+      responses:
+        '302':
+          description: Redirection vers /teams avec flash succès/échec
+        '401':
+          description: Authentification requise
+        '403':
+          description: Utilisateur non propriétaire de l'invitation
+        '404':
+          description: Invitation introuvable
+        '409':
+          description: Invitation déjà traitée (idempotence/concurrence)
+  /teams/{team_id}/invitations/{id}/refuse:
+    patch:
+      summary: Refuser une invitation
+      description: >-
+        Membre invité uniquement. Transition atomique `pending -> refused`.
+      tags: [Invitations]
+      parameters:
+        - $ref: '#/components/parameters/TeamId'
+        - $ref: '#/components/parameters/InvitationId'
+      responses:
+        '302':
+          description: Redirection vers /teams avec flash succès/échec
+        '401':
+          description: Authentification requise
+        '403':
+          description: Utilisateur non propriétaire de l'invitation
+        '404':
+          description: Invitation introuvable
+        '409':
+          description: Invitation déjà traitée (idempotence/concurrence)
+components:
+  parameters:
+    TeamId:
+      name: team_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+    InvitationId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+  schemas:
+    TeamInvitation:
+      type: object
+      required:
+        - id
+        - team_id
+        - invited_user_id
+        - invited_by_id
+        - status
+        - created_at
+      properties:
+        id:
+          type: integer
+        team_id:
+          type: integer
+        invited_user_id:
+          type: integer
+        invited_by_id:
+          type: integer
+        status:
+          type: string
+          enum: [pending, accepted, refused]
+        responded_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time

@@ -17,6 +17,7 @@
 ## ✨ Features
 
 - 🤝 **Team member autonomy** — Any team member (including the organizer) can launch, start guessing, and finish a game; cancel game and membership management remain organizer-only
+- 📩 **Team invite flow** — Adding a member now sends a pending invitation; the invitee accepts or refuses from `/teams` and active membership is only granted on explicit acceptance
 - 🎧 **Team-based gameplay** — Create teams, invite friends, and play together
 - 🎵 **Music proposals** — Submit YouTube or any music URL anonymously
 - ✏️ **Proposal edit window** — A player can edit their own proposal while the game is in collecting phase; once guessing starts, proposal changes are locked
@@ -96,25 +97,26 @@ A demo team "**Les Mélomanes**" is pre-created with a finished game showing the
 
 ### Roles
 
-| Role | Action | Autorisé |
-| ------------- | ----------------------------------------------- | -------- |
-| **All members** (organizer incl.) | Launch a game (≥ 3 members) | ✅ |
-| **All members** (organizer incl.) | Start guessing phase | ✅ |
-| **All members** (organizer incl.) | Finish game | ✅ |
-| **Organizer only** | Cancel an active game | ✅ |
-| **Organizer only** | Add a member to the team | ✅ |
-| **Organizer only** | Remove a member from the team | ✅ |
-| **Any player** | Submit a music proposal | ✅ |
-| **Any player** | Make guesses during guessing phase | ✅ |
-| **Any member** | Leave the team (no active game) | ✅ |
-| **Organizer** | Leave their own team | ❌ |
+| Role                               | Action                                                  | Autorisé |
+| ---------------------------------- | ------------------------------------------------------- | -------- |
+| **All members** (organizer incl.)  | Launch a game (≥ 3 members)                             | ✅       |
+| **All members** (organizer incl.)  | Start guessing phase                                    | ✅       |
+| **All members** (organizer incl.)  | Finish game                                             | ✅       |
+| **Organizer only**                 | Cancel an active game                                   | ✅       |
+| **Organizer only**                 | Invite a member to the team (by email)                  | ✅       |
+| **Organizer only**                 | Remove a member from the team                           | ✅       |
+| **Invitee only**                   | Accept or refuse a pending invitation                   | ✅       |
+| **Any player**                     | Submit a music proposal                                 | ✅       |
+| **Any player**                     | Make guesses during guessing phase                      | ✅       |
+| **Any member**                     | Leave the team (no active game)                         | ✅       |
+| **Organizer**                      | Leave their own team                                    | ❌       |
 
 > Note: The organizer is also a player and participates in the game.
 
 ### Phase Transitions
 
 - **Automatic**: When 100% of players have submitted, the game progresses automatically
-- **Manual**: The organizer can also manually advance phases at any time
+- **Manual**: Any team member can also manually advance phases at any time
 - Players are notified when automatic transitions occur
 
 ### Rules
@@ -155,35 +157,71 @@ A demo team "**Les Mélomanes**" is pre-created with a finished game showing the
 
 ## 📊 Data Model
 
-```text
-┌─────────────┐       ┌─────────────┐       ┌─────────────┐
-│    User     │       │    Team     │       │    Game     │
-├─────────────┤       ├─────────────┤       ├─────────────┤
-│ id          │◄──────│ organizer_id│       │ id          │
-│ email       │       │ name        │◄──────│ team_id     │
-│ name        │       └─────────────┘       │ status      │
-│ password    │              │              │ started_at  │
-└─────────────┘              │              │ finished_at │
-      │                      │              └─────────────┘
-      │              ┌───────┴───────┐            │
-      ▼              ▼               │            ▼
-┌─────────────┐                      │    ┌─────────────┐
-│ Membership  │                      │    │  Proposal   │
-├─────────────┤                      │    ├─────────────┤
-│ user_id     │──────────────────────┼────│ player_id   │
-│ team_id     │                      │    │ game_id     │
-└─────────────┘                      │    │ url         │
-                                     │    └─────────────┘
-                                     │          │
-                                     │          ▼
-                                     │    ┌─────────────┐
-                                     │    │   Guess     │
-                                     │    ├─────────────┤
-                                     └────│ player_id   │
-                                          │ proposal_id │
-                                          │ guessed_    │
-                                          │  author_id  │
-                                          └─────────────┘
+```mermaid
+erDiagram
+    User {
+        integer id PK
+        string  email
+        string  name
+        string  encrypted_password
+    }
+
+    Team {
+        integer id           PK
+        string  name
+        integer organizer_id FK
+    }
+
+    Membership {
+        integer id      PK
+        integer user_id FK
+        integer team_id FK
+    }
+
+    TeamInvitation {
+        integer  id              PK
+        integer  team_id         FK
+        integer  invited_user_id FK
+        integer  invited_by_id   FK
+        integer  status
+        datetime responded_at
+    }
+
+    Game {
+        integer  id          PK
+        integer  team_id     FK
+        integer  status
+        datetime started_at
+        datetime finished_at
+    }
+
+    Proposal {
+        integer id                   PK
+        integer game_id              FK
+        integer player_id            FK
+        string  url
+        integer guess_order_position
+    }
+
+    Guess {
+        integer id               PK
+        integer player_id        FK
+        integer proposal_id      FK
+        integer guessed_author_id FK
+    }
+
+    User       ||--o{ Team           : "organizes"
+    User       ||--o{ Membership     : "has"
+    Team       ||--o{ Membership     : "has"
+    Team       ||--o{ TeamInvitation : "has"
+    User       ||--o{ TeamInvitation : "receives (invited_user)"
+    User       ||--o{ TeamInvitation : "sends (invited_by)"
+    Team       ||--o{ Game           : "has"
+    User       ||--o{ Proposal       : "submits"
+    Game       ||--o{ Proposal       : "has"
+    User       ||--o{ Guess          : "makes"
+    Proposal   ||--o{ Guess          : "receives"
+    User       ||--o{ Guess          : "guessed as (guessed_author)"
 ```
 
 ### Game Statuses
@@ -223,21 +261,30 @@ A demo team "**Les Mélomanes**" is pre-created with a finished game showing the
 
 ### Memberships
 
-| Method | Path                              | Description           |
-| ------ | --------------------------------- | --------------------- |
-| POST   | `/teams/:team_id/memberships`     | Add member (by email) |
-| DELETE | `/teams/:team_id/memberships/:id` | Remove member         |
-| DELETE | `/teams/:team_id/leave`           | Leave current team    |
+| Method | Path                              | Description        |
+| ------ | --------------------------------- | ------------------ |
+| DELETE | `/teams/:team_id/memberships/:id` | Remove member      |
+| DELETE | `/teams/:team_id/leave`           | Leave current team |
+
+### Invitations
+
+| Method | Path                                         | Description                          |
+| ------ | -------------------------------------------- | ------------------------------------ |
+| POST   | `/teams/:team_id/invitations`                | Invite a member by email (organizer) |
+| PATCH  | `/teams/:team_id/invitations/:id/accept`     | Accept a pending invitation          |
+| PATCH  | `/teams/:team_id/invitations/:id/refuse`     | Refuse a pending invitation          |
 
 ### Games
 
-| Method | Path                        | Description                                       |
-| ------ | --------------------------- | ------------------------------------------------- |
-| GET    | `/teams/:team_id/games`     | List team's games                                 |
-| POST   | `/teams/:team_id/games`     | Start new game (requires at least 3 team members) |
-| GET    | `/games/:id`                | Show game state                                   |
-| PATCH  | `/games/:id/start_guessing` | Transition to guessing phase                      |
-| PATCH  | `/games/:id/finish`         | End the game                                      |
+| Method | Path                            | Description                                       |
+| ------ | ------------------------------- | ------------------------------------------------- |
+| GET    | `/teams/:team_id/games`         | List team's games                                 |
+| GET    | `/teams/:team_id/games/new`     | New game form                                     |
+| POST   | `/teams/:team_id/games`         | Start new game (requires at least 3 team members) |
+| GET    | `/games/:id`                    | Show game state                                   |
+| DELETE | `/games/:id`                    | Cancel game (organizer only)                      |
+| PATCH  | `/games/:id/start_guessing`     | Transition to guessing phase                      |
+| PATCH  | `/games/:id/finish`             | End the game                                      |
 
 ### Proposals
 
@@ -383,12 +430,30 @@ bin/kamal logs
 ```text
 hitguessr/
 ├── app/
-│   ├── controllers/      # Request handling
-│   ├── models/           # Business logic
+│   ├── controllers/
+│   │   ├── games_controller.rb
+│   │   ├── guesses_controller.rb
+│   │   ├── home_controller.rb
+│   │   ├── invitations_controller.rb
+│   │   ├── memberships_controller.rb
+│   │   ├── proposals_controller.rb
+│   │   ├── results_controller.rb
+│   │   └── teams_controller.rb
+│   ├── models/
+│   │   ├── game.rb
+│   │   ├── guess.rb
+│   │   ├── membership.rb
+│   │   ├── proposal.rb
+│   │   ├── team.rb
+│   │   ├── team_invitation.rb
+│   │   └── user.rb
 │   ├── views/            # ERB templates
 │   ├── assets/
 │   │   └── tailwind/     # Custom CSS with neon theme
-│   └── javascript/       # Stimulus controllers
+│   └── javascript/
+│       └── controllers/  # Stimulus controllers
+│           ├── guess_duplicates_controller.js
+│           └── youtube_preview_controller.js
 ├── config/
 │   ├── routes.rb         # URL routing
 │   ├── locales/          # i18n (French)
@@ -397,11 +462,21 @@ hitguessr/
 │   ├── migrate/          # Database migrations
 │   ├── schema.rb         # Current schema
 │   └── seeds.rb          # Demo data
-├── specs/                # Feature specifications
-│   └── 001-hitguessr-gameplay/
-│       ├── spec.md       # Full feature spec
-│       └── data-model.md # Entity definitions
-└── test/                 # Test suite
+├── specs/                # Feature specifications (001–015)
+│   └── NNN-feature-name/
+│       ├── spec.md        # Full feature spec
+│       ├── plan.md        # Tech stack & file structure
+│       ├── tasks.md       # Implementation task list
+│       ├── data-model.md  # Entity definitions
+│       ├── research.md    # Technical decisions
+│       ├── quickstart.md  # Integration scenarios
+│       ├── checklists/    # Pre-implementation checklists
+│       └── contracts/     # API / test contracts
+└── test/                 # Test suite (Minitest + Capybara)
+    ├── controllers/
+    ├── models/
+    ├── integration/
+    └── system/
 ```
 
 ---
@@ -416,6 +491,10 @@ The app is localized in **French** by default. Translation files are in `config/
 ---
 
 ## 📋 Changelog
+
+### v1.3.0 *(March 3, 2026)*
+
+- 📩 **Team invitation flow** — Adding a member as an organizer now creates a `pending` invitation instead of immediate membership. The invitee reviews it on `/teams` and explicitly accepts or refuses. Acceptance atomically creates an active membership (first-response-wins); refusal leaves the team unchanged. Pending invitations are displayed distinctly in the Members block (visible to active members and the organizer). Duplicate pending invitations and inviting an already-active member are blocked with explicit feedback ([#015](specs/015-team-invite-response/spec.md))
 
 ### v1.2.3 *(March 2, 2026)*
 

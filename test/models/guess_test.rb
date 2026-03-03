@@ -6,6 +6,7 @@ class GuessTest < ActiveSupport::TestCase
     Proposal.delete_all
     Game.delete_all
     Membership.delete_all
+    TeamInvitation.delete_all
     Team.delete_all
     User.delete_all
 

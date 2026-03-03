@@ -35,18 +35,19 @@ class TeamsTest < ApplicationSystemTestCase
     assert_text "Organisateur: #{@organizer.name}"
   end
 
-  test "organizer can add members to team" do
+  test "organizer can invite members to team" do
     sign_in_as @organizer
     team = Team.create!(name: "Les Mélomanes", organizer: @organizer)
 
     visit team_path(team)
     find("details.members-details summary").click
 
-    fill_in "Email du membre à ajouter", with: @member.email
-    click_button "+ Ajouter"
+    fill_in "Email du membre à inviter", with: @member.email
+    click_button "+ Inviter"
 
-    assert_text "#{@member.name} a été ajouté"
-    assert_text @member.name
+    assert_text I18n.t("invitations.create.success")
+    assert_not team.members.reload.include?(@member)
+    assert TeamInvitation.pending_only.exists?(team: team, invited_user: @member)
   end
 
   test "organizer can remove members from team" do
@@ -247,7 +248,7 @@ class TeamsTest < ApplicationSystemTestCase
     visit team_path(team)
     find("details.members-details summary").click
 
-    assert_no_field "Email du membre à ajouter"
+    assert_no_field "Email du membre à inviter"
     assert_no_button "Retirer"
   end
 
@@ -260,7 +261,7 @@ class TeamsTest < ApplicationSystemTestCase
     visit team_path(team)
     find("details.members-details summary").click
 
-    assert_field "Email du membre à ajouter"
+    assert_field "Email du membre à inviter"
     assert_button "Retirer"
   end
 
@@ -314,5 +315,110 @@ class TeamsTest < ApplicationSystemTestCase
 
     assert_button "⚠️ Terminer la partie"
     assert_no_button "🗑️ Annuler la partie"
+  end
+
+  # ==============================================
+  # Feature 015 – US1: Répondre à une invitation d'équipe
+  # ==============================================
+
+  test "invitee sees accept and refuse buttons for their pending invitation" do
+    team = Team.create!(name: "Les Invitants", organizer: @organizer)
+    invitation = TeamInvitation.create!(team: team, invited_user: @member, invited_by: @organizer, status: :pending)
+
+    sign_in_as @member
+
+    visit team_path(team)
+    find("details.members-details summary").click
+
+    assert_button "Accepter"
+    assert_button "Refuser"
+  end
+
+  test "invitee accepting invitation becomes active member" do
+    team = Team.create!(name: "Les Acceptants", organizer: @organizer)
+    invitation = TeamInvitation.create!(team: team, invited_user: @member, invited_by: @organizer, status: :pending)
+
+    sign_in_as @member
+
+    visit team_path(team)
+    find("details.members-details summary").click
+
+    accept_confirm do
+      click_button "Accepter"
+    end
+
+    assert_text I18n.t("invitations.accept.success")
+    assert team.members.reload.include?(@member), "Le membre devrait être actif après acceptation"
+    assert invitation.reload.accepted?
+  end
+
+  test "invitee refusing invitation does not become member" do
+    team = Team.create!(name: "Les Refusants", organizer: @organizer)
+    invitation = TeamInvitation.create!(team: team, invited_user: @member, invited_by: @organizer, status: :pending)
+
+    sign_in_as @member
+
+    visit team_path(team)
+    find("details.members-details summary").click
+
+    accept_confirm do
+      click_button "Refuser"
+    end
+
+    assert_text I18n.t("invitations.refuse.success")
+    assert_not team.members.reload.include?(@member), "Le membre ne doit pas être actif après refus"
+    assert invitation.reload.refused?
+  end
+
+  test "non-invitee member does not see accept/refuse buttons for others invitations" do
+    team = Team.create!(name: "Les Tiers", organizer: @organizer)
+    team.memberships.create!(user: @member)
+    invitation = TeamInvitation.create!(team: team, invited_user: @member_two, invited_by: @organizer, status: :pending)
+
+    sign_in_as @member
+
+    visit team_path(team)
+    find("details.members-details summary").click
+
+    assert_no_button "Accepter"
+    assert_no_button "Refuser"
+  end
+
+  # ==============================================
+  # Feature 015 – US3: Visualiser les membres en attente
+  # ==============================================
+
+  test "active member sees pending invitations section when there are pending invitations" do
+    team = Team.create!(name: "Les Visibles", organizer: @organizer)
+    team.memberships.create!(user: @member)
+    invitation = TeamInvitation.create!(team: team, invited_user: @member_two, invited_by: @organizer, status: :pending)
+
+    sign_in_as @member
+
+    visit team_path(team)
+    find("details.members-details summary").click
+
+    assert_text "en attente"
+    assert_text @member_two.name
+  end
+
+  test "pending invitee transitions to active after acceptance" do
+    team = Team.create!(name: "Transition Active", organizer: @organizer)
+    invitation = TeamInvitation.create!(team: team, invited_user: @member, invited_by: @organizer, status: :pending)
+
+    sign_in_as @member
+
+    visit team_path(team)
+    find("details.members-details summary").click
+
+    assert_selector "[data-invitation-id='#{invitation.id}']"
+
+    accept_confirm do
+      click_button "Accepter"
+    end
+
+    assert_text I18n.t("invitations.accept.success")
+    assert invitation.reload.accepted?
+    assert team.members.reload.include?(@member)
   end
 end

@@ -2,7 +2,7 @@
 
 **Feature Branch**: `011-randomize-guess-order`  
 **Created**: 2026-03-01  
-**Status**: Ready  
+**Status**: Shipped  
 **Input**: User description: "Lors de la phase de devinette, les propositions doivent être données dans un ordre aléatoire. Sinon, on est capable de deviner qui a proposé quoi, puisque le dernier à avoir proposé est forcément la dernière proposition."
 
 ## Clarifications
