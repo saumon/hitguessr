@@ -492,6 +492,10 @@ The app is localized in **French** by default. Translation files are in `config/
 
 ## 📋 Changelog
 
+### v1.3.1 *(March 3, 2026)*
+
+- 🔒 **Security (Brakeman SSLVerify)** — Fixed SSL certificate verification bypass in YouTube oEmbed fetching by removing insecure `VERIFY_NONE` behavior and enforcing certificate verification in HTTP requests
+
 ### v1.3.0 *(March 3, 2026)*
 
 - 📩 **Team invitation flow** — Adding a member as an organizer now creates a `pending` invitation instead of immediate membership. The invitee reviews it on `/teams` and explicitly accepts or refuses. Acceptance atomically creates an active membership (first-response-wins); refusal leaves the team unchanged. Pending invitations are displayed distinctly in the Members block (visible to active members and the organizer). Duplicate pending invitations and inviting an already-active member are blocked with explicit feedback ([#015](specs/015-team-invite-response/spec.md))
