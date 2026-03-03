@@ -17,9 +17,15 @@ class SelfLeaveTeamTest < ApplicationSystemTestCase
       name: "Membre",
       password: "password123"
     )
+    @member_two = User.create!(
+      email: "self_leave_member_two@example.com",
+      name: "Membre Deux",
+      password: "password123"
+    )
 
     @team_one = Team.create!(name: "Équipe Alpha", organizer: @organizer)
     @team_one.memberships.create!(user: @member)
+    @team_one.memberships.create!(user: @member_two)
     @team_one.games.create!(status: :collecting)
 
     @team_three = Team.create!(name: "Équipe Gamma", organizer: @organizer_two)

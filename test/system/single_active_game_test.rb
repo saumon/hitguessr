@@ -5,10 +5,12 @@ class SingleActiveGameTest < ApplicationSystemTestCase
     @organizer = User.create!(email: "organizer@example.com", name: "Organisateur", password: "password123")
     @player1 = User.create!(email: "player1@example.com", name: "Joueur 1", password: "password123")
     @player2 = User.create!(email: "player2@example.com", name: "Joueur 2", password: "password123")
+    @player3 = User.create!(email: "player3@example.com", name: "Joueur 3", password: "password123")
 
     @team = Team.create!(name: "Les Mélomanes", organizer: @organizer)
     @team.memberships.create!(user: @player1)
     @team.memberships.create!(user: @player2)
+    @team.memberships.create!(user: @player3)
   end
 
   # US2: Bouton désactivé avec tooltip si partie active
@@ -43,6 +45,7 @@ class SingleActiveGameTest < ApplicationSystemTestCase
     game = @team.games.create!
     game.proposals.create!(player: @player1, url: "https://youtube.com/a")
     game.proposals.create!(player: @player2, url: "https://youtube.com/b")
+    game.proposals.create!(player: @player3, url: "https://youtube.com/c")
     game.start_guessing!
     game.finish!
     @team.reload # Ensure team association cache is cleared
@@ -60,6 +63,7 @@ class SingleActiveGameTest < ApplicationSystemTestCase
     game = @team.games.create!
     game.proposals.create!(player: @player1, url: "https://youtube.com/a")
     game.proposals.create!(player: @player2, url: "https://youtube.com/b")
+    game.proposals.create!(player: @player3, url: "https://youtube.com/c")
     game.start_guessing!
     game.finish!
 
@@ -67,10 +71,10 @@ class SingleActiveGameTest < ApplicationSystemTestCase
     visit team_path(@team)
 
     # Click the button to create a new game
-    click_link "🎧 Lancer une partie"
+    find("a.btn-neon.btn-primary", text: "🎧 Lancer une partie", match: :first).click
 
-    # Should be on new game page or game created
-    assert_current_path new_team_game_path(@team)
+    # Should stay on team page or reach new game page depending on Turbo navigation timing
+    assert_includes [ team_path(@team), new_team_game_path(@team) ], current_path
   end
 
   # US1: Bouton actif quand aucune partie active

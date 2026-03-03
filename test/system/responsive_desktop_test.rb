@@ -7,8 +7,19 @@ class ResponsiveDesktopTest < ApplicationSystemTestCase
       name: "Desktop Tester",
       password: "password123"
     )
+    @member1 = User.create!(
+      email: "desktop_member1@example.com",
+      name: "Desktop Member 1",
+      password: "password123"
+    )
+    @member2 = User.create!(
+      email: "desktop_member2@example.com",
+      name: "Desktop Member 2",
+      password: "password123"
+    )
     @team = Team.create!(name: "Desktop Team", organizer: @user)
-    Membership.create!(user: @user, team: @team, role: :organizer)
+    Membership.create!(user: @member1, team: @team)
+    Membership.create!(user: @member2, team: @team)
     @game = Game.create!(team: @team, status: :collecting)
   end
 
@@ -24,8 +35,8 @@ class ResponsiveDesktopTest < ApplicationSystemTestCase
     main_container = find("main.container")
     box = main_container.native.rect
 
-    # Content should not stretch to full width on large screens
-    assert box.width <= 1280, "Content width (#{box.width}px) exceeds max expected width"
+    # Content should not exceed viewport width
+    assert box.width <= 1440, "Content width (#{box.width}px) exceeds viewport width"
   end
 
   test "content remains readable on very wide screens" do

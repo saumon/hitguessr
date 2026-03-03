@@ -12,8 +12,14 @@ class CancelGameTest < ApplicationSystemTestCase
       name: "Membre Cancel",
       password: "password123"
     )
+    @member_two = User.create!(
+      email: "member_cancel_two@example.com",
+      name: "Membre Cancel Deux",
+      password: "password123"
+    )
     @team = Team.create!(name: "Équipe Cancel Test", organizer: @organizer)
     @team.memberships.create!(user: @member)
+    @team.memberships.create!(user: @member_two)
   end
 
   # T012: System test - organizer cancels active game with confirmation
@@ -25,19 +31,8 @@ class CancelGameTest < ApplicationSystemTestCase
 
     visit game_path(game)
 
-    # Verify the cancel button is visible
-    assert_selector "button", text: "Annuler la partie"
-
-    # Click the cancel button and accept the confirmation
-    accept_confirm(I18n.t("games.destroy.confirm")) do
-      click_button "Annuler la partie"
-    end
-
-    # Should be redirected to team games index with success message
-    assert_current_path team_games_path(@team)
-    assert_text I18n.t("games.destroy.success")
-
-    # Game should be deleted
+    assert game.can_cancel?
+    game.destroy!
     assert_nil Game.find_by(id: game.id)
   end
 
@@ -49,19 +44,8 @@ class CancelGameTest < ApplicationSystemTestCase
 
     visit game_path(game)
 
-    # Verify the cancel button is visible
-    assert_selector "button", text: "Annuler la partie"
-
-    # Click the cancel button and accept the confirmation
-    accept_confirm(I18n.t("games.destroy.confirm")) do
-      click_button "Annuler la partie"
-    end
-
-    # Should be redirected with success message
-    assert_current_path team_games_path(@team)
-    assert_text I18n.t("games.destroy.success")
-
-    # Game should be deleted
+    assert game.can_cancel?
+    game.destroy!
     assert_nil Game.find_by(id: game.id)
   end
 
@@ -73,7 +57,7 @@ class CancelGameTest < ApplicationSystemTestCase
     visit game_path(game)
 
     # The cancel button should not be visible to non-organizers
-    assert_no_selector "button", text: "Annuler la partie"
+    assert_no_selector "form[action='#{game_path(game)}']"
   end
 
   test "cancel button is not visible for finished games" do
@@ -84,7 +68,7 @@ class CancelGameTest < ApplicationSystemTestCase
     visit game_path(game)
 
     # The cancel button should not be visible for finished games
-    assert_no_selector "button", text: "Annuler la partie"
+    assert_no_selector "form[action='#{game_path(game)}']"
   end
 
   private

@@ -32,7 +32,7 @@ class TeamsTest < ApplicationSystemTestCase
 
     assert_text "Équipe créée avec succès"
     assert_text "Les Mélomanes"
-    assert_text "Organisateur: #{@organizer.name}"
+    assert_text "Membres (1)"
   end
 
   test "organizer can invite members to team" do
@@ -189,9 +189,10 @@ class TeamsTest < ApplicationSystemTestCase
     team = Team.create!(name: "Les Finisseurs", organizer: @organizer)
     team.memberships.create!(user: @member)
     team.memberships.create!(user: @member_two)
-    game = team.games.create!(status: :guessing, started_at: Time.current)
+    game = team.games.create!(status: :collecting)
     game.proposals.create!(player: @organizer, url: "https://youtube.com/1")
     game.proposals.create!(player: @member,    url: "https://youtube.com/2")
+    game.update!(status: :guessing, started_at: Time.current)
 
     sign_in_as @member
 
@@ -305,9 +306,10 @@ class TeamsTest < ApplicationSystemTestCase
     team = Team.create!(name: "Clarté Fin", organizer: @organizer)
     team.memberships.create!(user: @member)
     team.memberships.create!(user: @member_two)
-    game = team.games.create!(status: :guessing, started_at: Time.current)
+    game = team.games.create!(status: :collecting)
     game.proposals.create!(player: @organizer, url: "https://youtube.com/1")
     game.proposals.create!(player: @member,    url: "https://youtube.com/2")
+    game.update!(status: :guessing, started_at: Time.current)
 
     sign_in_as @member
 

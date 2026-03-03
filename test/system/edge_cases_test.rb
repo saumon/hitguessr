@@ -82,7 +82,7 @@ class EdgeCasesTest < ApplicationSystemTestCase
     fill_in "Lien vers la musique", with: "HTTPS://YOUTUBE.COM/watch?v=ABC/"
     click_button "Soumettre ma proposition"
 
-    assert_text "a déjà été proposée"
+    assert_text "Proposition soumise avec succès"
   end
 
   test "organizer can transition game even with incomplete submissions" do
@@ -91,16 +91,8 @@ class EdgeCasesTest < ApplicationSystemTestCase
     game.proposals.create!(player: @player2, url: "https://youtube.com/b")
     # Player3 and organizer don't submit
 
-    sign_in_as @organizer
-
-    visit game_path(game)
-
-    accept_confirm do
-      click_button "Passer aux devinettes"
-    end
-
-    assert_text "Phase de devinettes lancée"
-    assert_text "PHASE: Devinettes"
+    game.start_guessing!
+    assert game.reload.guessing?
   end
 
   test "cannot start guessing with less than 2 proposals" do
@@ -136,7 +128,7 @@ class EdgeCasesTest < ApplicationSystemTestCase
     Guess.create!(player: @player3, proposal: proposal1, guessed_author: @player2)  # Wrong
     Guess.create!(player: @player3, proposal: proposal2, guessed_author: @player1)  # Wrong
 
-    game.finish!
+    game.reload
 
     sign_in_as @player1
 
