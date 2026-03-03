@@ -7,8 +7,19 @@ class ResponsiveTransitionsTest < ApplicationSystemTestCase
       name: "Transitions Tester",
       password: "password123"
     )
+    @member1 = User.create!(
+      email: "transitions_member1@example.com",
+      name: "Transitions Member 1",
+      password: "password123"
+    )
+    @member2 = User.create!(
+      email: "transitions_member2@example.com",
+      name: "Transitions Member 2",
+      password: "password123"
+    )
     @team = Team.create!(name: "Transitions Team", organizer: @user)
-    Membership.create!(user: @user, team: @team, role: :organizer)
+    Membership.create!(user: @member1, team: @team)
+    Membership.create!(user: @member2, team: @team)
     @game = Game.create!(team: @team, status: :collecting)
   end
 

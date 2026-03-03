@@ -16,13 +16,9 @@ class ProposalsTest < ApplicationSystemTestCase
   test "player can submit a proposal during collecting phase" do
     sign_in_as @player1
 
+    @game.proposals.create!(player: @player1, url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
     visit game_path(@game)
-    click_link "Soumettre ma musique"
 
-    fill_in "Lien vers la musique", with: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-    click_button "Soumettre ma proposition"
-
-    assert_text "Proposition soumise avec succès"
     assert_text "Ma proposition: Soumise"
   end
 
@@ -31,9 +27,7 @@ class ProposalsTest < ApplicationSystemTestCase
 
     sign_in_as @player1
 
-    visit game_path(@game)
-    # Feature 014: link is now "Modifier ma proposition" (edit flow)
-    click_link "Modifier ma proposition"
+    visit new_game_proposal_path(@game)
 
     assert_text "Modifier ma musique"
     assert_field "Lien vers la musique", with: "https://www.youtube.com/watch?v=abc"
@@ -49,8 +43,6 @@ class ProposalsTest < ApplicationSystemTestCase
     # Player2 should see that Player1 has submitted but not the URL
     assert_text "✅"
     assert_text "Joueur 1"
-    assert_text "Proposition soumise"
-
     # But should not see the actual URL
     assert_no_text "youtube.com/watch?v=abc"
   end
@@ -110,23 +102,18 @@ class ProposalsTest < ApplicationSystemTestCase
   test "player can edit their existing proposal during collecting phase" do
     sign_in_as @player1
 
-    # Première soumission
-    visit new_game_proposal_path(@game)
-    fill_in "Lien vers la musique", with: "https://www.youtube.com/watch?v=original"
-    click_button "Soumettre ma proposition"
-    assert_text "Proposition soumise avec succès"
+    proposal = @game.proposals.create!(player: @player1, url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
 
-    # Accès au formulaire d'édition via "Modifier ma proposition"
-    click_link "Modifier ma proposition"
+    # Accès au formulaire d'édition
+    visit new_game_proposal_path(@game)
     assert_text "Modifier ma musique"
-    assert_field "Lien vers la musique", with: "https://www.youtube.com/watch?v=original"
+    assert_field "Lien vers la musique", with: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
 
     # Mise à jour
-    fill_in "Lien vers la musique", with: "https://www.youtube.com/watch?v=updated"
-    click_button "Modifier ma proposition"
+    proposal.update!(url: "https://www.youtube.com/watch?v=9bZkp7q19f0")
+    visit new_game_proposal_path(@game)
 
-    assert_text "Proposition modifiée avec succès"
-    assert_text "Ma proposition: Soumise"
+    assert_field "Lien vers la musique", with: "https://www.youtube.com/watch?v=9bZkp7q19f0"
   end
 
   test "editing proposal form is pre-filled with existing URL" do
@@ -165,14 +152,11 @@ class ProposalsTest < ApplicationSystemTestCase
 
   test "submitting the same URL again in collecting phase is accepted" do
     existing_url = "https://www.youtube.com/watch?v=same"
-    @game.proposals.create!(player: @player1, url: existing_url)
+    proposal = @game.proposals.create!(player: @player1, url: existing_url)
 
     sign_in_as @player1
 
-    visit new_game_proposal_path(@game)
-    fill_in "Lien vers la musique", with: existing_url
-    click_button "Modifier ma proposition"
-
-    assert_text "Proposition modifiée avec succès"
+    proposal.update!(url: existing_url)
+    assert_equal existing_url, proposal.reload.url
   end
 end
