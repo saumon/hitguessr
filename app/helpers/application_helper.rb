@@ -77,7 +77,7 @@ module ApplicationHelper
 
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    http.verify_mode = OpenSSL::SSL::VERIFY_PEER
     http.open_timeout = 3
     http.read_timeout = 3
 
