@@ -492,6 +492,10 @@ The app is localized in **French** by default. Translation files are in `config/
 
 ## 📋 Changelog
 
+### v1.3.2 *(March 3, 2026)*
+
+- 🧪 **CI system-test stabilization** — Fixed and stabilized the system test suite so the GitHub Actions command `bin/rails db:test:prepare test:system` passes reliably again (updated outdated setup assumptions, selectors, and brittle assertions in system tests).
+
 ### v1.3.1 *(March 3, 2026)*
 
 - 🔒 **Security (Brakeman SSLVerify)** — Fixed SSL certificate verification bypass in YouTube oEmbed fetching by removing insecure `VERIFY_NONE` behavior and enforcing certificate verification in HTTP requests

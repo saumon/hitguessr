@@ -7,8 +7,19 @@ class ResponsiveGameTest < ApplicationSystemTestCase
       name: "Game Tester",
       password: "password123"
     )
+    @member1 = User.create!(
+      email: "game_member1@example.com",
+      name: "Game Member 1",
+      password: "password123"
+    )
+    @member2 = User.create!(
+      email: "game_member2@example.com",
+      name: "Game Member 2",
+      password: "password123"
+    )
     @team = Team.create!(name: "Test Team", organizer: @user)
-    Membership.create!(user: @user, team: @team, role: :organizer)
+    Membership.create!(user: @member1, team: @team)
+    Membership.create!(user: @member2, team: @team)
     @game = Game.create!(team: @team, status: :collecting)
   end
 
@@ -33,8 +44,7 @@ class ResponsiveGameTest < ApplicationSystemTestCase
     visit game_path(@game)
     assert_no_horizontal_scroll
 
-    # Progress bar should be visible
-    assert_selector ".bg-gradient-to-r"
+    assert_text "Progression:"
   end
 
   test "game guessing phase is usable on mobile" do
@@ -42,7 +52,8 @@ class ResponsiveGameTest < ApplicationSystemTestCase
     sign_in_as @user
 
     # Create a proposal so we can move to guessing
-    proposal = Proposal.create!(game: @game, user: @user, url: "https://example.com/song")
+    Proposal.create!(game: @game, player: @user, url: "https://example.com/song")
+    Proposal.create!(game: @game, player: @member1, url: "https://example.com/song-2")
     @game.update!(status: :guessing, started_at: Time.current)
 
     visit game_path(@game)

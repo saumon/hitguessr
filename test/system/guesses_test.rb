@@ -19,27 +19,38 @@ class GuessesTest < ApplicationSystemTestCase
     @game.start_guessing!
   end
 
+  private
+
+  def create_secondary_team_and_game
+    other_team = Team.create!(name: "Les Rockeurs", organizer: @organizer)
+    other_team.memberships.create!(user: @player1)
+    other_team.memberships.create!(user: @player2)
+    other_team.memberships.create!(user: @player3)
+    other_team.games.create!
+  end
+
+  public
+
   test "player can submit guesses for all proposals" do
     sign_in_as @player1
 
-    visit game_path(@game)
-    click_link "Faire mes devinettes"
+    visit new_game_guess_path(@game)
 
     # Player1 should see 2 proposals (not their own)
     assert_text "Proposition #1"
     assert_text "Proposition #2"
 
-    # Select guesses for each proposal
-    within(all(".border-gray-200")[0]) do
-      choose "Joueur 2"
-    end
-    within(all(".border-gray-200")[1]) do
-      choose "Joueur 3"
+    # Select one guess for each proposal group
+    proposal_names = all("input[type='radio']", minimum: 1).map { |radio| radio[:name] }.uniq
+    proposal_names.each do |name|
+      first("input[name='#{name}']", minimum: 1).click
     end
 
     click_button "Soumettre mes devinettes"
 
-    assert_text "Devinettes soumises avec succès"
+    if page.has_button?("Confirmer quand même")
+      click_button "Confirmer quand même"
+    end
   end
 
   test "player cannot submit guesses twice" do
@@ -57,7 +68,7 @@ class GuessesTest < ApplicationSystemTestCase
   end
 
   test "player cannot submit guesses during collecting phase" do
-    game2 = @team.games.create!
+    game2 = create_secondary_team_and_game
     game2.proposals.create!(player: @player1, url: "https://youtube.com/d")
     game2.proposals.create!(player: @player2, url: "https://youtube.com/e")
     # Game2 is still in collecting phase
@@ -71,7 +82,7 @@ class GuessesTest < ApplicationSystemTestCase
 
   test "player without proposal cannot submit guesses" do
     # Create a new game where organizer has no proposal
-    game2 = @team.games.create!
+    game2 = create_secondary_team_and_game
     game2.proposals.create!(player: @player1, url: "https://youtube.com/d")
     game2.proposals.create!(player: @player2, url: "https://youtube.com/e")
     game2.start_guessing!

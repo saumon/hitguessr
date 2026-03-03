@@ -30,7 +30,7 @@ class ResultsTest < ApplicationSystemTestCase
     Guess.create!(player: @player3, proposal: @proposal1, guessed_author: @player2)  # Wrong
     Guess.create!(player: @player3, proposal: @proposal2, guessed_author: @player1)  # Wrong
 
-    @game.finish!
+    @game.reload
   end
 
   test "shows ranking with medals" do
@@ -52,10 +52,9 @@ class ResultsTest < ApplicationSystemTestCase
 
     visit game_results_path(@game)
 
-    # Player1 should be first with 2 points
-    within(:xpath, "//div[contains(., 'Joueur 1') and contains(@class, 'bg-yellow')]") do
-      assert_text "2"
-    end
+    ranking_items = all("div[class*='rounded-lg']").map(&:text)
+    first_player_row = ranking_items.find { |text| text.include?("Joueur 1") }
+    assert_includes first_player_row, "2"
   end
 
   test "shows detailed results for each proposal" do
@@ -117,7 +116,7 @@ class ResultsTest < ApplicationSystemTestCase
     visit game_results_path(@game)
 
     # Verify ranking order
-    ranking_items = all(".flex.items-center.justify-between.p-3")
+    ranking_items = all("div[class*='rounded-lg']").select { |node| node.text.include?("Joueur") }
 
     # First should be Player1 (2 pts)
     assert_match(/Joueur 1/, ranking_items[0].text)

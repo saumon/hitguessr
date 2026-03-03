@@ -48,7 +48,7 @@ class TeamLeaderboardTest < ApplicationSystemTestCase
     # player3 scores 0
     prop1.guesses.create!(player: @player3, guessed_author: @player2) # wrong
     prop2.guesses.create!(player: @player3, guessed_author: @player1) # wrong
-    game.finish!
+    game.reload
 
     visit team_path(@team)
 
@@ -81,7 +81,7 @@ class TeamLeaderboardTest < ApplicationSystemTestCase
     prop3.guesses.create!(player: @player2, guessed_author: @player1) # wrong
     prop1.guesses.create!(player: @player3, guessed_author: @player2) # wrong
     prop2.guesses.create!(player: @player3, guessed_author: @player1) # wrong
-    game.finish!
+    game.reload
 
     visit team_path(@team)
 
@@ -108,7 +108,7 @@ class TeamLeaderboardTest < ApplicationSystemTestCase
     # player3 scores 0
     prop1.guesses.create!(player: @player3, guessed_author: @player2) # wrong
     prop2.guesses.create!(player: @player3, guessed_author: @player1) # wrong
-    game.finish!
+    game.reload
 
     visit team_path(@team)
 
