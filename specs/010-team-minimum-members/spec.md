@@ -2,7 +2,7 @@
 
 **Feature Branch**: `010-team-minimum-members`  
 **Created**: 2026-02-21  
-**Status**: Draft  
+**Status**: Shipped  
 **Input**: User description: "Un organisateur peut lancer une partie seulement si l'équipe a au moins trois membres."
 
 ## Clarifications

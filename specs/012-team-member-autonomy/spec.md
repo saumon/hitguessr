@@ -2,7 +2,7 @@
 
 **Feature Branch**: `012-team-member-autonomy`  
 **Created**: 2026-03-01  
-**Status**: Draft  
+**Status**: Shipped  
 **Input**: User description: "Je veux que les membres de l'équipe aient plus d'autonomie au cas où l'organisateur n'est pas là. Tout membre de l'équipe doit pouvoir 'Lancer une partie', 'Passer aux devinetttes', 'Terminer la partie'. Seul l'organisateur garde le droit exclusif 'Annuler la partie', ainsi que la gestion des membres de l'équipe (Ajouter / Retirer un membre)."
 
 ## Clarifications

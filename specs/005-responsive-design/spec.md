@@ -2,7 +2,7 @@
 
 **Feature Branch**: `005-responsive-design`  
 **Created**: 1 février 2026  
-**Status**: Draft  
+**Status**: Shipped  
 **Input**: User description: "Le site doit être responsive afin de pouvoir aussi bien s'afficher sur téléphone, sur tablette, que sur navigateur PC."
 
 ## User Scenarios & Testing *(mandatory)*

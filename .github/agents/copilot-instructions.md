@@ -25,6 +25,8 @@ Auto-generated from all feature plans. Last updated: 2026-01-31
 - SQLite via ActiveRecord (pas de changement de schéma prévu) (013-duplicate-guess-warning)
 - Ruby 3.4.6, Rails 8.1.2, ERB + Hotwire/Stimulus (importmap) + rails, devise, turbo-rails, stimulus-rails, tailwindcss-rails (014-proposal-edit-window)
 - SQLite via ActiveRecord (aucune migration prévue) (014-proposal-edit-window)
+- Ruby 3.4.6, Rails 8.1.2 + Rails (ActiveRecord, ActionController, ActionView), Devise, Turbo/Stimulus, Tailwind CSS Rails, SQLite3 (015-team-invite-response)
+- SQLite (tables existantes + nouvelle table d’invitations d’équipe) (015-team-invite-response)
 
 - Ruby 3.4.6 + Devise (authentification), TailwindCSS v4.1 (styling) (001-hitguessr-gameplay)
 
@@ -44,9 +46,9 @@ tests/
 Ruby 3.4.6: Follow standard conventions
 
 ## Recent Changes
+- 015-team-invite-response: Added Ruby 3.4.6, Rails 8.1.2 + Rails (ActiveRecord, ActionController, ActionView), Devise, Turbo/Stimulus, Tailwind CSS Rails, SQLite3
 - 014-proposal-edit-window: Added Ruby 3.4.6, Rails 8.1.2, ERB + Hotwire/Stimulus (importmap) + rails, devise, turbo-rails, stimulus-rails, tailwindcss-rails
 - 013-duplicate-guess-warning: Added Ruby 3.4.6, Rails 8.1.2, ERB + Hotwire/Stimulus (importmap) + rails, stimulus-rails, turbo-rails, tailwindcss-rails, devise
-- 012-team-member-autonomy: Added Ruby 3.4.6, Rails 8.1.x + Rails, ActiveRecord, Devise, Turbo, Stimulus, Tailwind CSS, SQLite3
 
 
 <!-- MANUAL ADDITIONS START -->

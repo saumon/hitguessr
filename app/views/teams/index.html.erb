@@ -6,13 +6,46 @@
     <% end %>
   </div>
 
-  <% if @teams.empty? %>
+  <%# Invitations en attente %>
+  <% if @pending_invitations.any? %>
+    <div class="mb-8">
+      <h2 class="font-display text-lg font-semibold text-yellow-300 mb-3 drop-shadow-[0_0_8px_rgba(253,224,71,0.85)]">⏳ Invitations en attente (<%= @pending_invitations.count %>)</h2>
+      <div class="space-y-3">
+        <% @pending_invitations.each do |invitation| %>
+          <div class="neon-border p-4 sm:p-5 border-yellow-500/30 bg-yellow-500/5">
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="text-yellow-400">⏳</span>
+                  <span class="font-display font-semibold neon-text-pink"><%= invitation.team.name %></span>
+                </div>
+                <p class="text-sm text-gray-400 mt-1">
+                  Invité par <span class="neon-text-cyan"><%= invitation.invited_by.name %></span> •
+                  <%= pluralize(invitation.team.members.count, "membre actif", "membres actifs") %>
+                </p>
+              </div>
+              <div class="flex gap-2 w-full sm:w-auto">
+                <%= button_to "Accepter", accept_team_invitation_path(invitation.team, invitation), method: :patch,
+                    data: { turbo_confirm: "Rejoindre \"#{invitation.team.name}\" ?" },
+                    class: "btn-neon btn-primary px-4 py-2 rounded-lg text-sm cursor-pointer min-h-11 flex-1 sm:flex-initial" %>
+                <%= button_to "Refuser", refuse_team_invitation_path(invitation.team, invitation), method: :patch,
+                    data: { turbo_confirm: "Refuser l'invitation à rejoindre \"#{invitation.team.name}\" ?" },
+                    class: "btn-neon btn-danger px-4 py-2 rounded-lg text-sm cursor-pointer min-h-11 flex-1 sm:flex-initial" %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <% if @teams.empty? && @pending_invitations.empty? %>
     <div class="neon-border p-8 sm:p-10 text-center">
       <div class="text-4xl sm:text-5xl mb-4 pulse-glow">🎵</div>
       <p class="text-gray-500 mb-4">Vous n'avez pas encore d'équipe.</p>
       <%= link_to "Créer ma première équipe", new_team_path, class: "neon-text-cyan hover:neon-text-pink font-medium transition-all duration-300" %>
     </div>
-  <% else %>
+  <% elsif @teams.any? %>
     <div class="space-y-4">
       <% @teams.each do |team| %>
         <div class="neon-border p-4 sm:p-6 hover:scale-[1.02] transition-transform duration-300">

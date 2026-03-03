@@ -2,6 +2,21 @@ fr:
   authorization:
     not_team_member: "Vous devez être membre de cette équipe pour effectuer cette action."
     organizer_only: "Seul l'organisateur peut effectuer cette action."
+  invitations:
+    create:
+      success: "Invitation envoyée avec succès."
+      not_found: "Aucun utilisateur trouvé avec cet email."
+      already_member: "Cet utilisateur est déjà membre actif de l'équipe."
+      already_invited: "Cet utilisateur a déjà une invitation en attente pour cette équipe."
+    accept:
+      success: "Vous avez rejoint l'équipe !"
+      forbidden: "Vous n'êtes pas le destinataire de cette invitation."
+      already_processed: "Cette invitation a déjà été traitée."
+    refuse:
+      success: "Vous avez refusé l'invitation."
+      forbidden: "Vous n'êtes pas le destinataire de cette invitation."
+      already_processed: "Cette invitation a déjà été traitée."
+    not_found: "Invitation introuvable."
   memberships:
     leave:
       success: "Vous avez quitté l'équipe."

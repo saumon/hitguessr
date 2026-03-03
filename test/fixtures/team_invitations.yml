@@ -1,0 +1,25 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+# Invitation en attente : non_member invité dans team_one par organizer
+pending_invitation:
+  team: team_one
+  invited_user: non_member
+  invited_by: organizer
+  status: 0
+  responded_at:
+
+# Invitation acceptée : member invité dans team_two par organizer_two
+accepted_invitation:
+  team: team_two
+  invited_user: member
+  invited_by: organizer_two
+  status: 1
+  responded_at: 2026-03-01 10:00:00
+
+# Invitation refusée : member invité dans team_three par organizer_two
+refused_invitation:
+  team: team_three
+  invited_user: member
+  invited_by: organizer_two
+  status: 2
+  responded_at: 2026-03-01 11:00:00

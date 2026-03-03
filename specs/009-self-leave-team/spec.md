@@ -2,7 +2,7 @@
 
 **Feature Branch**: `009-self-leave-team`  
 **Created**: 2026-02-21  
-**Status**: Draft  
+**Status**: Shipped  
 **Input**: User description: "un membre d'une équipe doit pouvoir décider lui-même de la quitter. Seul un organisateur d'équipe ne peut pas quitter sa propre équipe."
 
 ## Clarifications
