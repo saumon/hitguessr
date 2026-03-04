@@ -54,6 +54,9 @@ fr:
     collecting_phase_over: "La phase de collecte est terminée. Impossible de soumettre une nouvelle proposition."
     order_fixed: "L'ordre des propositions est figé depuis le début de la phase de devinettes."
   teams:
+    leave_action:
+      label: "Quitter l'équipe"
+      confirmation: "Êtes-vous sûr de vouloir quitter cette équipe ?"
     leaderboard:
       title: "Classement général"
       empty: "Aucun classement disponible. Terminez des parties pour voir le classement."

@@ -6,13 +6,9 @@
       <h1 class="font-display text-xl sm:text-2xl font-bold neon-text-pink truncate"><%= @team.name %></h1>
     </div>
     <% if @team.organizer == current_user %>
-      <div class="flex gap-2 w-full sm:w-auto">
+      <div class="flex gap-2 w-full sm:w-auto" data-team-header-actions="true">
         <%= link_to "Éditer", edit_team_path(@team), class: "btn-neon btn-secondary px-4 py-2 rounded-lg text-sm min-h-11 flex items-center justify-center flex-1 sm:flex-initial" %>
         <%= button_to "Supprimer", team_path(@team), method: :delete, data: { turbo_confirm: "Êtes-vous sûr de vouloir supprimer cette équipe ?" }, class: "btn-neon btn-danger px-4 py-2 rounded-lg text-sm cursor-pointer min-h-11 flex items-center justify-center flex-1 sm:flex-initial" %>
-      </div>
-    <% else %>
-      <div class="flex gap-2 w-full sm:w-auto">
-        <%= button_to "Quitter", team_leave_path(@team), method: :delete, data: { turbo_confirm: "Êtes-vous sûr de vouloir quitter cette équipe ?" }, class: "btn-neon btn-danger px-4 py-2 rounded-lg text-sm cursor-pointer min-h-11 flex items-center justify-center flex-1 sm:flex-initial" %>
       </div>
     <% end %>
   </div>
@@ -37,16 +33,25 @@
       <%# Membres actifs %>
       <div class="space-y-2">
         <% @members.each do |member| %>
-          <div class="flex justify-between items-center py-3 border-b border-neon-purple/20 last:border-0">
-            <div class="flex items-center gap-3">
+          <% can_remove_member = @team.organizer == current_user && member != @team.organizer %>
+          <% can_leave_team = show_leave_team_action_for?(team: @team, member: member, current_user: current_user) %>
+          <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center py-3 border-b border-neon-purple/20 last:border-0" data-member-id="<%= member.id %>">
+            <div class="flex items-center gap-3 min-w-0 member-row-name">
               <span class="neon-text-pink">♪</span>
-              <span class="text-gray-200"><%= member.name %></span>
+              <span class="text-gray-200 break-words"><%= member.name %></span>
               <% if member == @team.organizer %>
                 <span class="text-xs bg-neon-purple/20 text-neon-purple px-2 py-1 rounded border border-neon-purple/30">organisateur</span>
               <% end %>
             </div>
-            <% if @team.organizer == current_user && member != @team.organizer %>
-              <%= button_to "Retirer", team_membership_path(@team, @team.memberships.find_by(user: member)), method: :delete, data: { turbo_confirm: "Retirer #{member.name} de l'équipe ?" }, class: "neon-text-pink hover:opacity-80 text-sm transition-all duration-300 cursor-pointer" %>
+            <% if can_remove_member || can_leave_team %>
+              <div class="member-row-actions w-full sm:w-auto mt-2 sm:mt-0 flex justify-end items-center gap-3" data-member-actions="true">
+                <% if can_remove_member %>
+                  <%= button_to "Retirer", team_membership_path(@team, @team.memberships.find_by(user: member)), method: :delete, data: { turbo_confirm: "Retirer #{member.name} de l'équipe ?" }, class: "neon-text-pink hover:opacity-80 text-sm transition-all duration-300 cursor-pointer" %>
+                <% end %>
+                <% if can_leave_team %>
+                  <%= leave_team_button_for(@team) %>
+                <% end %>
+              </div>
             <% end %>
           </div>
         <% end %>

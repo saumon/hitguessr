@@ -492,6 +492,10 @@ The app is localized in **French** by default. Translation files are in `config/
 
 ## 📋 Changelog
 
+### v1.3.3 *(March 4, 2026)*
+
+- 🚪 **Reposition leave action in members list** — The leave-team action is now displayed only on the current member row inside the Members section (right-aligned), no longer in the team header actions. On mobile it moves to a second line under member info for readability, and the label is now explicit: `Quitter l'équipe` with i18n support and fallback ([#016](specs/016-reposition-leave-team-button/spec.md))
+
 ### v1.3.2 *(March 3, 2026)*
 
 - 🧪 **CI system-test stabilization** — Fixed and stabilized the system test suite so the GitHub Actions command `bin/rails db:test:prepare test:system` passes reliably again (updated outdated setup assumptions, selectors, and brittle assertions in system tests).
