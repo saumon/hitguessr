@@ -36,12 +36,13 @@ class SelfLeaveTeamTest < ApplicationSystemTestCase
     sign_in @member
 
     visit team_path(@team_three)
+    find("details.members-details summary").click
 
     assert_current_path team_path(@team_three)
-    assert_text "Quitter"
+    assert_text "Quitter l'équipe"
 
     accept_confirm("Êtes-vous sûr de vouloir quitter cette équipe ?") do
-      click_on "Quitter"
+      click_on "Quitter l'équipe"
     end
 
     assert_current_path teams_path
@@ -63,10 +64,11 @@ class SelfLeaveTeamTest < ApplicationSystemTestCase
     sign_in @member
 
     visit team_path(@team_one)
+    find("details.members-details summary").click
     assert_current_path team_path(@team_one)
 
     accept_confirm("Êtes-vous sûr de vouloir quitter cette équipe ?") do
-      click_on "Quitter"
+      click_on "Quitter l'équipe"
     end
 
     assert_text "Impossible de quitter l'équipe pendant une partie en cours."

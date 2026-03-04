@@ -1,0 +1,50 @@
+openapi: 3.0.3
+info:
+  title: HitGuessr Team Leave Action Contract
+  version: 1.3.3
+  description: |
+    Contrat de non-régression pour l'action de sortie d'équipe.
+    Cette feature modifie uniquement l'emplacement et le libellé du déclencheur UI.
+servers:
+  - url: http://localhost:3000
+paths:
+  /teams/{team_id}/leave:
+    delete:
+      summary: Quitter une équipe (membre connecté)
+      description: |
+        Déclenche la logique métier existante de sortie d'équipe.
+        Le comportement serveur ne change pas dans la feature 016.
+      operationId: leaveTeam
+      parameters:
+        - name: team_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '302':
+          description: Redirection HTML après action (succès ou refus selon règles métier)
+          headers:
+            Location:
+              schema:
+                type: string
+              description: URL de redirection (`/teams` ou `/teams/:id` selon cas)
+      security:
+        - cookieAuth: []
+      tags:
+        - Memberships
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: _session_id
+x-ui-requirements:
+  leave_button:
+    visible_for: active_member_with_leave_permission_only
+    row_target: current_member_row_only
+    desktop_alignment: right
+    mobile_layout: second_line_below_member_info
+    mobile_alignment: right
+    localized_label: true
+    fallback_label: "Quitter l'équipe"
