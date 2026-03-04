@@ -16,8 +16,13 @@ class TeamsHelperTest < ActionView::TestCase
 
   test "leave_team_action_label falls back to default french label when translation missing" do
     original_en_translations = I18n.backend.send(:translations)[:en].deep_dup
-    I18n.backend.send(:translations)[:en].deep_merge!(teams: { leave_action: {} })
-    I18n.backend.send(:translations)[:en][:teams].delete(:leave_action)
+    en_translations = I18n.backend.send(:translations)[:en]
+    en_translations.deep_merge!(teams: { leave_action: {} }, "teams" => { "leave_action" => {} })
+
+    if (teams_scope = en_translations[:teams] || en_translations["teams"])
+      teams_scope.delete(:leave_action)
+      teams_scope.delete("leave_action")
+    end
 
     I18n.with_locale(:en) do
       assert_equal "Quitter l'équipe", leave_team_action_label
