@@ -492,6 +492,11 @@ The app is localized in **French** by default. Translation files are in `config/
 
 ## 📋 Changelog
 
+### v1.3.4 *(March 4, 2026)*
+
+- 🚀 **Production server update script** — Added `script/update_production_server.sh`, an automated update script that prevents concurrent runs with a lock, stops the Puma service, updates the `master` branch in fast-forward-only mode, installs dependencies, precompiles assets, runs migrations, restarts the service, and attempts an automatic restart on failure.
+- 🌍 **i18n fallback fix (leave-team label)** — Hardened the helper test for `leave_team_action_label` so the “missing translation” scenario reliably removes the English key for both symbol and string hash keys in I18n backends. This guarantees the expected French default fallback (`Quitter l'équipe`) when `teams.leave_action.label` is unavailable.
+
 ### v1.3.3 *(March 4, 2026)*
 
 - 🚪 **Reposition leave action in members list** — The leave-team action is now displayed only on the current member row inside the Members section (right-aligned), no longer in the team header actions. On mobile it moves to a second line under member info for readability, and the label is now explicit: `Quitter l'équipe` with i18n support and fallback ([#016](specs/016-reposition-leave-team-button/spec.md))
