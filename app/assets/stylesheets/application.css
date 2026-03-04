@@ -8,3 +8,19 @@
  *
  * Consider organizing styles into separate files for maintainability.
  */
+
+.member-row-name {
+	overflow-wrap: anywhere;
+}
+
+.member-row-actions {
+	display: flex;
+	justify-content: flex-end;
+}
+
+@media (max-width: 639px) {
+	.member-row-actions {
+		width: 100%;
+		margin-top: 0.5rem;
+	}
+}
