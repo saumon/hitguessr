@@ -397,31 +397,137 @@ Game.last.ranking
 
 ## 🐳 Docker Deployment
 
-### Build and Run
+The provided `Dockerfile` is production-oriented (Rails 8 + Thruster, exposed on port `80`).
+
+### Run with Docker (single host)
+
+- Build the image:
 
 ```bash
-# Build the image
-docker build -t hitguessr .
-
-# Run the container
-docker run -d -p 80:80 \
-  -e RAILS_MASTER_KEY=$(cat config/master.key) \
-  --name hitguessr \
-  hitguessr
+docker build -t hitguessr:latest .
 ```
 
-### With Kamal
+- Choose one runtime mode:
+
+#### Option A: Without persistent volume (ephemeral)
+
+Use this for quick tests only. Data in `/rails/storage` is lost when the container is removed.
 
 ```bash
-# Setup (first time)
+docker run -d \
+    --name hitguessr \
+    -p 80:80 \
+    -e RAILS_MASTER_KEY="$(cat config/master.key)" \
+    hitguessr:latest
+```
+
+#### Option B: With persistent volume (recommended)
+
+Use this for real usage. SQLite and Active Storage files are kept across container recreation.
+
+```bash
+docker volume create hitguessr_storage
+
+docker run -d \
+    --name hitguessr \
+    -p 80:80 \
+    -e RAILS_MASTER_KEY="$(cat config/master.key)" \
+    -v hitguessr_storage:/rails/storage \
+    hitguessr:latest
+```
+
+- Check startup logs:
+
+```bash
+docker logs -f hitguessr
+```
+
+Notes:
+
+- Container entrypoint automatically runs `bin/rails db:prepare` when starting the Rails server.
+- App data (including SQLite production DB) is stored under `/rails/storage`; keep a mounted volume to avoid data loss.
+- Open `http://localhost` after startup.
+
+Useful commands:
+
+```bash
+docker stop hitguessr
+docker start hitguessr
+docker rm -f hitguessr
+docker exec -it hitguessr bash
+```
+
+### Deploy with Kamal
+
+- Update `config/deploy.yml`:
+
+  - Set real host(s) in `servers.web`.
+  - Set `registry.server` and registry auth if needed.
+  - Keep `RAILS_MASTER_KEY` in `env.secret` (already configured).
+  - Keep persistent volume mapping for `/rails/storage` (already configured).
+
+- Configure secrets in `.kamal/secrets`:
+
+```bash
+RAILS_MASTER_KEY=$(cat config/master.key)
+# KAMAL_REGISTRY_PASSWORD=...   # required for authenticated registries
+```
+
+- First deployment:
+
+```bash
 bin/kamal setup
-
-# Deploy
 bin/kamal deploy
-
-# View logs
-bin/kamal logs
 ```
+
+- Day-2 operations:
+
+```bash
+bin/kamal deploy        # rolling update
+bin/kamal logs -f       # follow logs
+bin/kamal app exec --interactive --reuse "bin/rails console"
+```
+
+Architecture note:
+
+- `config/deploy.yml` currently sets `builder.arch: amd64`; on Apple Silicon, builds use emulation unless you configure a remote amd64 builder.
+
+### Troubleshooting Docker
+
+- `Missing RAILS_MASTER_KEY`:
+Set the env var when running the container:
+
+```bash
+docker run ... -e RAILS_MASTER_KEY="$(cat config/master.key)" ...
+```
+
+- `Bind for 0.0.0.0:80 failed: port is already allocated`:
+Use another host port, for example:
+
+```bash
+docker run -d --name hitguessr -p 3000:80 ... hitguessr:latest
+```
+
+Then open `http://localhost:3000`.
+
+- Data lost after container recreation:
+Make sure `/rails/storage` is mounted to a named volume:
+
+```bash
+docker volume create hitguessr_storage
+docker run -d -v hitguessr_storage:/rails/storage ...
+```
+
+- Container starts then exits:
+Inspect logs and Rails boot output:
+
+```bash
+docker logs hitguessr
+docker ps -a --filter name=hitguessr
+```
+
+- Slow image build on Apple Silicon:
+`config/deploy.yml` is pinned to `amd64`. For faster builds, use a remote amd64 builder via Kamal.
 
 ---
 
@@ -491,6 +597,10 @@ The app is localized in **French** by default. Translation files are in `config/
 ---
 
 ## 📋 Changelog
+
+### v1.3.5 *(March 8, 2026)*
+
+- 🐳 **Docker deployment docs clarified** — Expanded the README Docker section with two explicit runtime modes: without persistent volume (ephemeral) and with persistent volume (recommended). Added operational notes on `/rails/storage` persistence, startup behavior (`db:prepare` via entrypoint), and a focused troubleshooting checklist (missing `RAILS_MASTER_KEY`, port conflicts, data persistence, startup failures, and Apple Silicon `amd64` build note).
 
 ### v1.3.4 *(March 4, 2026)*
 
