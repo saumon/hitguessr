@@ -601,6 +601,7 @@ The app is localized in **French** by default. Translation files are in `config/
 ### v1.3.5 *(March 8, 2026)*
 
 - 🐳 **Docker deployment docs clarified** — Expanded the README Docker section with two explicit runtime modes: without persistent volume (ephemeral) and with persistent volume (recommended). Added operational notes on `/rails/storage` persistence, startup behavior (`db:prepare` via entrypoint), and a focused troubleshooting checklist (missing `RAILS_MASTER_KEY`, port conflicts, data persistence, startup failures, and Apple Silicon `amd64` build note).
+- ⚙️ **Chore** — dependency updates
 
 ### v1.3.4 *(March 4, 2026)*
 
