@@ -90,13 +90,13 @@ class GamesController < ApplicationController
   private
 
   def set_team
-    @team = current_user.teams.find(params[:team_id])
+    @team = current_user.teams.find_by!(public_id: params[:team_id])
   rescue ActiveRecord::RecordNotFound
     redirect_to teams_path, alert: "Équipe introuvable ou accès non autorisé."
   end
 
   def set_game
-    @game = Game.find(params[:id])
+    @game = Game.find_by!(public_id: params[:id])
   rescue ActiveRecord::RecordNotFound
     redirect_to teams_path, alert: "Partie introuvable."
   end

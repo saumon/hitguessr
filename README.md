@@ -29,7 +29,8 @@
 - 🏆 **Leaderboard** — Scores and rankings with tie handling
 - 👤 **User authentication** — Secure sign-up/login with Devise
 - 🌙 **Dark neon theme** — Stylish music-inspired UI with glowing effects
-- 📱 **Responsive design** — Works on desktop and mobile
+- � **Public URL IDs** — Games and teams use short public identifiers (`gm_`, `tm_`) instead of numeric IDs in URLs for privacy and shareability
+- �📱 **Responsive design** — Works on desktop and mobile
 
 ---
 
@@ -168,6 +169,7 @@ erDiagram
 
     Team {
         integer id           PK
+        string  public_id    UK
         string  name
         integer organizer_id FK
     }
@@ -189,6 +191,7 @@ erDiagram
 
     Game {
         integer  id          PK
+        string   public_id   UK
         integer  team_id     FK
         integer  status
         datetime started_at
@@ -249,63 +252,63 @@ erDiagram
 
 ### Teams
 
-| Method | Path              | Description       |
-| ------ | ----------------- | ----------------- |
-| GET    | `/teams`          | List user's teams |
-| GET    | `/teams/new`      | New team form     |
-| POST   | `/teams`          | Create team       |
-| GET    | `/teams/:id`      | Show team details |
-| GET    | `/teams/:id/edit` | Edit team form    |
-| PATCH  | `/teams/:id`      | Update team       |
-| DELETE | `/teams/:id`      | Delete team       |
+| Method | Path                     | Description       |
+| ------ | ------------------------ | ----------------- |
+| GET    | `/teams`                 | List user's teams |
+| GET    | `/teams/new`             | New team form     |
+| POST   | `/teams`                 | Create team       |
+| GET    | `/teams/:public_id`      | Show team details |
+| GET    | `/teams/:public_id/edit` | Edit team form    |
+| PATCH  | `/teams/:public_id`      | Update team       |
+| DELETE | `/teams/:public_id`      | Delete team       |
 
 ### Memberships
 
-| Method | Path                              | Description        |
-| ------ | --------------------------------- | ------------------ |
-| DELETE | `/teams/:team_id/memberships/:id` | Remove member      |
-| DELETE | `/teams/:team_id/leave`           | Leave current team |
+| Method | Path                                     | Description        |
+| ------ | ---------------------------------------- | ------------------ |
+| DELETE | `/teams/:team_public_id/memberships/:id` | Remove member      |
+| DELETE | `/teams/:team_public_id/leave`           | Leave current team |
 
 ### Invitations
 
-| Method | Path                                         | Description                          |
-| ------ | -------------------------------------------- | ------------------------------------ |
-| POST   | `/teams/:team_id/invitations`                | Invite a member by email (organizer) |
-| PATCH  | `/teams/:team_id/invitations/:id/accept`     | Accept a pending invitation          |
-| PATCH  | `/teams/:team_id/invitations/:id/refuse`     | Refuse a pending invitation          |
+| Method | Path                                                | Description                          |
+| ------ | --------------------------------------------------- | ------------------------------------ |
+| POST   | `/teams/:team_public_id/invitations`                | Invite a member by email (organizer) |
+| PATCH  | `/teams/:team_public_id/invitations/:id/accept`     | Accept a pending invitation          |
+| PATCH  | `/teams/:team_public_id/invitations/:id/refuse`     | Refuse a pending invitation          |
 
 ### Games
 
-| Method | Path                            | Description                                       |
-| ------ | ------------------------------- | ------------------------------------------------- |
-| GET    | `/teams/:team_id/games`         | List team's games                                 |
-| GET    | `/teams/:team_id/games/new`     | New game form                                     |
-| POST   | `/teams/:team_id/games`         | Start new game (requires at least 3 team members) |
-| GET    | `/games/:id`                    | Show game state                                   |
-| DELETE | `/games/:id`                    | Cancel game (organizer only)                      |
-| PATCH  | `/games/:id/start_guessing`     | Transition to guessing phase                      |
-| PATCH  | `/games/:id/finish`             | End the game                                      |
+| Method | Path                                   | Description                                       |
+| ------ | -------------------------------------- | ------------------------------------------------- |
+| GET    | `/teams/:team_public_id/games`         | List team's games                                 |
+| GET    | `/teams/:team_public_id/games/new`     | New game form                                     |
+| POST   | `/teams/:team_public_id/games`         | Start new game (requires at least 3 team members) |
+| GET    | `/games/:public_id`                    | Show game state                                   |
+| DELETE | `/games/:public_id`                    | Cancel game (organizer only)                      |
+| PATCH  | `/games/:public_id/start_guessing`     | Transition to guessing phase                      |
+| PATCH  | `/games/:public_id/finish`             | End the game                                      |
 
 ### Proposals
 
-| Method | Path                            | Description          |
-| ------ | ------------------------------- | -------------------- |
-| GET    | `/games/:game_id/proposals/new` | Submit proposal form |
-| POST   | `/games/:game_id/proposals`     | Create proposal      |
-| GET    | `/games/:game_id/proposals/:id` | View proposal        |
+| Method | Path                                   | Description          |
+| ------ | -------------------------------------- | -------------------- |
+| GET    | `/games/:game_public_id/proposals/new` | Submit proposal form |
+| POST   | `/games/:game_public_id/proposals`     | Create proposal      |
+| GET    | `/games/:game_public_id/proposals/:id` | View proposal        |
 
 ### Guesses
 
-| Method | Path                          | Description        |
-| ------ | ----------------------------- | ------------------ |
-| GET    | `/games/:game_id/guesses/new` | Guessing form      |
-| POST   | `/games/:game_id/guesses`     | Submit all guesses |
+| Method | Path                                 | Description        |
+| ------ | ------------------------------------ | ------------------ |
+| GET    | `/games/:game_public_id/guesses/new` | Guessing form      |
+| POST   | `/games/:game_public_id/guesses`     | Submit all guesses |
 
 ### Results
 
-| Method | Path                      | Description            |
-| ------ | ------------------------- | ---------------------- |
-| GET    | `/games/:game_id/results` | View scores & rankings |
+| Method | Path                             | Description            |
+| ------ | -------------------------------- | ---------------------- |
+| GET    | `/games/:game_public_id/results` | View scores & rankings |
 
 ---
 
@@ -598,8 +601,9 @@ The app is localized in **French** by default. Translation files are in `config/
 
 ## 📋 Changelog
 
-### v1.3.5 *(March 8, 2026)*
+### v1.3.5 *(March 13, 2026)*
 
+- 🔗 **Public URL IDs** — Games and teams now use short public identifiers (`gm_<8chars>` for games, `tm_<8chars>` for teams) instead of numeric IDs in all public-facing URLs. Numeric and malformed IDs on public endpoints return 404 with no redirect or information leak. Existing records are backfilled automatically via migration. All URL helpers, controllers, and views updated for seamless public-id routing ([#017](specs/017-public-url-ids/spec.md))
 - 🐳 **Docker deployment docs clarified** — Expanded the README Docker section with two explicit runtime modes: without persistent volume (ephemeral) and with persistent volume (recommended). Added operational notes on `/rails/storage` persistence, startup behavior (`db:prepare` via entrypoint), and a focused troubleshooting checklist (missing `RAILS_MASTER_KEY`, port conflicts, data persistence, startup failures, and Apple Silicon `amd64` build note).
 - ⚙️ **Chore** — dependency updates
 

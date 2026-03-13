@@ -62,14 +62,14 @@ class TeamsController < ApplicationController
   private
 
   def set_team
-    @team = current_user.teams.find_by(id: params[:id])
+    @team = current_user.teams.find_by(public_id: params[:id])
 
     # Permettre aussi l'accès aux utilisateurs avec une invitation en attente
     if @team.nil?
       @team = Team
                 .joins(:team_invitations)
                 .where(team_invitations: { invited_user_id: current_user.id, status: TeamInvitation.statuses[:pending] })
-                .find_by(id: params[:id])
+                .find_by(public_id: params[:id])
     end
 
     redirect_to teams_path, alert: "Équipe introuvable ou accès non autorisé." if @team.nil?

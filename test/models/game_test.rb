@@ -639,4 +639,51 @@ class GameTest < ActiveSupport::TestCase
   def build_user(prefix, name)
     User.create!(email: "#{prefix}-#{SecureRandom.hex(6)}@example.com", name: name, password: "password123")
   end
+
+  # =============================================================
+  # Feature 017: Public IDs — T011 Game public_id generation/format/retry
+  # =============================================================
+
+  public
+
+  test "game gets a public_id on create with gm_ prefix" do
+    assert @game.public_id.present?
+    assert_match(/\Agm_[A-Za-z0-9]{8}\z/, @game.public_id)
+  end
+
+  test "game public_id is unique across games" do
+    @game.proposals.create!(player: @player1, url: "https://youtube.com/a")
+    @game.proposals.create!(player: @player2, url: "https://youtube.com/b")
+    @game.start_guessing!
+    @game.finish!
+    game2 = @team.games.create!
+    assert_not_equal @game.public_id, game2.public_id
+  end
+
+  test "game public_id is stable after reload" do
+    original_id = @game.public_id
+    @game.reload
+    assert_equal original_id, @game.public_id
+  end
+
+  test "game to_param returns public_id" do
+    assert_equal @game.public_id, @game.to_param
+  end
+
+  test "game public_id does not change on update" do
+    original_id = @game.public_id
+    @game.proposals.create!(player: @player1, url: "https://youtube.com/a")
+    @game.proposals.create!(player: @player2, url: "https://youtube.com/b")
+    @game.start_guessing!
+    assert_equal original_id, @game.reload.public_id
+  end
+
+  # T052: Cross-model collision test
+  test "game segment does not collide with existing team segment" do
+    game_segments = Game.pluck(:public_id).map { |pid| pid.split("_", 2).last }
+    team_segments = Team.pluck(:public_id).map { |pid| pid.split("_", 2).last }
+
+    overlap = game_segments & team_segments
+    assert_empty overlap, "Segments should not overlap between games and teams: #{overlap}"
+  end
 end

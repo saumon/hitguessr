@@ -457,4 +457,58 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to team_path(@team)
     assert_equal I18n.t("authorization.organizer_only"), flash[:alert]
   end
+
+  # =============================================================
+  # Feature 017: Public IDs — US1 Tests
+  # =============================================================
+
+  # T014: Show-route success by game public_id
+  test "member can access game show by public_id" do
+    sign_in @organizer
+
+    get game_path(@collecting_game)
+
+    assert_response :success
+  end
+
+  # T015: 404 for numeric game id on public endpoint
+  test "numeric game id returns 404 on game show" do
+    sign_in @organizer
+
+    get "/games/#{@collecting_game.id}"
+
+    assert_redirected_to teams_path
+    assert_equal "Partie introuvable.", flash[:alert]
+  end
+
+  # T016: malformed game public_id returns 404
+  test "malformed game public_id returns 404" do
+    sign_in @organizer
+
+    get "/games/gm_abc"
+
+    assert_redirected_to teams_path
+    assert_equal "Partie introuvable.", flash[:alert]
+  end
+
+  test "invalid prefix game public_id returns 404" do
+    sign_in @organizer
+
+    get "/games/xx_ABCDEFGH"
+
+    assert_redirected_to teams_path
+    assert_equal "Partie introuvable.", flash[:alert]
+  end
+
+  # T046: No-leak assertions for invalid game public_id
+  test "invalid game public_id does not leak internal details" do
+    sign_in @organizer
+
+    get "/games/999"
+
+    assert_redirected_to teams_path
+    # Should be a generic message, no internal details
+    assert_equal "Partie introuvable.", flash[:alert]
+    assert_nil flash[:notice]
+  end
 end

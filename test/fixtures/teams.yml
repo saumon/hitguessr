@@ -3,23 +3,29 @@
 team_one:
   name: "Équipe Alpha"
   organizer: organizer
+  public_id: tm_FxT00001
 
 team_two:
   name: "Équipe Beta"
   organizer: organizer_two
+  public_id: tm_FxT00002
 
 team_three:
   name: "Équipe Gamma"
   organizer: organizer_two
+  public_id: tm_FxT00003
 
 team_one_member:
   name: "Équipe Solo"
   organizer: organizer
+  public_id: tm_FxT00004
 
 team_two_members:
   name: "Équipe Duo"
   organizer: organizer
+  public_id: tm_FxT00005
 
 team_three_members:
   name: "Équipe Trio"
   organizer: organizer
+  public_id: tm_FxT00006

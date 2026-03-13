@@ -68,7 +68,7 @@ class GuessesController < ApplicationController
   private
 
   def set_game
-    @game = Game.find(params[:game_id])
+    @game = Game.find_by!(public_id: params[:game_id])
   rescue ActiveRecord::RecordNotFound
     redirect_to teams_path, alert: "Partie introuvable."
   end
