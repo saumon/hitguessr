@@ -1,4 +1,10 @@
 class Team < ApplicationRecord
+  include PublicId
+
+  def self.public_id_prefix
+    "tm"
+  end
+
   # Associations
   belongs_to :organizer, class_name: "User", inverse_of: :organized_teams
   has_many :memberships, dependent: :destroy

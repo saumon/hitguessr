@@ -5,15 +5,18 @@ collecting_game:
   status: 0
   started_at: null
   finished_at: null
+  public_id: gm_FxG00001
 
 guessing_game:
   team: team_two
   status: 1
   started_at: <%= Time.current %>
   finished_at: null
+  public_id: gm_FxG00002
 
 finished_game:
   team: team_two
   status: 2
   started_at: <%= 1.hour.ago %>
   finished_at: <%= Time.current %>
+  public_id: gm_FxG00003

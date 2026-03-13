@@ -92,4 +92,47 @@ class TeamsControllerTest < ActionDispatch::IntegrationTest
     # Pas de section invitations en attente pour un membre actif sans invitation
     assert_select "h2", text: /Invitations en attente/, count: 0
   end
+
+  # ============================================================
+  # Feature 017 – US2: Public team URLs
+  # ============================================================
+
+  # T022: Show-route success by team public_id
+  test "member can access team show by public_id" do
+    sign_in @member
+
+    get team_path(@team_one)
+
+    assert_response :success
+  end
+
+  # T023: 404 for numeric team id on public endpoint
+  test "numeric team id returns 404 on team show" do
+    sign_in @member
+
+    get "/teams/#{@team_one.id}"
+
+    assert_redirected_to teams_path
+    assert_equal "Équipe introuvable ou accès non autorisé.", flash[:alert]
+  end
+
+  # T047: No-leak assertions for invalid team public_id
+  test "invalid team public_id does not leak internal details" do
+    sign_in @member
+
+    get "/teams/999"
+
+    assert_redirected_to teams_path
+    assert_equal "Équipe introuvable ou accès non autorisé.", flash[:alert]
+    assert_nil flash[:notice]
+  end
+
+  test "malformed team public_id returns 404" do
+    sign_in @member
+
+    get "/teams/tm_abc"
+
+    assert_redirected_to teams_path
+    assert_equal "Équipe introuvable ou accès non autorisé.", flash[:alert]
+  end
 end

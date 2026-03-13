@@ -409,4 +409,57 @@ class TeamTest < ActiveSupport::TestCase
     ensure_minimum_members(team)
     team.games.create!
   end
+
+  # =============================================================
+  # Feature 017: Public IDs — T012 Team public_id generation/format/retry
+  # =============================================================
+
+  public
+
+  test "team gets a public_id on create with tm_ prefix" do
+    team = Team.create!(name: "Public ID Team", organizer: @user)
+    assert team.public_id.present?
+    assert_match(/\Atm_[A-Za-z0-9]{8}\z/, team.public_id)
+  end
+
+  test "team public_id is unique across teams" do
+    team1 = Team.create!(name: "Team A", organizer: @user)
+    team2 = Team.create!(name: "Team B", organizer: @user)
+    assert_not_equal team1.public_id, team2.public_id
+  end
+
+  test "team public_id is stable after reload" do
+    team = Team.create!(name: "Stable ID", organizer: @user)
+    original = team.public_id
+    team.reload
+    assert_equal original, team.public_id
+  end
+
+  test "team to_param returns public_id" do
+    team = Team.create!(name: "Param Team", organizer: @user)
+    assert_equal team.public_id, team.to_param
+  end
+
+  test "team public_id does not change on update" do
+    team = Team.create!(name: "Immutable", organizer: @user)
+    original = team.public_id
+    team.update!(name: "Renamed")
+    assert_equal original, team.reload.public_id
+  end
+
+  test "team segment does not collide with game segments" do
+    player1 = build_user("p1", "P1")
+    player2 = build_user("p2", "P2")
+    3.times do |i|
+      t = Team.create!(name: "Cross-check #{i}", organizer: @user)
+      t.memberships.create!(user: player1)
+      t.memberships.create!(user: player2)
+      t.games.create!
+    end
+
+    game_segments = Game.pluck(:public_id).map { |pid| pid.split("_", 2).last }
+    team_segments = Team.pluck(:public_id).map { |pid| pid.split("_", 2).last }
+    overlap = game_segments & team_segments
+    assert_empty overlap, "Segments should not overlap: #{overlap}"
+  end
 end

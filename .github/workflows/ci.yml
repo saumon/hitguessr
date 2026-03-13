@@ -89,6 +89,11 @@ jobs:
           # RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
           # REDIS_URL: redis://localhost:6379/0
         run: bin/rails db:test:prepare test
+        # Note: public_id lookup performance is validated by the N+1 regression
+        # test in test/integration/public_ids_routing_test.rb and by the
+        # benchmark script tmp/benchmark_public_id_lookup.rb (run manually).
+        # A CI-based p95 budget is not feasible with variable runner performance;
+        # the unique index on public_id ensures O(log n) lookups.
 
   system-test:
     runs-on: ubuntu-latest

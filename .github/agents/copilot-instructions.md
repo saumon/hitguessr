@@ -29,6 +29,8 @@ Auto-generated from all feature plans. Last updated: 2026-01-31
 - SQLite (tables existantes + nouvelle table d’invitations d’équipe) (015-team-invite-response)
 - Ruby 3.4.6, Rails 8.1.x + Rails (ActionView/ERB), Devise, Turbo (`button_to`), Tailwind CSS 4, I18n (016-reposition-leave-team-button)
 - SQLite via ActiveRecord (aucun changement de schéma) (016-reposition-leave-team-button)
+- Ruby 3.4.6 + Rails 8.1.2 + ActiveRecord, ActionController, Devise, SecureRandom (017-public-url-ids)
+- SQLite (dev/test), schema ActiveRecord (017-public-url-ids)
 
 - Ruby 3.4.6 + Devise (authentification), TailwindCSS v4.1 (styling) (001-hitguessr-gameplay)
 
@@ -48,9 +50,9 @@ tests/
 Ruby 3.4.6: Follow standard conventions
 
 ## Recent Changes
+- 017-public-url-ids: Added Ruby 3.4.6 + Rails 8.1.2 + ActiveRecord, ActionController, Devise, SecureRandom
 - 016-reposition-leave-team-button: Added Ruby 3.4.6, Rails 8.1.x + Rails (ActionView/ERB), Devise, Turbo (`button_to`), Tailwind CSS 4, I18n
 - 015-team-invite-response: Added Ruby 3.4.6, Rails 8.1.2 + Rails (ActiveRecord, ActionController, ActionView), Devise, Turbo/Stimulus, Tailwind CSS Rails, SQLite3
-- 014-proposal-edit-window: Added Ruby 3.4.6, Rails 8.1.2, ERB + Hotwire/Stimulus (importmap) + rails, devise, turbo-rails, stimulus-rails, tailwindcss-rails
 
 
 <!-- MANUAL ADDITIONS START -->

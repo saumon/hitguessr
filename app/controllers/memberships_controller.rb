@@ -42,13 +42,13 @@ class MembershipsController < ApplicationController
   private
 
   def set_team
-    @team = current_user.teams.find(params[:team_id])
+    @team = current_user.teams.find_by!(public_id: params[:team_id])
   rescue ActiveRecord::RecordNotFound
     redirect_to teams_path, alert: "Équipe introuvable ou accès non autorisé."
   end
 
   def set_team_for_leave
-    @team = Team.find(params[:team_id])
+    @team = Team.find_by!(public_id: params[:team_id])
   rescue ActiveRecord::RecordNotFound
     redirect_to teams_path, alert: I18n.t("memberships.leave.unauthorized")
   end
