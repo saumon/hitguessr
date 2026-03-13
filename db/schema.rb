@@ -10,14 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_03_110503) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_13_100003) do
   create_table "games", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "finished_at"
+    t.string "public_id", null: false
     t.datetime "started_at"
     t.integer "status", default: 0, null: false
     t.integer "team_id", null: false
     t.datetime "updated_at", null: false
+    t.index ["public_id"], name: "index_games_on_public_id", unique: true
     t.index ["status"], name: "index_games_on_status"
     t.index ["team_id"], name: "index_games_on_team_id"
   end
@@ -78,8 +80,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_03_110503) do
     t.datetime "created_at", null: false
     t.string "name", null: false
     t.integer "organizer_id", null: false
+    t.string "public_id", null: false
     t.datetime "updated_at", null: false
     t.index ["organizer_id"], name: "index_teams_on_organizer_id"
+    t.index ["public_id"], name: "index_teams_on_public_id", unique: true
   end
 
   create_table "users", force: :cascade do |t|

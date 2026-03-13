@@ -1,5 +1,11 @@
 class Game < ApplicationRecord
+  include PublicId
+
   MINIMUM_TEAM_MEMBERS = 3
+
+  def self.public_id_prefix
+    "gm"
+  end
 
   # Enum for game status
   enum :status, { collecting: 0, guessing: 1, finished: 2 }, default: :collecting

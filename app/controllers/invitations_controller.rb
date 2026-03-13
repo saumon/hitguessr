@@ -77,7 +77,7 @@ class InvitationsController < ApplicationController
   private
 
   def set_team
-    @team = Team.find(params[:team_id])
+    @team = Team.find_by!(public_id: params[:team_id])
   rescue ActiveRecord::RecordNotFound
     redirect_to teams_path, alert: t("invitations.not_found")
   end
