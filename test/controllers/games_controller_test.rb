@@ -511,4 +511,62 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Partie introuvable.", flash[:alert]
     assert_nil flash[:notice]
   end
+
+  # =============================================
+  # Feature 018: Team-Scoped Game Numbering
+  # =============================================
+
+  # T013 [P] [US1] — La première partie créée dans une équipe reçoit team_game_number = 1
+  test "first game created for a team gets team_game_number = 1" do
+    sign_in @organizer
+
+    new_team = Team.create!(name: "Équipe Fraîche", organizer: @organizer)
+    new_team.memberships.create!(user: @member)
+    new_team.memberships.create!(user: @member_two)
+
+    assert_difference("Game.count", 1) do
+      post team_games_path(new_team)
+    end
+
+    created = Game.order(:id).last
+    assert_equal 1, created.team_game_number
+  end
+
+  # T014 [P] [US1] — Des créations successives numérotent de façon incrémentale
+  test "successive game creates for a team receive incrementing team_game_number" do
+    sign_in @organizer
+
+    team = Team.create!(name: "Équipe Séquentielle", organizer: @organizer)
+    team.memberships.create!(user: @member)
+    team.memberships.create!(user: @member_two)
+
+    post team_games_path(team)
+    g1 = Game.order(:id).last
+    g1.update_columns(status: 2, started_at: 1.hour.ago, finished_at: Time.current)
+
+    post team_games_path(team)
+    g2 = Game.order(:id).last
+    g2.update_columns(status: 2, started_at: 30.minutes.ago, finished_at: Time.current)
+
+    post team_games_path(team)
+    g3 = Game.order(:id).last
+
+    assert_equal 1, g1.team_game_number
+    assert_equal 2, g2.team_game_number
+    assert_equal 3, g3.team_game_number
+  end
+
+  # T029 [P] [US3] — Le show d'une partie affiche le team_game_number dans le titre
+  test "game show title uses team_game_number" do
+    sign_in @organizer
+
+    get game_path(@collecting_game)
+
+    assert_response :success
+    assert_match(/Partie ##{@collecting_game.team_game_number}/, response.body)
+    # Si le team_game_number diffère de l'id, on ne doit plus voir l'id dans le titre principal
+    if @collecting_game.team_game_number != @collecting_game.id
+      assert_no_match(/Partie ##{@collecting_game.id}\b/, response.body)
+    end
+  end
 end

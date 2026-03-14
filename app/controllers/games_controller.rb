@@ -17,10 +17,24 @@ class GamesController < ApplicationController
 
   def create
     created = false
+    max_retries = 3
+    retry_delays_ms = [ 10, 25, 50 ]
+    attempt = 0
 
-    @team.with_lock do
-      @game = @team.games.build
-      created = @game.save
+    begin
+      @team.with_lock do
+        @game = @team.games.build
+        @game.team_game_number = Game.next_team_game_number_for(@team)
+        created = @game.save
+      end
+    rescue ActiveRecord::RecordNotUnique
+      attempt += 1
+      if attempt < max_retries
+        sleep(retry_delays_ms[attempt - 1] / 1000.0)
+        retry
+      end
+      @game ||= @team.games.build
+      @game.errors.add(:base, "Impossible d'assigner un numéro de partie unique. Veuillez réessayer.")
     end
 
     if created

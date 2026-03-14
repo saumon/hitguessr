@@ -3,7 +3,7 @@
   <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
     <div class="flex items-center gap-3 sm:gap-4 min-w-0">
       <%= link_to "← Équipe", team_path(@team), class: "neon-text-cyan hover:neon-text-pink transition-all duration-300 text-sm sm:text-base min-h-11 inline-flex items-center flex-shrink-0" %>
-      <h1 class="font-display text-lg sm:text-2xl font-bold neon-text-pink truncate">Partie #<%= @game.id %> - <%= @team.name %></h1>
+      <h1 class="font-display text-lg sm:text-2xl font-bold neon-text-pink truncate">Partie #<%= @game.team_game_number %> - <%= @team.name %></h1>
     </div>
   </div>
 

@@ -37,7 +37,7 @@ class SingleActiveGameTest < ApplicationSystemTestCase
 
     # Should see the active game indicator
     assert_text "Partie en cours:"
-    assert_selector "a", text: "Partie ##{game.id}"
+    assert_selector "a", text: "Partie ##{game.team_game_number}"
   end
 
   # US3: Bouton actif après fin de partie

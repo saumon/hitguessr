@@ -21,8 +21,23 @@ class Game < ApplicationRecord
 
   # Validations
   validates :status, presence: true
+  validates :team_game_number, presence: true, numericality: { only_integer: true, greater_than: 0 }, uniqueness: { scope: :team_id }
   validate :only_one_active_game_per_team, on: :create
   validate :minimum_team_members_required, on: :create
+  validate :team_id_immutable, on: :update
+
+  # --- Team-scoped game numbering ---
+
+  # Calcule le prochain numéro pour une équipe donnée.
+  # DOIT être appelé à l'intérieur du verrou team (with_lock).
+  def self.next_team_game_number_for(team)
+    current_max = where(team_id: team.id).maximum(:team_game_number) || 0
+    current_max + 1
+  end
+
+  # Assigne automatiquement le prochain numéro si non défini.
+  # En production, le contrôleur le définit explicitement sous verrou (with_lock).
+  before_validation :assign_team_game_number_if_missing, on: :create
 
   # State transitions
   def start_guessing!
@@ -140,5 +155,18 @@ class Game < ApplicationRecord
     return if team.eligible_to_start_game?(MINIMUM_TEAM_MEMBERS)
 
     errors.add(:base, I18n.t("games.create.minimum_members_required", count: MINIMUM_TEAM_MEMBERS))
+  end
+
+  def team_id_immutable
+    return unless team_id_changed?
+
+    errors.add(:team, I18n.t("games.errors.team_id_immutable"))
+  end
+
+  def assign_team_game_number_if_missing
+    return if team_game_number.present?
+    return if team.nil?
+
+    self.team_game_number = self.class.next_team_game_number_for(team)
   end
 end

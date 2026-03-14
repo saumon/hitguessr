@@ -686,4 +686,96 @@ class GameTest < ActiveSupport::TestCase
     overlap = game_segments & team_segments
     assert_empty overlap, "Segments should not overlap between games and teams: #{overlap}"
   end
+
+  # =========================================================
+  # Feature 018: Team-Scoped Game Numbering
+  # =========================================================
+
+  # T010 [P] — Séquence d'allocation et unicité
+  test "first game created for a team gets team_game_number 1" do
+    team2 = Team.create!(name: "Nouvelle équipe", organizer: @organizer)
+    team2.memberships.create!(user: @player1)
+    team2.memberships.create!(user: @player2)
+    team2.memberships.create!(user: @player3)
+
+    g = team2.games.create!
+    assert_equal 1, g.team_game_number
+  end
+
+  test "successive games for a team receive incrementing team_game_number" do
+    # Terminer @game (numéro 1) pour pouvoir créer les suivantes
+    @game.proposals.create!(player: @player1, url: "https://youtube.com/a")
+    @game.proposals.create!(player: @player2, url: "https://youtube.com/b")
+    @game.start_guessing!
+    @game.finish!
+
+    g2 = @team.games.create!
+    # Terminer g2 pour pouvoir créer g3
+    g2.proposals.create!(player: @player1, url: "https://youtube.com/c")
+    g2.proposals.create!(player: @player2, url: "https://youtube.com/d")
+    g2.start_guessing!
+    g2.finish!
+
+    g3 = @team.games.create!
+
+    assert_equal 1, @game.team_game_number
+    assert_equal 2, g2.team_game_number
+    assert_equal 3, g3.team_game_number
+  end
+
+  test "next_team_game_number_for returns 1 when no game exists for team" do
+    empty_team = Team.create!(name: "Équipe vide", organizer: @organizer)
+    assert_equal 1, Game.next_team_game_number_for(empty_team)
+  end
+
+  test "next_team_game_number_for returns max+1 when games exist" do
+    assert_equal (@game.team_game_number + 1), Game.next_team_game_number_for(@team)
+  end
+
+  test "team_game_number must be positive" do
+    invalid_game = @team.games.build(team_game_number: 0)
+    assert_not invalid_game.valid?
+    assert invalid_game.errors[:team_game_number].any?
+  end
+
+  test "team_game_number scoped uniqueness is enforced per team" do
+    duplicate = @team.games.build
+    duplicate.team_game_number = @game.team_game_number  # collision intentionnelle
+
+    # On contourne les autres validations
+    @team.games.find_by_status(:collecting)&.update_columns(status: 2)
+    assert_not duplicate.valid?
+    assert duplicate.errors[:team_game_number].any?
+  end
+
+  # T011 [P] — Immutabilité et stabilité après update
+  test "team_game_number does not change after non-team updates" do
+    original_number = @game.team_game_number
+    @game.proposals.create!(player: @player1, url: "https://youtube.com/x")
+    @game.reload
+    assert_equal original_number, @game.team_game_number
+  end
+
+  test "team_game_number is not changed on save" do
+    original_number = @game.team_game_number
+    @game.touch
+    assert_equal original_number, @game.reload.team_game_number
+  end
+
+  # T022 [P] [US2] — Immutabilité du team_id
+  test "team_id cannot be changed after create" do
+    other_team = Team.create!(name: "Autre équipe", organizer: @organizer)
+    @game.team_id = other_team.id
+    assert_not @game.valid?
+    assert @game.errors[:team].any?
+  end
+
+  # T023 [P] [US2] — Rejet du changement de team_id
+  test "attempting to reassign team_id raises validation error" do
+    other_team = Team.create!(name: "Troisième équipe", organizer: @organizer)
+    @game.team = other_team
+    assert_raises(ActiveRecord::RecordInvalid) do
+      @game.save!
+    end
+  end
 end
