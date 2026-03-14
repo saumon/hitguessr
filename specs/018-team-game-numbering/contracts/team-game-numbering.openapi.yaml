@@ -1,0 +1,127 @@
+openapi: 3.0.3
+info:
+  title: HitGuessr Team Game Numbering Contract
+  version: 1.0.0
+  description: >-
+    Contract for team-scoped sequential game numbers persisted on Game records.
+servers:
+  - url: https://example.com
+paths:
+  /teams/{teamPublicId}/games:
+    get:
+      summary: List games for a team with stable team-scoped numbers
+      tags: [Games]
+      parameters:
+        - $ref: '#/components/parameters/TeamPublicId'
+      responses:
+        '200':
+          description: Team games listed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  team:
+                    $ref: '#/components/schemas/TeamRef'
+                  games:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/GameSummary'
+    post:
+      summary: Create a new game and assign next team-scoped number
+      tags: [Games]
+      parameters:
+        - $ref: '#/components/parameters/TeamPublicId'
+      responses:
+        '201':
+          description: Game created with assigned team number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameDetail'
+        '422':
+          description: Validation conflict not recoverable by retry
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /games/{gamePublicId}:
+    get:
+      summary: Get one game with team-scoped number
+      tags: [Games]
+      parameters:
+        - $ref: '#/components/parameters/GamePublicId'
+      responses:
+        '200':
+          description: Game detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameDetail'
+        '404':
+          description: Game not found
+
+components:
+  parameters:
+    TeamPublicId:
+      name: teamPublicId
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: '^tm_[A-Za-z0-9]{8}$'
+    GamePublicId:
+      name: gamePublicId
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: '^gm_[A-Za-z0-9]{8}$'
+
+  schemas:
+    TeamRef:
+      type: object
+      required: [public_id, name]
+      properties:
+        public_id:
+          type: string
+          example: tm_Ab12Cd34
+        name:
+          type: string
+          example: Les Melomanes
+
+    GameSummary:
+      type: object
+      required: [public_id, team_game_number, status, created_at]
+      properties:
+        public_id:
+          type: string
+          example: gm_Xy98Qw76
+        team_game_number:
+          type: integer
+          minimum: 1
+          example: 12
+        status:
+          type: string
+          enum: [collecting, guessing, finished]
+        created_at:
+          type: string
+          format: date-time
+
+    GameDetail:
+      allOf:
+        - $ref: '#/components/schemas/GameSummary'
+        - type: object
+          required: [team]
+          properties:
+            team:
+              $ref: '#/components/schemas/TeamRef'
+
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+          example: Unable to assign team-scoped game number after retries

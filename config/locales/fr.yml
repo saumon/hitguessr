@@ -30,6 +30,8 @@ fr:
       minimum_members_required: "Au moins %{count} membres sont requis pour lancer une partie."
       minimum_members_hint: "Au moins %{count} membres requis"
       active_game_in_progress: "Une partie est déjà en cours"
+    errors:
+      team_id_immutable: "ne peut pas être modifié après la création de la partie"
     destroy:
       success: "Partie annulée avec succès."
       error: "Une erreur s'est produite lors de l'annulation de la partie."
@@ -87,6 +89,7 @@ fr:
         status: "Phase"
         started_at: "Démarré le"
         finished_at: "Terminé le"
+        team_game_number: "Numéro de partie"
       proposal:
         url: "Lien musical"
         player: "Joueur"

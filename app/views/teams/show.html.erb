@@ -170,7 +170,7 @@
       <div class="mb-4 p-3 bg-neon-cyan/10 border border-neon-cyan/30 rounded-lg text-sm sm:text-base">
         <span class="neon-text-cyan">▶</span>
         <span class="text-gray-200">Partie en cours:</span>
-        <%= link_to "Partie ##{@team.active_game.id}", game_path(@team.active_game), class: "neon-text-pink hover:underline ml-1" %>
+        <%= link_to "Partie ##{@team.active_game.team_game_number}", game_path(@team.active_game), class: "neon-text-pink hover:underline ml-1" %>
         <span class="text-xs text-gray-400 ml-2">(<%= @team.active_game.status.humanize %>)</span>
       </div>
     <% end %>
@@ -182,7 +182,7 @@
         <% @games.each do |game| %>
           <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center py-3 border-b border-neon-purple/20 last:border-0 gap-2 sm:gap-0">
             <div class="flex flex-wrap items-center gap-2">
-              <span class="font-medium text-gray-200 text-sm sm:text-base">Partie #<%= game.id %></span>
+              <span class="font-medium text-gray-200 text-sm sm:text-base">Partie #<%= game.team_game_number %></span>
               <span class="text-gray-500 text-xs sm:text-sm"><%= l(game.created_at, format: :short) rescue game.created_at.strftime("%d/%m/%Y") %></span>
               <span class="text-xs px-2 py-1 rounded border <%= game.finished? ? 'bg-gray-500/20 text-gray-400 border-gray-500/30' : game.guessing? ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' : 'bg-neon-cyan/20 neon-text-cyan border-neon-cyan/30' %>">
                 <%= game.status.humanize %>

@@ -10,17 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_13_100003) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_14_100003) do
   create_table "games", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "finished_at"
     t.string "public_id", null: false
     t.datetime "started_at"
     t.integer "status", default: 0, null: false
+    t.integer "team_game_number", null: false
     t.integer "team_id", null: false
     t.datetime "updated_at", null: false
     t.index ["public_id"], name: "index_games_on_public_id", unique: true
     t.index ["status"], name: "index_games_on_status"
+    t.index ["team_id", "team_game_number"], name: "index_games_on_team_id_and_team_game_number", unique: true
     t.index ["team_id"], name: "index_games_on_team_id"
   end
 
