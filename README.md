@@ -17,6 +17,7 @@
 ## ✨ Features
 
 - 🤝 **Team member autonomy** — Any team member (including the organizer) can launch, start guessing, and finish a game; cancel game and membership management remain organizer-only
+- 🔢 **Team-scoped game numbering** — Each team has its own stable sequential game counter (1, 2, 3 …) displayed consistently across all views
 - 📩 **Team invite flow** — Adding a member now sends a pending invitation; the invitee accepts or refuses from `/teams` and active membership is only granted on explicit acceptance
 - 🎧 **Team-based gameplay** — Create teams, invite friends, and play together
 - 🎵 **Music proposals** — Submit YouTube or any music URL anonymously
@@ -600,6 +601,10 @@ The app is localized in **French** by default. Translation files are in `config/
 ---
 
 ## 📋 Changelog
+
+### v1.4.0 *(March 14, 2026)*
+
+- 🔢 **Team-scoped game numbering** — Each team now has its own sequential game counter (1, 2, 3 …) stored as `team_game_number` on every game record. Numbers are stable forever: deletion of a game does not renumber others, and the team cannot be reassigned after creation. A bounded retry (up to 3 attempts, backoff 10/25/50 ms) handles concurrent collisions transparently. All views (team page, game list, game detail, results) are aligned to display this team-local number instead of the global database ID. Historical parties are backfilled automatically by the migration ([#018](specs/018-team-game-numbering/spec.md))
 
 ### v1.3.5 *(March 13, 2026)*
 

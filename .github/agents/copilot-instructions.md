@@ -31,6 +31,8 @@ Auto-generated from all feature plans. Last updated: 2026-01-31
 - SQLite via ActiveRecord (aucun changement de schéma) (016-reposition-leave-team-button)
 - Ruby 3.4.6 + Rails 8.1.2 + ActiveRecord, ActionController, Devise, SecureRandom (017-public-url-ids)
 - SQLite (dev/test), schema ActiveRecord (017-public-url-ids)
+- Ruby 3.4.6 + Rails 8.1.2 + ActiveRecord, ActionController, Devise, SQLite adapter, I18n (018-team-game-numbering)
+- SQLite via schema ActiveRecord (dev/test), RDBMS compatible en production (018-team-game-numbering)
 
 - Ruby 3.4.6 + Devise (authentification), TailwindCSS v4.1 (styling) (001-hitguessr-gameplay)
 
@@ -50,9 +52,9 @@ tests/
 Ruby 3.4.6: Follow standard conventions
 
 ## Recent Changes
+- 018-team-game-numbering: Added Ruby 3.4.6 + Rails 8.1.2 + ActiveRecord, ActionController, Devise, SQLite adapter, I18n
 - 017-public-url-ids: Added Ruby 3.4.6 + Rails 8.1.2 + ActiveRecord, ActionController, Devise, SecureRandom
 - 016-reposition-leave-team-button: Added Ruby 3.4.6, Rails 8.1.x + Rails (ActionView/ERB), Devise, Turbo (`button_to`), Tailwind CSS 4, I18n
-- 015-team-invite-response: Added Ruby 3.4.6, Rails 8.1.2 + Rails (ActiveRecord, ActionController, ActionView), Devise, Turbo/Stimulus, Tailwind CSS Rails, SQLite3
 
 
 <!-- MANUAL ADDITIONS START -->
