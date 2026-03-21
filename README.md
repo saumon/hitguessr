@@ -602,9 +602,10 @@ The app is localized in **French** by default. Translation files are in `config/
 
 ## 📋 Changelog
 
-### v1.5.0 *(March 30, 2026)*
+### v1.5.0 *(April 5, 2026)*
 
-- **docs** - Website URL updated from `https://hitguessr.hopto.org` to `https://hitguessr.saumon.cc`
+- 📄 **docs** - Website URL updated from `https://hitguessr.hopto.org` to `https://hitguessr.saumon.cc`
+- ⚙️ **Chore** — dependency updates
 
 ### v1.4.0 *(March 14, 2026)*
 
