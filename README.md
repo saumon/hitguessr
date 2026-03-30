@@ -602,6 +602,10 @@ The app is localized in **French** by default. Translation files are in `config/
 
 ## 📋 Changelog
 
+### v1.5.0 *(March 30, 2026)*
+
+- **docs** - Website URL updated from `https://hitguessr.hopto.org` to `https://hitguessr.saumon.cc`
+
 ### v1.4.0 *(March 14, 2026)*
 
 - 🔢 **Team-scoped game numbering** — Each team now has its own sequential game counter (1, 2, 3 …) stored as `team_game_number` on every game record. Numbers are stable forever: deletion of a game does not renumber others, and the team cannot be reassigned after creation. A bounded retry (up to 3 attempts, backoff 10/25/50 ms) handles concurrent collisions transparently. All views (team page, game list, game detail, results) are aligned to display this team-local number instead of the global database ID. Historical parties are backfilled automatically by the migration ([#018](specs/018-team-game-numbering/spec.md))
