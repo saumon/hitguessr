@@ -6,6 +6,7 @@ fr:
       send_paranoid_instructions: "Si votre email existe dans notre base de données, vous allez recevoir un email avec les instructions de confirmation de votre compte."
     failure:
       already_authenticated: "Vous êtes déjà connecté(e)."
+      confirmation_required: "Vous devez confirmer votre adresse email avant de vous connecter. Vérifiez votre boîte de réception."
       inactive: "Votre compte n'est pas encore activé."
       invalid: "Email ou mot de passe invalide."
       locked: "Votre compte est verrouillé."

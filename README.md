@@ -29,6 +29,7 @@
 - 🚪 **Self-leave team** — A member can quit their team with confirmation (organizer cannot leave their own team)
 - 🏆 **Leaderboard** — Scores and rankings with tie handling
 - 👤 **User authentication** — Secure sign-up/login with Devise
+- 📧 **Account email confirmation** — New accounts require email verification before first sign-in (toggle-controlled; see [Account Email Confirmation](#account-email-confirmation))
 - 🌙 **Dark neon theme** — Stylish music-inspired UI with glowing effects
 - � **Public URL IDs** — Games and teams use short public identifiers (`gm_`, `tm_`) instead of numeric IDs in URLs for privacy and shareability
 - �📱 **Responsive design** — Works on desktop and mobile
@@ -119,6 +120,51 @@ Notes:
 - Do not use `none` in production. Keep certificate verification enabled in production.
 - In production, set `APP_HOST` to your public domain so password reset links point to the correct URL.
 - The Devise sender address uses `smtp.sender`, then `mailer.sender`, then `MAILER_SENDER` / `SMTP_SENDER`.
+
+### Account Email Confirmation
+
+HitGuessr uses Devise's native Confirmable module for account activation. The feature is controlled by a runtime toggle and is **disabled by default in development** so you can sign in locally without confirming email addresses.
+
+#### Toggle control
+
+| Method | Key | Notes |
+| ------ | --- | ----- |
+| Environment variable | `ACCOUNT_EMAIL_CONFIRMATION_ENABLED=true` | Takes precedence |
+| Rails credentials | `features.account_email_confirmation_enabled: true` | Falls back to default if absent |
+| Default | `false` (development), `true` (production) | Applied when both above are absent |
+
+#### Enabling in development
+
+```bash
+# Via environment variable (one-shot)
+ACCOUNT_EMAIL_CONFIRMATION_ENABLED=true bin/dev
+
+# Via credentials (persistent)
+bin/rails credentials:edit
+```
+
+Add to credentials:
+
+```yaml
+features:
+  account_email_confirmation_enabled: true
+```
+
+#### Behaviour when enabled
+
+- **Registration** — A confirmation email is sent immediately with a 24-hour activation link.
+- **Sign-in** — Unconfirmed accounts are blocked with a clear message.
+- **Resend** — Users can request a new confirmation link at `/users/confirmation`. Responses are generic regardless of whether the email exists (anti-enumeration). A 5-minute cooldown prevents email flooding per account.
+- **Token validity** — Confirmation link valid for 24 hours. Requesting a resend after expiry generates a new token and invalidates the previous one.
+- **Existing accounts** — All accounts created before enabling the feature are automatically marked as confirmed via database backfill.
+
+#### Confirming a development account manually
+
+```bash
+bin/rails runner "User.find_by(email: 'you@example.com')&.confirm"
+```
+
+---
 
 ### Demo Account
 
@@ -669,6 +715,10 @@ The app is localized in **French** by default. Translation files are in `config/
 ---
 
 ## 📋 Changelog
+
+### v1.6.0 *(April 5, 2026)*
+
+- 📧 **Account email confirmation** — New accounts must now confirm their email address before signing in. After registration, a confirmation link is sent to the user's inbox (valid 24 hours). Unconfirmed users are blocked at sign-in with a clear message. Resending confirmation instructions is available from `/users/confirmation` with generic (anti-enumeration) responses and a 5-minute resend cooldown per account. The confirmation feature is controlled by a runtime toggle (disabled by default in development for local convenience): set `ACCOUNT_EMAIL_CONFIRMATION_ENABLED=true` via environment variable, or add `features: { account_email_confirmation_enabled: true }` in Rails credentials. All pre-existing accounts are automatically backfilled as confirmed. ([#001](specs/001-account-email-verification/spec.md))
 
 ### v1.5.0 *(April 5, 2026)*
 
