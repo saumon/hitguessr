@@ -55,5 +55,14 @@ module Hitguessr
       value = setting(namespace, key, env: env, default: default)
       value.present? ? value.to_sym : nil
     end
+
+    # Feature toggle for account email confirmation (T009).
+    # Resolution precedence: ENV ACCOUNT_EMAIL_CONFIRMATION_ENABLED → credentials features.account_email_confirmation_enabled → default.
+    # Expected defaults: development = false, test/production = true.
+    def confirmation_feature_enabled?(default:)
+      boolean_setting(:features, :account_email_confirmation_enabled,
+                      env: "ACCOUNT_EMAIL_CONFIRMATION_ENABLED",
+                      default: default)
+    end
   end
 end

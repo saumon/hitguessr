@@ -89,4 +89,11 @@ Rails.application.configure do
   #
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+
+  # Account email confirmation feature toggle (T012).
+  # Default: true in production — confirmation is enforced unless explicitly disabled.
+  # Override via ENV: ACCOUNT_EMAIL_CONFIRMATION_ENABLED=false
+  # Override via credentials: features.account_email_confirmation_enabled = false
+  config.x.account_email_confirmation_enabled =
+    Hitguessr::MailerSettings.confirmation_feature_enabled?(default: true)
 end
