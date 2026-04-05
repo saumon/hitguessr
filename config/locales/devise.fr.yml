@@ -16,15 +16,15 @@ fr:
       unconfirmed: "Vous devez confirmer votre email avant de continuer."
     mailer:
       confirmation_instructions:
-        subject: "Instructions de confirmation"
+        subject: "HitGuessr - Confirmation de votre compte"
       reset_password_instructions:
-        subject: "Instructions de réinitialisation du mot de passe"
+        subject: "HitGuessr - Reinitialisation de votre mot de passe"
       unlock_instructions:
-        subject: "Instructions de déverrouillage"
+        subject: "HitGuessr - Deverrouillage de votre compte"
       email_changed:
-        subject: "Email modifié"
+        subject: "HitGuessr - Modification de votre adresse email"
       password_change:
-        subject: "Mot de passe modifié"
+        subject: "HitGuessr - Mot de passe modifie"
     omniauth_callbacks:
       failure: "Impossible de vous authentifier depuis %{kind} : \"%{reason}\"."
       success: "Vous êtes connecté(e) via %{kind}."
