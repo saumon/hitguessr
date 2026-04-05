@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
-  devise_for :users
-
+  devise_for :users, controllers: {
+    sessions:      "users/sessions",
+    confirmations: "users/confirmations"
+  }
   # Teams with nested memberships, invitations and games
   resources :teams do
     delete :leave, to: "memberships#leave"

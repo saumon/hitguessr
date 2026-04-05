@@ -50,4 +50,12 @@ Rails.application.configure do
 
   # Raise error when a before_action's only/except options reference missing actions.
   config.action_controller.raise_on_missing_callback_actions = true
+
+  # Account email confirmation feature toggle (T011).
+  # Default: false in test — existing tests create users without confirmed_at; enabling
+  # the toggle here would break them via Devise's active_for_authentication? check.
+  # Confirmation-specific tests set this to true explicitly in their setup blocks.
+  # Production-like behaviour is validated by those dedicated integration tests.
+  config.x.account_email_confirmation_enabled =
+    Hitguessr::MailerSettings.confirmation_feature_enabled?(default: false)
 end

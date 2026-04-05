@@ -1,0 +1,119 @@
+openapi: 3.0.3
+info:
+  title: HitGuessr Authentication Confirmation Flows
+  version: 1.6.0-draft
+  description: |
+    Contract for Devise-native account confirmation flows used by HitGuessr.
+    Routes are HTML form endpoints (not JSON API-first).
+servers:
+  - url: http://localhost:3000
+paths:
+  /users:
+    post:
+      summary: Register a new user
+      description: Creates an account. When confirmation feature is enabled, account is unconfirmed and confirmation email is sent.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [user]
+              properties:
+                user:
+                  type: object
+                  required: [name, email, password, password_confirmation]
+                  properties:
+                    name:
+                      type: string
+                    email:
+                      type: string
+                      format: email
+                    password:
+                      type: string
+                      minLength: 6
+                    password_confirmation:
+                      type: string
+      responses:
+        '302':
+          description: Redirect to post-sign-up page (or sign-in flow) with flash notice.
+        '422':
+          description: Validation error (e.g., email already taken).
+  /users/sign_in:
+    post:
+      summary: Sign in user
+      description: Authenticates a user. When confirmation is enabled and user is unconfirmed, sign-in is denied with confirmation-required feedback.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [user]
+              properties:
+                user:
+                  type: object
+                  required: [email, password]
+                  properties:
+                    email:
+                      type: string
+                      format: email
+                    password:
+                      type: string
+      responses:
+        '302':
+          description: Redirect after authentication attempt (success or failure with flash).
+        '401':
+          description: Optional non-navigational auth failure response.
+  /users/confirmation:
+    get:
+      summary: Confirm account by token
+      description: Activates user account when confirmation_token is valid and not expired.
+      parameters:
+        - name: confirmation_token
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '302':
+          description: Redirect with success or failure flash message.
+        '422':
+          description: Invalid or expired token state rendered.
+    post:
+      summary: Resend confirmation instructions
+      description: Resends confirmation email with anti-enumeration response semantics.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [user]
+              properties:
+                user:
+                  type: object
+                  required: [email]
+                  properties:
+                    email:
+                      type: string
+                      format: email
+      responses:
+        '302':
+          description: Generic response redirect regardless of account existence and regardless of resend throttling state.
+components:
+  schemas:
+    ConfirmationPolicy:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        confirm_within_hours:
+          type: integer
+          example: 24
+        resend_cooldown_seconds:
+          type: integer
+          example: 300
+        anti_enumeration_generic_response:
+          type: boolean
+          example: true
