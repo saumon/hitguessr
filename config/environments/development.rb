@@ -31,14 +31,27 @@ Rails.application.configure do
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
 
-  # Don't care if the mailer can't send.
-  config.action_mailer.raise_delivery_errors = false
+  mailer_url_options = Hitguessr::MailerSettings.default_url_options(
+    default_host: "localhost",
+    default_port: 3000,
+    default_protocol: "http"
+  )
+  smtp_settings = Hitguessr::MailerSettings.smtp_settings
+  smtp_configured = Hitguessr::MailerSettings.smtp_configured?
+
+  # Surface delivery errors only when SMTP is configured.
+  config.action_mailer.raise_delivery_errors = smtp_configured
 
   # Make template changes take effect immediately.
   config.action_mailer.perform_caching = false
 
-  # Set localhost to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
+  # Set the host used by links generated in mailer templates.
+  config.action_mailer.default_url_options = mailer_url_options
+
+  if smtp_configured
+    config.action_mailer.delivery_method = :smtp
+    config.action_mailer.smtp_settings = smtp_settings
+  end
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log

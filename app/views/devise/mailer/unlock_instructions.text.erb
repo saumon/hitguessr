@@ -1,0 +1,9 @@
+Bonjour <%= @resource.respond_to?(:name) && @resource.name.present? ? @resource.name : @resource.email %>,
+
+Votre compte HitGuessr a ete verrouille suite a plusieurs tentatives de connexion echouees.
+
+Vous pouvez le deverrouiller en ouvrant le lien suivant :
+<%= unlock_url(@resource, unlock_token: @token) %>
+
+A bientot sur HitGuessr,
+L'equipe HitGuessr
