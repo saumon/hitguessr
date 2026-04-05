@@ -62,6 +62,64 @@ bin/dev
 
 The app will be available at **<http://localhost:3000>**
 
+### SMTP / emails Devise
+
+To make Devise emails actually work, including password reset emails, configure SMTP either in Rails credentials or via environment variables.
+
+Example using Rails credentials:
+
+```bash
+bin/rails credentials:edit
+```
+
+Then add:
+
+```yml
+app:
+    host: localhost
+    port: 3000
+    protocol: http
+
+smtp:
+    sender: no-reply@hitguessr.local
+    address: smtp.example.com
+    port: 587
+    domain: example.com
+    user_name: your-smtp-login
+    password: your-smtp-password
+    authentication: plain
+    enable_starttls_auto: true
+    # Optional (development troubleshooting only): disable TLS certificate verification
+    openssl_verify_mode: none
+```
+
+Supported environment variables as an alternative:
+
+```bash
+APP_HOST=localhost
+APP_PORT=3000
+APP_PROTOCOL=http
+MAILER_SENDER=no-reply@hitguessr.local
+SMTP_SENDER=no-reply@hitguessr.local
+SMTP_ADDRESS=smtp.example.com
+SMTP_PORT=587
+SMTP_DOMAIN=example.com
+SMTP_USERNAME=your-smtp-login
+SMTP_PASSWORD=your-smtp-password
+SMTP_AUTHENTICATION=plain
+SMTP_ENABLE_STARTTLS_AUTO=true
+# Optional (development troubleshooting only): disable TLS certificate verification
+SMTP_OPENSSL_VERIFY_MODE=none
+```
+
+Notes:
+
+- In development, email delivery switches to SMTP as soon as `SMTP_ADDRESS`, `SMTP_PORT`, `SMTP_USERNAME`, and `SMTP_PASSWORD` are provided.
+- If your SMTP provider has TLS certificate chain/CRL issues in local development, you can temporarily disable verification with `smtp.openssl_verify_mode: none` (credentials) or `SMTP_OPENSSL_VERIFY_MODE=none` (environment variable).
+- Do not use `none` in production. Keep certificate verification enabled in production.
+- In production, set `APP_HOST` to your public domain so password reset links point to the correct URL.
+- The Devise sender address uses `smtp.sender`, then `mailer.sender`, then `MAILER_SENDER` / `SMTP_SENDER`.
+
 ### Demo Account
 
 After seeding, you can log in with:
@@ -540,6 +598,8 @@ docker ps -a --filter name=hitguessr
 ```text
 hitguessr/
 ├── app/
+│   ├── assets/
+│   │   └── tailwind/     # Custom CSS with neon theme
 │   ├── controllers/
 │   │   ├── games_controller.rb
 │   │   ├── guesses_controller.rb
@@ -549,6 +609,13 @@ hitguessr/
 │   │   ├── proposals_controller.rb
 │   │   ├── results_controller.rb
 │   │   └── teams_controller.rb
+│   ├── helpers/
+│   ├── javascript/
+│   │   └── controllers/  # Stimulus controllers
+│   │       ├── guess_duplicates_controller.js
+│   │       └── youtube_preview_controller.js
+│   ├── jobs/
+│   ├── mailers/
 │   ├── models/
 │   │   ├── game.rb
 │   │   ├── guess.rb
@@ -558,21 +625,21 @@ hitguessr/
 │   │   ├── team_invitation.rb
 │   │   └── user.rb
 │   ├── views/            # ERB templates
-│   ├── assets/
-│   │   └── tailwind/     # Custom CSS with neon theme
-│   └── javascript/
-│       └── controllers/  # Stimulus controllers
-│           ├── guess_duplicates_controller.js
-│           └── youtube_preview_controller.js
+│   └── ...
+├── bin/                  # Rails, dev, ci, lint/security scripts
 ├── config/
-│   ├── routes.rb         # URL routing
+│   ├── environments/     # Environment-specific configuration
+│   ├── initializers/     # Devise and other initializers
 │   ├── locales/          # i18n (French)
-│   └── initializers/     # Devise, etc.
+│   ├── mailer_settings.rb # Shared SMTP and mailer URL settings
+│   └── routes.rb         # URL routing
 ├── db/
 │   ├── migrate/          # Database migrations
 │   ├── schema.rb         # Current schema
 │   └── seeds.rb          # Demo data
-├── specs/                # Feature specifications (001–015)
+├── docs/                 # Project docs and assets
+├── script/               # Deployment and maintenance scripts
+├── specs/                # Feature specifications (001–018)
 │   └── NNN-feature-name/
 │       ├── spec.md        # Full feature spec
 │       ├── plan.md        # Tech stack & file structure
@@ -582,6 +649,7 @@ hitguessr/
 │       ├── quickstart.md  # Integration scenarios
 │       ├── checklists/    # Pre-implementation checklists
 │       └── contracts/     # API / test contracts
+├── storage/              # SQLite DB and persisted files (local/dev)
 └── test/                 # Test suite (Minitest + Capybara)
     ├── controllers/
     ├── models/
@@ -601,6 +669,12 @@ The app is localized in **French** by default. Translation files are in `config/
 ---
 
 ## 📋 Changelog
+
+### v1.5.0 *(April 5, 2026)*
+
+- ✉️ **Devise SMTP mail delivery setup** — Added a shared mailer configuration for SMTP with environment-variable and Rails-credentials support, wired Devise sender configuration, and documented setup for password reset emails.
+- 📄 **docs** - Website URL updated from `https://hitguessr.hopto.org` to `https://hitguessr.saumon.cc`
+- ⚙️ **Chore** — dependency updates
 
 ### v1.4.0 *(March 14, 2026)*
 

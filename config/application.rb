@@ -1,4 +1,5 @@
 require_relative "boot"
+require_relative "mailer_settings"
 
 require "rails/all"
 

@@ -1,7 +1,19 @@
-<p>Hello <%= @resource.email %>!</p>
+<p>
+	Bonjour
+	<%= @resource.respond_to?(:name) && @resource.name.present? ? @resource.name : @resource.email %>,
+</p>
 
-<p>Your account has been locked due to an excessive number of unsuccessful sign in attempts.</p>
+<p>
+	Votre compte HitGuessr a ete verrouille suite a plusieurs tentatives de connexion echouees.
+</p>
 
-<p>Click the link below to unlock your account:</p>
+<p>
+	Vous pouvez le deverrouiller en cliquant sur le lien ci-dessous :
+</p>
 
-<p><%= link_to 'Unlock my account', unlock_url(@resource, unlock_token: @token) %></p>
+<p>
+	<%= link_to "Deverrouiller mon compte", unlock_url(@resource, unlock_token: @token) %>
+</p>
+
+<p>A bientot sur HitGuessr,</p>
+<p>L'equipe HitGuessr</p>

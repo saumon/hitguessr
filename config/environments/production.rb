@@ -53,21 +53,23 @@ Rails.application.configure do
   config.active_job.queue_adapter = :solid_queue
   config.solid_queue.connects_to = { database: { writing: :queue } }
 
-  # Ignore bad email addresses and do not raise email delivery errors.
-  # Set this to true and configure the email server for immediate delivery to raise delivery errors.
-  # config.action_mailer.raise_delivery_errors = false
+  # Raise delivery errors in production so SMTP issues are visible immediately.
+  config.action_mailer.raise_delivery_errors = true
 
-  # Set host to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = { host: "example.com" }
+  mailer_url_options = Hitguessr::MailerSettings.default_url_options(
+    default_host: "example.com",
+    default_protocol: "https"
+  )
+  smtp_settings = Hitguessr::MailerSettings.smtp_settings
+  smtp_configured = Hitguessr::MailerSettings.smtp_configured?
 
-  # Specify outgoing SMTP server. Remember to add smtp/* credentials via bin/rails credentials:edit.
-  # config.action_mailer.smtp_settings = {
-  #   user_name: Rails.application.credentials.dig(:smtp, :user_name),
-  #   password: Rails.application.credentials.dig(:smtp, :password),
-  #   address: "smtp.example.com",
-  #   port: 587,
-  #   authentication: :plain
-  # }
+  # Set the host used by links generated in mailer templates.
+  config.action_mailer.default_url_options = mailer_url_options
+
+  if smtp_configured
+    config.action_mailer.delivery_method = :smtp
+    config.action_mailer.smtp_settings = smtp_settings
+  end
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).

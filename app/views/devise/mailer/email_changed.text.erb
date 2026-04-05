@@ -1,0 +1,12 @@
+Bonjour <%= @resource.respond_to?(:name) && @resource.name.present? ? @resource.name : @email %>,
+
+<% if @resource.try(:unconfirmed_email?) %>
+Nous vous informons que l'adresse email de votre compte HitGuessr est en cours de modification vers <%= @resource.unconfirmed_email %>.
+<% else %>
+Nous vous confirmons que l'adresse email de votre compte HitGuessr a ete modifiee vers <%= @resource.email %>.
+<% end %>
+
+Si vous n'etes pas a l'origine de cette action, contactez-nous rapidement.
+
+A bientot sur HitGuessr,
+L'equipe HitGuessr
